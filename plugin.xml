@@ -2,21 +2,31 @@
 
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
-id="org.apache.cordova.core">
+id="org.apache.cordova.core.GeoBroker"
     version="0.1.0">
+
     <name>Geolocation</name>
 
     <!-- android -->
     <platform name="android">
-        <config-file target="res/xml/config.xml" parent="/cordova/plugins">
+        <config-file target="res/xml/config.xml" parent="plugins">
             <plugin name="Geolocation" value="org.apache.cordova.core.GeoBroker"/>
         </config-file>
 
-        <source-file src="GeoBroker.java" target-dir="org/apache/cordova/core" />
-        <source-file src="GPSListener.java" target-dir="org/apache/cordova/core" />
-        <source-file src="NetworkListener.java" target-dir="org/apache/cordova/core" />
-        <source-file src="CordovaLocationListener.java" target-dir="org/apache/cordova/core" />
-        <source-file src="GeoBroker.java" target-dir="org/apache/cordova/core" />
+	<source-file src="GeoBroker.java" target-dir="src/org/apache/cordova/core" />
+	<source-file src="GPSListener.java" target-dir="src/org/apache/cordova/core" />
+	<source-file src="NetworkListener.java" target-dir="src/org/apache/cordova/core" />
+	<source-file src="CordovaLocationListener.java" target-dir="src/org/apache/cordova/core" />
+	<source-file src="GeoBroker.java" target-dir="src/org/apache/cordova/core" />
 
-       </platform>
+    </platform>
+
+    <!-- ios -->
+    <platform name="ios">    
+        <config-file target="config.xml" parent="plugins">
+	    <plugin name="Geolocation" value="CDVLocation" /> 
+        </config-file>
+        <header-file src="src/ios/CDVLocation.h" />
+	<source-file src="src/ios/CDVLocation.m" />
+    </platform>
 </plugin>
