@@ -18,7 +18,7 @@
  */
 
 #import "CDVLocation.h"
-#import "NSArray+Comparisons.h"
+#import <Cordova/NSArray+Comparisons.h>
 
 #pragma mark Constants
 
