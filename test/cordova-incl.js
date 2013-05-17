@@ -19,7 +19,6 @@
  *
 */
 
-var VERSION='2.6.0';
 var PLAT;
 if (/Android/.exec(navigator.userAgent)) {
     PLAT = 'android';
@@ -31,9 +30,9 @@ if (/Android/.exec(navigator.userAgent)) {
 
 var scripts = document.getElementsByTagName('script');
 var currentPath = scripts[scripts.length - 1].src;
-var platformCordovaPath = currentPath.replace("cordova.js", "cordova." + PLAT + ".js");
-var versionCordovaPath = currentPath.replace("cordova.js", "cordova-" + VERSION + ".js");
-var cordovaPath = versionCordovaPath;
+var platformCordovaPath = currentPath.replace("cordova-incl.js", "cordova." + PLAT + ".js");
+var normalCordovaPath = currentPath.replace("cordova-incl.js", "cordova.js");
+var cordovaPath = normalCordovaPath;
 
 if (PLAT) {
     // XHR to local file is an error on some platforms, windowsphone for one 
@@ -44,7 +43,7 @@ if (PLAT) {
 
             if (this.readyState == this.DONE && this.responseText.length > 0) {
                 if(parseInt(this.status) >= 400){
-                    cordovaPath = versionCordovaPath;
+                    cordovaPath = normalCordovaPath;
                 }else{
                     cordovaPath = platformCordovaPath;
                 }
@@ -53,7 +52,7 @@ if (PLAT) {
         xhr.send(null);
     }
     catch(e){
-        cordovaPath = versionCordovaPath;
+        cordovaPath = normalCordovaPath;
     } // access denied!
 }
 
