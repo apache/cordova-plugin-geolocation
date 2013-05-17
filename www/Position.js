@@ -19,7 +19,7 @@
  *
 */
 
-var Coordinates = require('org.apache.cordova.core.GeoBroker.PositionError.Coordinates');
+var Coordinates = require('org.apache.cordova.core.GeoBroker.Coordinates');
 
 var Position = function(coords, timestamp) {
     if (coords) {

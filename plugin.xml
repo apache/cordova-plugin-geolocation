@@ -7,6 +7,10 @@ id="org.apache.cordova.core.GeoBroker"
 
     <name>Geolocation</name>
 
+    <js-module src="www/Coordinates.js" name="Coordinates">
+        <clobbers target="Coordinates" />
+    </js-module>
+    
     <js-module src="www/PositionError.js" name="PositionError">
         <clobbers target="PositionError" />
     </js-module>
@@ -18,7 +22,9 @@ id="org.apache.cordova.core.GeoBroker"
     <js-module src="www/geolocation.js" name="geolocation">
         <clobbers target="navigator.geolocation" />
     </js-module>
-        
+    
+
+    
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
