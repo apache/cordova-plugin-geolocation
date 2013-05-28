@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+<plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
 id="org.apache.cordova.core.GeoBroker"
     version="0.1.0">
@@ -50,4 +50,16 @@ id="org.apache.cordova.core.GeoBroker"
         <header-file src="src/ios/CDVLocation.h" />
 	    <source-file src="src/ios/CDVLocation.m" />
     </platform>
+
+    <!-- wp7 -->
+    <platform name="wp7">
+        <config-file target="config.xml" parent="/*">
+            <feature name="GeoLocation">
+                <param name="wp-package" value="GeoLocation"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/wp7/GeoLocation.cs" />
+    </platform>
+    
 </plugin>
