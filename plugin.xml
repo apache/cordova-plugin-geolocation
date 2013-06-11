@@ -33,6 +33,11 @@ id="org.apache.cordova.core.GeoBroker"
 	        </feature>
         </config-file>
 
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        </config-file>
+        
         <source-file src="src/android/GeoBroker.java" target-dir="src/org/apache/cordova/core" />
         <source-file src="src/android/GPSListener.java" target-dir="src/org/apache/cordova/core" />
         <source-file src="src/android/NetworkListener.java" target-dir="src/org/apache/cordova/core" />
