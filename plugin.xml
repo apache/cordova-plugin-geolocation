@@ -56,6 +56,14 @@ id="org.apache.cordova.core.GeoBroker"
 	    <source-file src="src/ios/CDVLocation.m" />
     </platform>
 
+    <!-- blackberry10 -->
+    <platform name="blackberry10">
+        <source-file src="src/blackberry10/index.js" target-dir="Geolocation" />
+        <config-file target="www/config.xml" parent="/widget">
+            <feature name="Geolocation" value="Geolocation"/>
+        </config-file>
+    </platform>
+
     <!-- wp7 -->
     <platform name="wp7">
         <config-file target="config.xml" parent="/*">
