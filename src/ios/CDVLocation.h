@@ -20,14 +20,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import <Cordova/CDVPlugin.h>
-
-enum CDVHeadingStatus {
-    HEADINGSTOPPED = 0,
-    HEADINGSTARTING,
-    HEADINGRUNNING,
-    HEADINGERROR
-};
-typedef NSUInteger CDVHeadingStatus;
+#import <Cordova/CDVShared.h>
 
 enum CDVLocationStatus {
     PERMISSIONDENIED = 1,
@@ -35,18 +28,6 @@ enum CDVLocationStatus {
     TIMEOUT
 };
 typedef NSUInteger CDVLocationStatus;
-
-// simple object to keep track of heading information
-@interface CDVHeadingData : NSObject {}
-
-@property (nonatomic, assign) CDVHeadingStatus headingStatus;
-@property (nonatomic, strong) CLHeading* headingInfo;
-@property (nonatomic, strong) NSMutableArray* headingCallbacks;
-@property (nonatomic, copy) NSString* headingFilter;
-@property (nonatomic, strong) NSDate* headingTimestamp;
-@property (assign) NSInteger timeout;
-
-@end
 
 // simple object to keep track of location information
 @interface CDVLocationData : NSObject {
@@ -66,15 +47,12 @@ typedef NSUInteger CDVLocationStatus;
 @interface CDVLocation : CDVPlugin <CLLocationManagerDelegate>{
     @private BOOL __locationStarted;
     @private BOOL __highAccuracyEnabled;
-    CDVHeadingData* headingData;
     CDVLocationData* locationData;
 }
 
 @property (nonatomic, strong) CLLocationManager* locationManager;
-@property (strong) CDVHeadingData* headingData;
 @property (nonatomic, strong) CDVLocationData* locationData;
 
-- (BOOL)hasHeadingSupport;
 - (void)getLocation:(CDVInvokedUrlCommand*)command;
 - (void)addWatch:(CDVInvokedUrlCommand*)command;
 - (void)clearWatch:(CDVInvokedUrlCommand*)command;
@@ -90,15 +68,4 @@ typedef NSUInteger CDVLocationStatus;
        didFailWithError:(NSError*)error;
 
 - (BOOL)isLocationServicesEnabled;
-
-- (void)getHeading:(CDVInvokedUrlCommand*)command;
-- (void)returnHeadingInfo:(NSString*)callbackId keepCallback:(BOOL)bRetain;
-- (void)watchHeadingFilter:(CDVInvokedUrlCommand*)command;
-- (void)stopHeading:(CDVInvokedUrlCommand*)command;
-- (void)startHeadingWithFilter:(CLLocationDegrees)filter;
-- (void)locationManager:(CLLocationManager*)manager
-       didUpdateHeading:(CLHeading*)heading;
-
-- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager*)manager;
-
 @end
