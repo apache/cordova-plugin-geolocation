@@ -56,6 +56,14 @@ id="org.apache.cordova.core.GeoBroker"
 	    <source-file src="src/ios/CDVLocation.m" />
     </platform>
 
+    <!-- blackberry10 -->
+    <platform name="blackberry10">
+        <source-file src="src/blackberry10/index.js" target-dir="Geolocation" />
+        <config-file target="www/config.xml" parent="/widget">
+            <feature name="Geolocation" value="Geolocation"/>
+        </config-file>
+    </platform>
+
     <!-- wp7 -->
     <platform name="wp7">
         <config-file target="config.xml" parent="/*">
@@ -64,7 +72,26 @@ id="org.apache.cordova.core.GeoBroker"
             </feature>
         </config-file>
 
+        <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
+            <Capability Name="ID_CAP_LOCATION" />
+        </config-file>
+
         <source-file src="src/wp7/GeoLocation.cs" />
+    </platform>
+
+    <!-- wp8 -->
+    <platform name="wp8">
+        <config-file target="config.xml" parent="/*">
+            <feature name="GeoLocation">
+                <param name="wp-package" value="GeoLocation"/>
+            </feature>
+        </config-file>
+
+        <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
+            <Capability Name="ID_CAP_LOCATION" />
+        </config-file>
+
+        <source-file src="src/wp8/GeoLocation.cs" />
     </platform>
     
 </plugin>
