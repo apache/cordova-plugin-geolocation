@@ -22,8 +22,8 @@
 var argscheck = require('cordova/argscheck'),
     utils = require('cordova/utils'),
     exec = require('cordova/exec'),
-    PositionError = require('org.apache.cordova.core.GeoBroker.PositionError'),
-    Position = require('org.apache.cordova.core.GeoBroker.Position');
+    PositionError = require('org.apache.cordova.core.geolocation.PositionError'),
+    Position = require('org.apache.cordova.core.geolocation.Position');
 
 var timers = {};   // list of timers in use
 
