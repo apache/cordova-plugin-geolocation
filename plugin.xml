@@ -75,7 +75,7 @@
             <Capability Name="ID_CAP_LOCATION" />
         </config-file>
 
-        <source-file src="src/wp7/GeoLocation.cs" />
+        <source-file src="src/wp/GeoLocation.cs" />
     </platform>
 
     <!-- wp8 -->
@@ -90,7 +90,7 @@
             <Capability Name="ID_CAP_LOCATION" />
         </config-file>
 
-        <source-file src="src/wp8/GeoLocation.cs" />
+        <source-file src="src/wp/GeoLocation.cs" />
     </platform>
     
 </plugin>
