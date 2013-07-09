@@ -19,7 +19,7 @@
  *
 */
 
-var Coordinates = require('org.apache.cordova.core.geolocation.Coordinates');
+var Coordinates = require('./Coordinates');
 
 var Position = function(coords, timestamp) {
     if (coords) {
