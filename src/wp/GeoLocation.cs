@@ -23,7 +23,7 @@ namespace WPCordovaClassLib.Cordova.Commands
     /// <summary>
     /// This is a command stub, the browser provides the correct implementation.  We use this to trigger the static analyzer that we require this permission 
     /// </summary>
-    public class GeoLocation
+    public class Geolocation
     {
         /* Unreachable code, by design -jm */
         private void triggerGeoInclusion()
