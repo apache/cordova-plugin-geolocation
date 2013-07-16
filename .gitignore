@@ -1,1 +1,23 @@
-.DS_Store
+﻿#If ignorance is bliss, then somebody knock the smile off my face
+
+*.csproj.user
+*.suo
+*.cache
+Thumbs.db
+*.DS_Store
+
+*.bak
+*.cache
+*.log
+*.swp
+*.user
+
+
+
+
+
+
+
+
+
+ 
