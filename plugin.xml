@@ -65,7 +65,7 @@
         <config-file target="config.xml" parent="/*">
 	        <feature name="Geolocation">
 	            <param name="ios-package" value="CDVLocation"/>
-	        </feature> 
+	        </feature>
         </config-file>
         <header-file src="src/ios/CDVLocation.h" />
 	    <source-file src="src/ios/CDVLocation.m" />
@@ -94,6 +94,13 @@
         <config-file target="www/config.xml" parent="/widget">
             <feature name="Geolocation" value="Geolocation"/>
         </config-file>
+        <config-file target="www/config.xml" parent="/widget">
+          <rim:permissions>
+          </rim:permissions>
+        </config-file>
+        <config-file target="www/config.xml" parent="/widget/rim:permissions">
+          <rim:permit>read_geolocation</rim:permit>
+        </config-file>
     </platform>
 
     <!-- wp7 -->
@@ -115,5 +122,5 @@
 
         <source-file src="src/wp/Geolocation.cs" />
     </platform>
-    
+
 </plugin>
