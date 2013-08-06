@@ -6,7 +6,7 @@
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
-    <license>Apache</license>
+    <license>Apache 2.0</license>
     <keywords>cordova,geolocation</keywords>
 
     <!-- android -->
