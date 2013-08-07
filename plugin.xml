@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
+xmlns:rim="http://www.blackberry.com/ns/widgets"
+xmlns:android="http://schemas.android.com/apk/res/android"
            id="org.apache.cordova.core.geolocation"
       version="0.1.0">
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
-    <license>Apache</license>
+    <license>Apache 2.0</license>
     <keywords>cordova,geolocation</keywords>
 
     <!-- android -->
