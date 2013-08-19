@@ -128,4 +128,11 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <source-file src="src/wp/Geolocation.cs" />
     </platform>
 
+    <!-- windows8 -->
+    <platform name="windows8">
+        <config-file target="package.appxmanifest" parent="/Package/Capabilities">
+            <DeviceCapability Name="location" />
+        </config-file>
+    </platform>
+
 </plugin>
