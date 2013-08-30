@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var ids = {};
+var ids = {},
+    clientIds = [];
 
 module.exports = {
     getLocation: function (success, fail, args, env) {
@@ -45,6 +46,7 @@ module.exports = {
                 }, options);
 
         ids[clientId] = id;
+        clientIds.push(clientId);
 
         result.noResult(true);
     },
@@ -60,5 +62,15 @@ module.exports = {
         }
 
         result.ok(null, false);
+    },
+
+    reset: function () {
+        clientIds.forEach(function (clientId) {
+            if (ids.hasOwnProperty(clientId)) {
+                navigator.geolocation.clearWatch(ids[clientId]);
+            }
+        });
+        clientIds = [];
+        ids = {};
     }
 };
