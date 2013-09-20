@@ -99,10 +99,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="www/config.xml" parent="/widget">
             <feature name="Geolocation" value="Geolocation"/>
         </config-file>
-        <config-file target="www/config.xml" parent="/widget">
-          <rim:permissions>
-          </rim:permissions>
-        </config-file>
         <config-file target="www/config.xml" parent="/widget/rim:permissions">
           <rim:permit>read_geolocation</rim:permit>
         </config-file>
