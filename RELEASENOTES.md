@@ -20,6 +20,10 @@
 -->
 # Release Notes
 
-
 ### 0.3.0 (Sept 5, 2013)
 * Added support for windows 8 (Adds required permission)
+
+### 0.3.2 (Sept 25, 2013)
+* CB-4889 bumping&resetting version
+* [BlackBerry10] removed uneeded permission tags in plugin.xml
+* CB-4889 renaming org.apache.cordova.core.geolocation to org.apache.cordova.geolocation
