@@ -50,9 +50,9 @@ function createErrorCode() {
 }
 function createResult(pos) {
     return {
-        latitude: pos.coordinate.latitude,
-        longitude: pos.coordinate.longitude,
-        altitude: pos.coordinate.altitude,
+        latitude: pos.coordinate.point.position.latitude,
+        longitude: pos.coordinate.point.position.longitude,
+        altitude: pos.coordinate.point.position.altitude,
         accuracy: pos.coordinate.accuracy,
         heading: pos.coordinate.heading,
         velocity: pos.coordinate.speed,
@@ -77,7 +77,7 @@ module.exports = {
 
             loc.getGeopositionAsync().then(
                 function (pos) {
-                    success(getResult(pos));
+                    success(createResult(pos));
                 },
                 function (err) {
                     fail({
@@ -102,7 +102,7 @@ module.exports = {
             highAccuracy = args[1],
 
             onPositionChanged = function (e) {
-                success(getResult(e.position));
+                success(createResult(e.position));
             },
 
             onStatusChanged = function (e) {
@@ -154,4 +154,4 @@ module.exports = {
     }
 };
 
-require("cordova/exec/proxy").add("Geolocation", module.exports);
+require("cordova/windows8/commandProxy").add("Geolocation", module.exports);
