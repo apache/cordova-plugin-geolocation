@@ -129,6 +129,9 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="package.appxmanifest" parent="/Package/Capabilities">
             <DeviceCapability Name="location" />
         </config-file>
+        <js-module src="src/windows8/GeolocationProxy.js" name="GeolocationProxy">
+          <merges target="" />
+        </js-module>
     </platform>
     
     <!-- firefoxos -->
