@@ -20,7 +20,9 @@
 */
 
 var PLAT;
-if (/Android/.exec(navigator.userAgent)) {
+if (/Chrome/.exec(navigator.userAgent)) {
+    PLAT = 'amazon-fireos';
+} else if (/Android/.exec(navigator.userAgent)) {
     PLAT = 'android';
 } else if (/(iPad)|(iPhone)|(iPod)/.exec(navigator.userAgent)) {
     PLAT = 'ios';
