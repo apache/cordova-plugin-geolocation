@@ -65,8 +65,8 @@ public class GeoBroker extends CordovaPlugin {
             if (action.equals("getLocation")) {
                 boolean enableHighAccuracy = args.getBoolean(0);
                 int maximumAge = args.getInt(1);
-
-                Location last = this.locationManager.getLastKnownLocation(enableHighAccuracy ? LocationManager.GPS_PROVIDER: LocationManager.NETWORK_PROVIDER);
+                String provider = (enableHighAccuracy && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) ? LocationManager.GPS_PROVIDER : LocationManager.NETWORK_PROVIDER;
+                Location last = this.locationManager.getLastKnownLocation(provider);
                 // Check if we can use lastKnownLocation to get a quick reading and use less battery
                 if (last != null && (System.currentTimeMillis() - last.getTime()) <= maximumAge) {
                     PluginResult result = new PluginResult(PluginResult.Status.OK, this.returnLocationJSON(last));
