@@ -24,10 +24,10 @@
 module.exports = {
 
     getCurrentPosition: function(win, geolocationError, args) {
-        win(position);
+        return navigator.geolocation.getCurrentPosition(win, geolocationError);
     },
     
-    geolocationError(error) {
+    geolocationError: function(error) {
         switch(error.code) {
             case error.TIMEOUT:
                 console.log("geolocation timeout");
@@ -35,7 +35,7 @@ module.exports = {
             case error.POSITION_UNAVAILABLE:
                 console.log("position unavailable");
                 break;
-            case error:.PERMISSION_DENIED:
+            case error.PERMISSION_DENIED:
                 console.log("permission denied");
                 break;
             default:    
