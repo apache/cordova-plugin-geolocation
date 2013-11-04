@@ -21,29 +21,40 @@
            
 // latest geolocation spec can be found here: http://www.w3.org/TR/geolocation-API/
 
-module.exports = {
+var idsMap = {};
 
-    getCurrentPosition: function(win, geolocationError, args) {
-        return navigator.geolocation.getCurrentPosition(win, geolocationError);
+module.exports = {
+    getLocation: function(success, error, args) {
+        var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
+        geo.getCurrentPosition(success, error, {
+            enableHighAccuracy: args[0],
+            maximumAge: args[1]
+        });
     },
-    
-    geolocationError: function(error) {
-        switch(error.code) {
-            case error.TIMEOUT:
-                console.log("geolocation timeout");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                console.log("position unavailable");
-                break;
-            case error.PERMISSION_DENIED:
-                console.log("permission denied");
-                break;
-            default:    
-                console.log("unknown error");
-                break;
+
+    addWatch: function(success, error, args) {
+        var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');        
+        var id = args[0];
+        var nativeId = geo.watchPosition(success, error, {
+            enableHighAccuracy: args[1]
+        });
+
+        idsMap[id] = nativeId;
+    },
+
+    clearWatch: function(success, error, args) {
+        var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
+        var id = args[0];
+
+        if(id in idsMap) {
+            geo.clearWatch(idsMap[id]);
+            delete idsMap[id];
+        }
+
+        if(success) {
+            success();
         }
     }
-
 };
 
 require("cordova/firefoxos/commandProxy").add("Geolocation", module.exports);
