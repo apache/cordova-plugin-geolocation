@@ -26,7 +26,11 @@ var idsMap = {};
 module.exports = {
     getLocation: function(success, error, args) {
         var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
-        geo.getCurrentPosition(success, error, {
+        function successCallback(position) {
+          // Cordova is creating Position object using just coords
+          success(position.coords);
+        }
+        geo.getCurrentPosition(successCallback, error, {
             enableHighAccuracy: args[0],
             maximumAge: args[1]
         });
