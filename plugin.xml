@@ -81,6 +81,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <!-- blackberry10 -->
     <platform name="blackberry10">
 
+        <js-module src="www/blackberry10/GeolocationProxy.js" name="GeolocationProxy">
+            <runs />
+        </js-module>
+
         <js-module src="www/Coordinates.js" name="Coordinates">
             <clobbers target="Coordinates" />
         </js-module>
@@ -97,13 +101,14 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <clobbers target="navigator.geolocation" />
         </js-module>
 
-        <source-file src="src/blackberry10/index.js" target-dir="Geolocation" />
         <config-file target="www/config.xml" parent="/widget">
             <feature name="Geolocation" value="Geolocation"/>
         </config-file>
+
         <config-file target="www/config.xml" parent="/widget/rim:permissions">
           <rim:permit>read_geolocation</rim:permit>
         </config-file>
+
     </platform>
 
     <!-- wp7 -->
