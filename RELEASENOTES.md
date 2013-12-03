@@ -27,3 +27,7 @@
 * CB-4889 bumping&resetting version
 * [BlackBerry10] removed uneeded permission tags in plugin.xml
 * CB-4889 renaming org.apache.cordova.core.geolocation to org.apache.cordova.geolocation
+
+ ### 0.3.3 (Oct 28, 2013)
+* CB-5128: add repo + issue tag to plugin.xml for geolocation plugin
+* [CB-4915] Incremented plugin version on dev branch.
