@@ -28,6 +28,17 @@
 * [BlackBerry10] removed uneeded permission tags in plugin.xml
 * CB-4889 renaming org.apache.cordova.core.geolocation to org.apache.cordova.geolocation
 
- ### 0.3.3 (Oct 28, 2013)
+### 0.3.3 (Oct 28, 2013)
 * CB-5128: add repo + issue tag to plugin.xml for geolocation plugin
 * [CB-4915] Incremented plugin version on dev branch.
+
+### 0.3.4 (Dec 4, 2013)
+* Append proxy to platform definition in plugin.xml
+* Append windows 8 Geolocation proxy
+* Code clean-up for android src.
+* Updated amazon-fireos platform + reverting some of the fixes in android code.
+* Added amazon-fireos platform + some of the fixes in android code.
+* CB-5334 [BlackBerry10] Use command proxy
+* call FxOS's getCurrentProxy added
+* pass by only coords
+* proper implementation for firefoxos
