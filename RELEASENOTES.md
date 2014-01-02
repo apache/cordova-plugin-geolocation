@@ -42,3 +42,8 @@
 * call FxOS's getCurrentProxy added
 * pass by only coords
 * proper implementation for firefoxos
+
+### 0.3.5 (Jan 02, 2014)
+* CB-5658 Add doc/index.md for Geolocation plugin
+* windows8: adds missing reference to PositionError (w/o it the app crashes)
+* Removing incorrectly added closing comments for wp7 platform in plugin.xml

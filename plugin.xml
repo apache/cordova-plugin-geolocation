@@ -4,7 +4,7 @@
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="org.apache.cordova.geolocation"
-      version="0.3.5-dev">
+      version="0.3.5">
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
