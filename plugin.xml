@@ -4,7 +4,7 @@
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="org.apache.cordova.geolocation"
-      version="0.3.3">
+      version="0.3.5">
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
@@ -50,6 +50,43 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
     </platform>
 
+     <!-- amazon-fireos -->
+    <platform name="amazon-fireos">
+
+        <js-module src="www/Coordinates.js" name="Coordinates">
+            <clobbers target="Coordinates" />
+        </js-module>
+
+        <js-module src="www/PositionError.js" name="PositionError">
+            <clobbers target="PositionError" />
+        </js-module>
+
+        <js-module src="www/Position.js" name="Position">
+            <clobbers target="Position" />
+        </js-module>
+
+        <js-module src="www/geolocation.js" name="geolocation">
+            <clobbers target="navigator.geolocation" />
+        </js-module>
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="Geolocation">
+	            <param name="android-package" value="org.apache.cordova.geolocation.GeoBroker"/>
+	        </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        </config-file>
+
+        <source-file src="src/amazon/GeoBroker.java" target-dir="src/org/apache/cordova/geolocation" />
+        <source-file src="src/amazon/GPSListener.java" target-dir="src/org/apache/cordova/geolocation" />
+        <source-file src="src/amazon/NetworkListener.java" target-dir="src/org/apache/cordova/geolocation" />
+        <source-file src="src/amazon/CordovaLocationListener.java" target-dir="src/org/apache/cordova/geolocation" />
+
+    </platform>
+    
     <!-- ios -->
     <platform name="ios">
 
@@ -81,6 +118,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <!-- blackberry10 -->
     <platform name="blackberry10">
 
+        <js-module src="www/blackberry10/GeolocationProxy.js" name="GeolocationProxy">
+            <runs />
+        </js-module>
+
         <js-module src="www/Coordinates.js" name="Coordinates">
             <clobbers target="Coordinates" />
         </js-module>
@@ -97,13 +138,14 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <clobbers target="navigator.geolocation" />
         </js-module>
 
-        <source-file src="src/blackberry10/index.js" target-dir="Geolocation" />
         <config-file target="www/config.xml" parent="/widget">
             <feature name="Geolocation" value="Geolocation"/>
         </config-file>
+
         <config-file target="www/config.xml" parent="/widget/rim:permissions">
           <rim:permit>read_geolocation</rim:permit>
         </config-file>
+
     </platform>
 
     <!-- wp7 -->
@@ -114,7 +156,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </config-file>
 
         <source-file src="src/wp/Geolocation.cs" />
-    </platform>-->
+    </platform>
 
     <!-- wp8 -->
     <platform name="wp8">
@@ -131,6 +173,12 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="package.appxmanifest" parent="/Package/Capabilities">
             <DeviceCapability Name="location" />
         </config-file>
+        <js-module src="www/PositionError.js" name="PositionError">
+            <clobbers target="PositionError" />
+        </js-module>
+        <js-module src="src/windows8/GeolocationProxy.js" name="GeolocationProxy">
+          <merges target="" />
+        </js-module>
     </platform>
 
     <!-- firefoxos -->
