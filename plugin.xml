@@ -148,6 +148,28 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
     </platform>
 
+    <!-- ubuntu -->
+    <platform name="ubuntu">
+        <js-module src="www/Coordinates.js" name="Coordinates">
+            <clobbers target="Coordinates" />
+        </js-module>
+
+        <js-module src="www/PositionError.js" name="PositionError">
+            <clobbers target="PositionError" />
+        </js-module>
+
+        <js-module src="www/Position.js" name="Position">
+            <clobbers target="Position" />
+        </js-module>
+
+        <js-module src="www/geolocation.js" name="geolocation">
+            <clobbers target="navigator.geolocation" />
+        </js-module>
+
+        <source-file src="src/ubuntu/geolocation.cpp" />
+        <header-file src="src/ubuntu/geolocation.h" />
+    </platform>-->
+
     <!-- wp7 -->
     <platform name="wp7">
 
