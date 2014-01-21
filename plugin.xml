@@ -168,6 +168,11 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <source-file src="src/ubuntu/geolocation.cpp" />
         <header-file src="src/ubuntu/geolocation.h" />
+        <config-file target="config.xml" parent="/*">
+            <feature name="Geolocation">
+                <param policy_group="location" policy_version="1" />
+            </feature>
+        </config-file>
     </platform>-->
 
     <!-- wp7 -->
