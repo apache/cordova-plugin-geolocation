@@ -173,7 +173,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 <param policy_group="location" policy_version="1" />
             </feature>
         </config-file>
-    </platform>-->
+    </platform>
 
     <!-- wp7 -->
     <platform name="wp7">
