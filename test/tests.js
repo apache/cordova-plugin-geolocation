@@ -1,6 +1,4 @@
-// Eventually, require cdvtest plugin, for now its global
-
-registerAutoTests('org.apache.cordova.geolocation', function() {
+exports.defineAutoTests = function() {
     var fail = function (done) {
         expect(true).toBe(false);
         done();
@@ -114,4 +112,4 @@ registerAutoTests('org.apache.cordova.geolocation', function() {
 
     });
 
-});
+};
