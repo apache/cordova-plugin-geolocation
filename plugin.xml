@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="org.apache.cordova.geolocation"
-      version="0.3.6">
+      version="0.3.8-dev">
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
@@ -16,37 +34,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <!-- android -->
     <platform name="android">
 
-        <js-module src="www/Coordinates.js" name="Coordinates">
-            <clobbers target="Coordinates" />
-        </js-module>
-
-        <js-module src="www/PositionError.js" name="PositionError">
-            <clobbers target="PositionError" />
-        </js-module>
-
-        <js-module src="www/Position.js" name="Position">
-            <clobbers target="Position" />
-        </js-module>
-
-        <js-module src="www/geolocation.js" name="geolocation">
-            <clobbers target="navigator.geolocation" />
-        </js-module>
-
-        <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Geolocation">
-	            <param name="android-package" value="org.apache.cordova.geolocation.GeoBroker"/>
-	        </feature>
-        </config-file>
-
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
         </config-file>
-
-        <source-file src="src/android/GeoBroker.java" target-dir="src/org/apache/cordova/geolocation" />
-        <source-file src="src/android/GPSListener.java" target-dir="src/org/apache/cordova/geolocation" />
-        <source-file src="src/android/NetworkListener.java" target-dir="src/org/apache/cordova/geolocation" />
-        <source-file src="src/android/CordovaLocationListener.java" target-dir="src/org/apache/cordova/geolocation" />
 
     </platform>
 
