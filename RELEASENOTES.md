@@ -28,6 +28,34 @@
 * [BlackBerry10] removed uneeded permission tags in plugin.xml
 * CB-4889 renaming org.apache.cordova.core.geolocation to org.apache.cordova.geolocation
 
- ### 0.3.3 (Oct 28, 2013)
+### 0.3.3 (Oct 28, 2013)
 * CB-5128: add repo + issue tag to plugin.xml for geolocation plugin
 * [CB-4915] Incremented plugin version on dev branch.
+
+### 0.3.4 (Dec 4, 2013)
+* Append proxy to platform definition in plugin.xml
+* Append windows 8 Geolocation proxy
+* Code clean-up for android src.
+* Updated amazon-fireos platform + reverting some of the fixes in android code.
+* Added amazon-fireos platform + some of the fixes in android code.
+* CB-5334 [BlackBerry10] Use command proxy
+* call FxOS's getCurrentProxy added
+* pass by only coords
+* proper implementation for firefoxos
+
+### 0.3.5 (Jan 02, 2014)
+* CB-5658 Add doc/index.md for Geolocation plugin
+* windows8: adds missing reference to PositionError (w/o it the app crashes)
+* Removing incorrectly added closing comments for wp7 platform in plugin.xml
+
+### 0.3.6 (Feb 05, 2014)
+* add ubuntu platform support
+* CB-5326 adding FFOS permission and updating supported platforms
+* CB-5729 [BlackBerry10] Update GeolocationProxy to return collapsed object
+
+### 0.3.7 (Apr 17, 2014)
+* CB-6422: [windows8] use cordova/exec/proxy
+* CB-6212: [iOS] fix warnings compiled under arm64 64-bit
+* CB-5977: [android] Removing the Android Geolocation Code.  Mission Accomplished.
+* CB-6460: Update license headers
+* Add NOTICE file

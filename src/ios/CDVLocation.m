@@ -293,7 +293,7 @@
 {
     NSMutableDictionary* posError = [NSMutableDictionary dictionaryWithCapacity:2];
 
-    [posError setObject:[NSNumber numberWithInt:errorCode] forKey:@"code"];
+    [posError setObject:[NSNumber numberWithUnsignedInteger:errorCode] forKey:@"code"];
     [posError setObject:message ? message:@"" forKey:@"message"];
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:posError];
 
