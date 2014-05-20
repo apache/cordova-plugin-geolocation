@@ -201,11 +201,9 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
     <!-- firefoxos -->
     <platform name="firefoxos">
-        <config-file target="config.xml" parent="/*">
-            <feature name="Geolocation">
-                <param name="firefoxos-package" value="Geolocation" />
-            </feature>
-        </config-file>
+      <config-file target="config.xml" parent="/*">
+          <permission name="geolocation" description="Required for accessing user location." />
+      </config-file>
 
         <js-module src="src/firefoxos/GeolocationProxy.js" name="GeolocationProxy">
             <runs />

@@ -49,16 +49,6 @@ see the Privacy Guide.
 
     cordova plugin add org.apache.cordova.geolocation
 
-### Firefox OS Quirks
-
-Create __www/manifest.webapp__ as described in 
-[Manifest Docs](https://developer.mozilla.org/en-US/Apps/Developing/Manifest).
-Add permisions: 
-
-    "permissions": {
-		"geolocation": { "description": "Used to position the map to your current position" }
-	}
-
 ## Supported Platforms
 
 - Amazon Fire OS
