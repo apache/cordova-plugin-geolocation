@@ -47,3 +47,15 @@
 * CB-5658 Add doc/index.md for Geolocation plugin
 * windows8: adds missing reference to PositionError (w/o it the app crashes)
 * Removing incorrectly added closing comments for wp7 platform in plugin.xml
+
+### 0.3.6 (Feb 05, 2014)
+* add ubuntu platform support
+* CB-5326 adding FFOS permission and updating supported platforms
+* CB-5729 [BlackBerry10] Update GeolocationProxy to return collapsed object
+
+### 0.3.7 (Apr 17, 2014)
+* CB-6422: [windows8] use cordova/exec/proxy
+* CB-6212: [iOS] fix warnings compiled under arm64 64-bit
+* CB-5977: [android] Removing the Android Geolocation Code.  Mission Accomplished.
+* CB-6460: Update license headers
+* Add NOTICE file

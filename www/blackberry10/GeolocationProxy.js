@@ -19,14 +19,19 @@
  *
 */
 
-var idsMap = {};
+var idsMap = {},
+    geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
 
 module.exports = {
+
     getLocation: function(success, error, args) {
-        var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'),
-            successCallback = function (position) {
-                success(position.coords);
-            };
+        var successCallback = function (result) {
+            var pos = result.coords;
+            pos.timestamp = result.timestamp;
+            if (success) {
+                success(pos);
+            }
+        };
         geo.getCurrentPosition(successCallback, error, {
             enableHighAccuracy: args[0],
             maximumAge: args[1]
@@ -34,28 +39,31 @@ module.exports = {
     },
 
     addWatch: function(success, error, args) {
-        var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'),
-            id = args[0],
-            nativeId = geo.watchPosition(success, error, {
+        var id = args[0],
+            successCallback = function (result) {
+                var pos = result.coords;
+                pos.timestamp = result.timestamp;
+                if (success) {
+                    success(pos);
+                }
+            },
+            nativeId = geo.watchPosition(successCallback, error, {
                 enableHighAccuracy: args[1]
             });
-
         idsMap[id] = nativeId;
     },
 
     clearWatch: function(success, error, args) {
-        var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'),
-            id = args[0];
-
+        var id = args[0];
         if(id in idsMap) {
             geo.clearWatch(idsMap[id]);
             delete idsMap[id];
         }
-
         if(success) {
             success();
         }
     }
+
 };
 
 require("cordova/exec/proxy").add("Geolocation", module.exports);
