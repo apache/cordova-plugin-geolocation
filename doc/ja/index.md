@@ -19,7 +19,7 @@
 
 # org.apache.cordova.geolocation
 
-This plugin provides information about the device's location, such as latitude and longitude. 位置情報の共通のソースはグローバル ポジショニング システム （GPS） と IP アドレス、RFID、WiFi および Bluetooth の MAC アドレス、および GSM/cdma 方式携帯 Id などのネットワーク信号から推定される場所にもあります。 API は、デバイスの実際の場所を返すことの保証はありません。
+このプラグインは緯度や経度などのデバイスの場所に関する情報を提供します。 位置情報の共通のソースはグローバル ポジショニング システム （GPS） と IP アドレス、RFID、WiFi および Bluetooth の MAC アドレス、および GSM/cdma 方式携帯 Id などのネットワーク信号から推定される場所にもあります。 API は、デバイスの実際の場所を返すことの保証はありません。
 
 この API は[W3C 地理位置情報 API 仕様][1]に基づいており、既に実装を提供しないデバイス上のみで実行します。
 
@@ -32,23 +32,12 @@ This plugin provides information about the device's location, such as latitude a
     cordova plugin add org.apache.cordova.geolocation
     
 
-### Firefox OS Quirks
-
-Create **www/manifest.webapp** as described in [Manifest Docs][2]. Add permisions:
-
- [2]: https://developer.mozilla.org/en-US/Apps/Developing/Manifest
-
-    "permissions": {
-        "geolocation": { "description": "Used to position the map to your current position" }
-    }
-    
-
 ## サポートされているプラットフォーム
 
 *   アマゾン火 OS
 *   アンドロイド
 *   ブラックベリー 10
-*   Firefox OS
+*   Firefox の OS
 *   iOS
 *   Tizen
 *   Windows Phone 7 と 8
@@ -68,11 +57,9 @@ Create **www/manifest.webapp** as described in [Manifest Docs][2]. Add permision
 
 ## navigator.geolocation.getCurrentPosition
 
-Returns the device's current position to the `geolocationSuccess` callback with a `Position` object as the parameter. エラーがある場合、 `geolocationError` コールバックに渡される、 `PositionError` オブジェクト。
+デバイスの現在の位置を返します、 `geolocationSuccess` コールバックを `Position` オブジェクトをパラメーターとして。 エラーがある場合、 `geolocationError` コールバックに渡される、 `PositionError` オブジェクト。
 
-    navigator.geolocation.getCurrentPosition(geolocationSuccess,
-                                             [geolocationError],
-                                             [geolocationOptions]);
+    navigator.geolocation.getCurrentPosition （geolocationSuccess、[geolocationError] [geolocationOptions]);
     
 
 ### パラメーター
@@ -85,38 +72,14 @@ Returns the device's current position to the `geolocationSuccess` callback with 
 
 ### 例
 
-    // onSuccess Callback
-    // This method accepts a Position object, which contains the
-    // current GPS coordinates
-    //
-    var onSuccess = function(position) {
-        alert('Latitude: '          + position.coords.latitude          + '\n' +
-              'Longitude: '         + position.coords.longitude         + '\n' +
-              'Altitude: '          + position.coords.altitude          + '\n' +
-              'Accuracy: '          + position.coords.accuracy          + '\n' +
-              'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-              'Heading: '           + position.coords.heading           + '\n' +
-              'Speed: '             + position.coords.speed             + '\n' +
-              'Timestamp: '         + position.timestamp                + '\n');
-    };
-    
-    // onError Callback receives a PositionError object
-    //
-    function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
-    }
-    
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    onSuccess コールバック/このメソッドを含む位置のオブジェクトを受け入れる/、/現在 GPS 座標///var onSuccess function(position) = {警告 (' 緯度: '+ position.coords.latitude + '\n' +' 経度: '+ position.coords.longitude + '\n' +' 高度: '+ position.coords.altitude + '\n' +' 精度: '+ position.coords.accuracy + '\n' +' 高度精度: '+ position.coords.altitudeAccuracy + '\n' +' 見出し: '+ position.coords.heading + '\n' +' 速度: '+ position.coords.speed + '\n' +' タイムスタンプ: ' + position.timestamp + '\n');};onError コールバックが PositionError オブジェクトを受け取る//onError(error) 関数 {警告 (' コード: '+ error.code + '\n' +' メッセージ: ' + error.message + '\n');}navigator.geolocation.getCurrentPosition (onSuccess、onError);
     
 
 ## navigator.geolocation.watchPosition
 
-Returns the device's current position when a change in position is detected. デバイスを新しい場所を取得するとき、 `geolocationSuccess` コールバックを実行すると、 `Position` オブジェクトをパラメーターとして。 エラーがある場合、 `geolocationError` コールバックを実行すると、 `PositionError` オブジェクトをパラメーターとして。
+位置の変更が検出された場合は、デバイスの現在位置を返します。 デバイスを新しい場所を取得するとき、 `geolocationSuccess` コールバックを実行すると、 `Position` オブジェクトをパラメーターとして。 エラーがある場合、 `geolocationError` コールバックを実行すると、 `PositionError` オブジェクトをパラメーターとして。
 
-    var watchId = navigator.geolocation.watchPosition(geolocationSuccess,
-                                                      [geolocationError],
-                                                      [geolocationOptions]);
+    var watchId = navigator.geolocation.watchPosition （geolocationSuccess、[geolocationError] [geolocationOptions]);
     
 
 ### パラメーター
@@ -129,31 +92,12 @@ Returns the device's current position when a change in position is detected. デ
 
 ### 返します
 
-*   **String**: returns a watch id that references the watch position interval. The watch id should be used with `navigator.geolocation.clearWatch` to stop watching for changes in position.
+*   **文字列**: 時計の位置の間隔を参照する時計 id を返します。 時計 id で使用する必要があります `navigator.geolocation.clearWatch` 停止位置の変化を監視します。
 
 ### 例
 
-    // onSuccess Callback
-    //   This method accepts a `Position` object, which contains
-    //   the current GPS coordinates
-    //
-    function onSuccess(position) {
-        var element = document.getElementById('geolocation');
-        element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
-                            'Longitude: ' + position.coords.longitude     + '<br />' +
-                            '<hr />'      + element.innerHTML;
-    }
-    
-    // onError Callback receives a PositionError object
-    //
-    function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
-    }
-    
-    // Options: throw an error if no update is received every 30 seconds.
-    //
-    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
+    onSuccess コールバック//このメソッドを含む '位置' オブジェクトを受け入れる/現在の GPS 座標///onSuccess(position) 関数 {var 要素 = document.getElementById('geolocation');element.innerHTML = '緯度:' + position.coords.latitude + '< br/>' +' 経度: '+ position.coords.longitude +' < br/>' + ' < hr/>' + element.innerHTML;}/onError コールバックが PositionError オブジェクトを受け取る///onError(error) 関数 {警告 (' コード: '+ error.code + '\n' +' メッセージ: ' + error.message + '\n');}オプション: 30 秒ごとの更新を受信しない場合エラーをスローします。
+    var watchID = navigator.geolocation.watchPosition (onError、onSuccess {タイムアウト: 30000});
     
 
 ## geolocationOptions
@@ -167,7 +111,7 @@ Returns the device's current position when a change in position is detected. デ
 
 *   **enableHighAccuracy**： 最高の結果が、アプリケーションに必要があることのヒントを示します。 既定では、デバイスの取得を試みます、 `Position` ネットワーク ベースのメソッドを使用します。 このプロパティを設定する `true` 衛星測位などのより正確な方法を使用するためにフレームワークに指示します。 *(ブール値)*
 
-*   **timeout**: The maximum length of time (milliseconds) that is allowed to pass from the call to `navigator.geolocation.getCurrentPosition` or `geolocation.watchPosition` until the corresponding `geolocationSuccess` callback executes. 場合は、 `geolocationSuccess` この時間内に、コールバックは呼び出されません、 `geolocationError` コールバックに渡される、 `PositionError.TIMEOUT` のエラー コード。 (と組み合わせて使用するときに注意してください `geolocation.watchPosition` の `geolocationError` 間隔でコールバックを呼び出すことができますすべて `timeout` ミリ秒 ！)*(数)*
+*   **タイムアウト**: への呼び出しから通過が許可される時間 (ミリ秒単位) の最大長 `navigator.geolocation.getCurrentPosition` または `geolocation.watchPosition` まで対応する、 `geolocationSuccess` コールバックを実行します。 場合は、 `geolocationSuccess` この時間内に、コールバックは呼び出されません、 `geolocationError` コールバックに渡される、 `PositionError.TIMEOUT` のエラー コード。 (と組み合わせて使用するときに注意してください `geolocation.watchPosition` の `geolocationError` 間隔でコールバックを呼び出すことができますすべて `timeout` ミリ秒 ！)*(数)*
 
 *   **maximumAge**： 年齢があるミリ秒単位で指定した時間よりも大きくないキャッシュされた位置を受け入れます。*(数)*
 
@@ -188,11 +132,8 @@ Returns the device's current position when a change in position is detected. デ
 
 ### 例
 
-    //オプション: 位置の変化を監視し、頻繁に使用//正確な位置取得法利用可能。
-    //
-    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { enableHighAccuracy: true });
-    
-    // ...later on...
+    オプション: の位置では、変更を監視して最も//正確な位置取得法利用可能。
+    var watchID = navigator.geolocation.watchPosition （成功すると、onError、{enableHighAccuracy: true});... うな上.
     
     navigator.geolocation.clearWatch(watchID);
     
@@ -209,7 +150,7 @@ Returns the device's current position when a change in position is detected. デ
 
 ## Coordinates
 
-A `Coordinates` object is attached to a `Position` object that is available to callback functions in requests for the current position. It contains a set of properties that describe the geographic coordinates of a position.
+A `Coordinates` オブジェクトに使用されて、 `Position` は、現在の位置のための要求でコールバック関数を利用可能なオブジェクト。 位置の地理座標を記述するプロパティのセットが含まれています。
 
 ### プロパティ
 
@@ -227,7 +168,7 @@ A `Coordinates` object is attached to a `Position` object that is available to c
 
 *   **速度**： 毎秒メートルで指定されたデバイスの現在の対地速度。*(数)*
 
-### Amazon Fire OS Quirks
+### アマゾン火 OS 癖
 
 **altitudeAccuracy**： 返すの Android デバイスでサポートされていません`null`.
 
@@ -237,7 +178,7 @@ A `Coordinates` object is attached to a `Position` object that is available to c
 
 ## PositionError
 
-The `PositionError` object is passed to the `geolocationError` callback function when an error occurs with navigator.geolocation.
+`PositionError`オブジェクトに渡されます、 `geolocationError` navigator.geolocation でエラーが発生した場合のコールバック関数。
 
 ### プロパティ
 
@@ -248,8 +189,8 @@ The `PositionError` object is passed to the `geolocationError` callback function
 ### 定数
 
 *   `PositionError.PERMISSION_DENIED` 
-    *   Returned when users do not allow the app to retrieve position information. This is dependent on the platform.
+    *   ユーザーの位置情報を取得するアプリを許可しない場合に返されます。これはプラットフォームに依存します。
 *   `PositionError.POSITION_UNAVAILABLE` 
-    *   Returned when the device is unable to retrieve a position. In general, this means the device is not connected to a network or can't get a satellite fix.
+    *   デバイスが、位置を取得することができます返されます。一般に、つまり、デバイスがネットワークに接続されていないまたは衛星の修正を得ることができません。
 *   `PositionError.TIMEOUT` 
-    *   Returned when the device is unable to retrieve a position within the time specified by the `timeout` included in `geolocationOptions`. When used with `navigator.geolocation.watchPosition`, this error could be repeatedly passed to the `geolocationError` callback every `timeout` milliseconds.
+    *   デバイスがで指定された時間内の位置を取得することができるときに返される、 `timeout` に含まれている `geolocationOptions` 。 使用すると `navigator.geolocation.watchPosition` 、このエラーが繰り返しに渡すことが、 `geolocationError` コールバックごと `timeout` (ミリ秒単位)。
