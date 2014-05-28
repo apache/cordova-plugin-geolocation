@@ -32,17 +32,6 @@ Cette API est basée sur la [Spécification de l'API Geolocation du W3C][1] et s
     cordova plugin add org.apache.cordova.geolocation
     
 
-### Firefox OS Quirks
-
-Créez **www/manifest.webapp** comme décrit dans [Les Docs manifeste][2]. Ajouter permisions :
-
- [2]: https://developer.mozilla.org/en-US/Apps/Developing/Manifest
-
-    "permissions": {
-        "geolocation": { "description": "Used to position the map to your current position" }
-    }
-    
-
 ## Plates-formes prises en charge
 
 *   Amazon Fire OS
@@ -68,11 +57,9 @@ Créez **www/manifest.webapp** comme décrit dans [Les Docs manifeste][2]. Ajout
 
 ## navigator.geolocation.getCurrentPosition
 
-Retourne la position actuelle de l'appareil à la `geolocationSuccess` rappel avec un `Position` objet comme paramètre. Si une erreur se produit, un objet `PositionError` est passé en paramètre à la fonction callback `geolocationError`.
+Retourne la position actuelle de l'appareil à la `geolocationSuccess` rappel avec un `Position` objet comme paramètre. Si une erreur se produit, le `geolocationError` rappel est passé un `PositionError` objet.
 
-    navigator.geolocation.getCurrentPosition(geolocationSuccess,
-                                             [geolocationError],
-                                             [geolocationOptions]);
+    navigator.geolocation.getCurrentPosition (geolocationSuccess, [geolocationError], [geolocationOptions]) ;
     
 
 ### Paramètres
@@ -85,38 +72,18 @@ Retourne la position actuelle de l'appareil à la `geolocationSuccess` rappel av
 
 ### Exemple
 
-    // onSuccess Callback
-    // This method accepts a Position object, which contains the
-    // current GPS coordinates
-    //
-    var onSuccess = function(position) {
-        alert('Latitude: '          + position.coords.latitude          + '\n' +
-              'Longitude: '         + position.coords.longitude         + '\n' +
-              'Altitude: '          + position.coords.altitude          + '\n' +
-              'Accuracy: '          + position.coords.accuracy          + '\n' +
-              'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-              'Heading: '           + position.coords.heading           + '\n' +
-              'Speed: '             + position.coords.speed             + '\n' +
-              'Timestamp: '         + position.timestamp                + '\n');
-    };
+    onSuccess rappel / / cette méthode accepte un objet de Position, qui contient le / / coordonnées GPS actuel / / var onSuccess = function(position) {alert ('Latitude: ' + position.coords.latitude + « \n » + ' Longitude: ' + position.coords.longitude + « \n » + ' Altitude: ' + position.coords.altitude + « \n » + ' précision: ' + position.coords.accuracy + « \n » + ' Altitude précision: ' + position.coords.altitudeAccuracy + « \n » + ' rubrique: ' + position.coords.heading + « \n » + ' vitesse: ' + position.coords.speed + « \n » + ' Timestamp: ' + position.timestamp + « \n »);} ;
     
-    // onError Callback receives a PositionError object
-    //
-    function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
-    }
+    onError rappel reçoit un objet PositionError / / function onError(error) {alert ('code: "+ error.code + « \n » + ' message: ' + error.message + « \n »);}
     
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    navigator.geolocation.getCurrentPosition (onSuccess, onError) ;
     
 
 ## navigator.geolocation.watchPosition
 
-Retourne la position actuelle de l'appareil lorsqu'un changement de position est détecté. Lorsque l'appareil récupère un nouvelle position, la fonction callback `geolocationSuccess` est exécutée avec un objet `Position` comme paramètre. Si une erreur se produit, la fonction callback `geolocationError` est appelée avec un obet `PositionError` comme paramètre.
+Retourne la position actuelle de l'appareil lorsqu'un changement de position est détecté. Lorsque l'appareil récupère un nouvel emplacement, le `geolocationSuccess` rappel s'exécute avec un `Position` objet comme paramètre. Si une erreur se produit, le `geolocationError` rappel s'exécute avec un `PositionError` objet comme paramètre.
 
-    var watchId = navigator.geolocation.watchPosition(geolocationSuccess,
-                                                      [geolocationError],
-                                                      [geolocationOptions]);
+    var watchId = navigator.geolocation.watchPosition (geolocationSuccess, [geolocationError], [geolocationOptions]) ;
     
 
 ### Paramètres
@@ -127,40 +94,25 @@ Retourne la position actuelle de l'appareil lorsqu'un changement de position est
 
 *   **geolocationOptions** : (facultatives) options de personnalisation de la géolocalisation.
 
-### Retourne
+### Retours
 
 *   **Chaîne**: retourne un id de montre qui fait référence à l'intervalle de position montre. L'id de la montre doit être utilisé avec `navigator.geolocation.clearWatch` d'arrêter de regarder pour les changements de position.
 
 ### Exemple
 
-    // onSuccess Callback
-    //   This method accepts a `Position` object, which contains
-    //   the current GPS coordinates
-    //
-    function onSuccess(position) {
-        var element = document.getElementById('geolocation');
-        element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
-                            'Longitude: ' + position.coords.longitude     + '<br />' +
-                            '<hr />'      + element.innerHTML;
-    }
+    onSuccess rappel / / cette méthode accepte un objet « Position », qui contient / / coordonnées de GPS le courant / / function onSuccess(position) {var element = document.getElementById('geolocation') ;
+        element.innerHTML = ' Latitude: "+ position.coords.latitude + ' < br / >' + ' Longitude:" + position.coords.longitude + ' < br / >' + ' < hr / >' + element.innerHTML ;
+    } / / onError rappel reçoit un objet PositionError / / function onError(error) {alert ('code: ' + error.code + « \n » + "message: ' + error.message + « \n »);}
     
-    // onError Callback receives a PositionError object
-    //
-    function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
-    }
-    
-    // Options: throw an error if no update is received every 30 seconds.
-    //
-    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
+    Options : lever une erreur si aucune mise à jour n'est reçu toutes les 30 secondes.
+    var watchID = navigator.geolocation.watchPosition (onSuccess, onError, {timeout : 30000}) ;
     
 
 ## geolocationOptions
 
-Paramètres optionnels permettant la personnalisation de la récupération d'une `Position` géolocalisée.
+Paramètres optionnels pour personnaliser la récupération de la géolocalisation`Position`.
 
-    { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
+    {maximumAge : 3000, délai d'attente : 5000, enableHighAccuracy : true} ;
     
 
 ### Options
@@ -173,13 +125,13 @@ Paramètres optionnels permettant la personnalisation de la récupération d'une
 
 ### Quirks Android
 
-Les émulateurs d'Android 2.x ne retournent aucun résultat de géolocalisation à moins que l'option `enableHighAccuracy` ne soit réglée sur `true`.
+Émulateurs Android 2.x ne pas retournent un résultat de géolocalisation, à moins que le `enableHighAccuracy` option est définie sur`true`.
 
 ## navigator.geolocation.clearWatch
 
-Arrêter d'observer les changements de position de l'appareil référencés par le paramètre `watchID`.
+Arrêter de regarder pour les modifications à l'emplacement de l'appareil référencé par le `watchID` paramètre.
 
-    navigator.geolocation.clearWatch(watchID);
+    navigator.geolocation.clearWatch(watchID) ;
     
 
 ### Paramètres
@@ -188,19 +140,17 @@ Arrêter d'observer les changements de position de l'appareil référencés par 
 
 ### Exemple
 
-    // Options : observer les changements de position, et utiliser
-    // la méthode d'acquisition la plus précise disponible.
-    //
-    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { enableHighAccuracy: true });
+    Options : suivi des modifications dans la position et utilise le plus / / exacte position méthode d'acquisition disponible.
+    var watchID = navigator.geolocation.watchPosition (onSuccess, onError, {enableHighAccuracy : true}) ;
     
-    // ...later on...
+    .. plus sur...
     
-    navigator.geolocation.clearWatch(watchID);
+    navigator.geolocation.clearWatch(watchID) ;
     
 
 ## Position
 
-Contient les coordonnées et l'horodatage de `Position` créés par l'API geolocation.
+Contient `Position` coordonnées et timestamp, créé par l'API de géolocalisation.
 
 ### Propriétés
 
@@ -230,11 +180,11 @@ A `Coordinates` objet est attaché à un `Position` objet qui n'existe pas de fo
 
 ### Amazon Fire OS Quirks
 
-**altitudeAccuracy** : n'est pas prise en charge par les appareils Android, renvoie alors `null`.
+**altitudeAccuracy**: ne pas pris en charge par les appareils Android, retour`null`.
 
 ### Quirks Android
 
-**altitudeAccuracy**: ne pas pris en charge par les appareils Android, retour`null`.
+**altitudeAccuracy** : n'est pas prise en charge par les appareils Android, renvoie alors `null`.
 
 ## PositionError
 
