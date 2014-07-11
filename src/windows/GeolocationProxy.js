@@ -49,16 +49,25 @@ function createErrorCode() {
     }
 }
 function createResult(pos) {
-    return {
-        latitude: pos.coordinate.latitude,
-        longitude: pos.coordinate.longitude,
-        altitude: pos.coordinate.altitude,
+    var res = {
         accuracy: pos.coordinate.accuracy,
         heading: pos.coordinate.heading,
         velocity: pos.coordinate.speed,
         altitudeAccuracy: pos.coordinate.altitudeAccuracy,
         timestamp: pos.coordinate.timestamp
-    };
+    }
+    
+    if (pos.coordinate.point) {
+        res.latitude = pos.coordinate.point.position.latitude;
+        res.longitude = pos.coordinate.point.position.longitude;
+        res.altitude = pos.coordinate.point.position.altitude;
+    } else { // compatibility with old windows8.0 api
+        res.latitude = pos.coordinate.latitude;
+        res.longitude = pos.coordinate.longitude;
+        res.altitude = pos.coordinate.altitude;
+    }
+    
+    return res;
 }
 
 module.exports = {
@@ -77,7 +86,7 @@ module.exports = {
 
             loc.getGeopositionAsync().then(
                 function (pos) {
-                    success(getResult(pos));
+                    success(createResult(pos));
                 },
                 function (err) {
                     fail({
@@ -102,7 +111,7 @@ module.exports = {
             highAccuracy = args[1],
 
             onPositionChanged = function (e) {
-                success(getResult(e.position));
+                success(createResult(e.position));
             },
 
             onStatusChanged = function (e) {
