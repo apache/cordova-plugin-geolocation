@@ -103,7 +103,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	        </feature>
         </config-file>
         <header-file src="src/ios/CDVLocation.h" />
-	    <source-file src="src/ios/CDVLocation.m" />
+        <source-file src="src/ios/CDVLocation.m" />
+        <framework src="CoreLocation.framework" />
     </platform>
 
     <!-- blackberry10 -->
