@@ -31,12 +31,6 @@
 #pragma mark -
 #pragma mark Categories
 
-@interface CLHeading (JSONMethods)
-
-- (NSString*)JSONRepresentation;
-
-@end
-
 @implementation CDVLocationData
 
 @synthesize locationStatus, locationInfo, locationCallbacks, watchCallbacks;
