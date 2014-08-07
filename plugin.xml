@@ -192,14 +192,55 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="package.appxmanifest" parent="/Package/Capabilities">
             <DeviceCapability Name="location" />
         </config-file>
+
+        <js-module src="src/windows/GeolocationProxy.js" name="GeolocationProxy">
+            <runs />
+        </js-module>
+
+        <js-module src="www/Coordinates.js" name="Coordinates">
+            <clobbers target="Coordinates" />
+        </js-module>
+
         <js-module src="www/PositionError.js" name="PositionError">
             <clobbers target="PositionError" />
         </js-module>
-        <js-module src="src/windows8/GeolocationProxy.js" name="GeolocationProxy">
-          <merges target="" />
+
+        <js-module src="www/Position.js" name="Position">
+            <clobbers target="Position" />
+        </js-module>
+
+        <js-module src="www/geolocation.js" name="geolocation">
+            <clobbers target="navigator.geolocation" />
         </js-module>
     </platform>
 
+    <!-- windows universal apps (Windows 8.1, Windows Phone 8.1, Windows 8.0) -->
+    <platform name="windows">
+        <config-file target="package.appxmanifest" parent="/Package/Capabilities">
+            <DeviceCapability Name="location" />
+        </config-file>
+
+        <js-module src="src/windows/GeolocationProxy.js" name="GeolocationProxy">
+            <runs />
+        </js-module>
+
+        <js-module src="www/Coordinates.js" name="Coordinates">
+            <clobbers target="Coordinates" />
+        </js-module>
+
+        <js-module src="www/PositionError.js" name="PositionError">
+            <clobbers target="PositionError" />
+        </js-module>
+
+        <js-module src="www/Position.js" name="Position">
+            <clobbers target="Position" />
+        </js-module>
+
+        <js-module src="www/geolocation.js" name="geolocation">
+            <clobbers target="navigator.geolocation" />
+        </js-module>
+    </platform>
+    
     <!-- firefoxos -->
     <platform name="firefoxos">
       <config-file target="config.xml" parent="/*">

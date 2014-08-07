@@ -48,6 +48,27 @@ function createErrorCode() {
             break;
     }
 }
+function createResult(pos) {
+    var res = {
+        accuracy: pos.coordinate.accuracy,
+        heading: pos.coordinate.heading,
+        velocity: pos.coordinate.speed,
+        altitudeAccuracy: pos.coordinate.altitudeAccuracy,
+        timestamp: pos.coordinate.timestamp
+    }
+    
+    if (pos.coordinate.point) {
+        res.latitude = pos.coordinate.point.position.latitude;
+        res.longitude = pos.coordinate.point.position.longitude;
+        res.altitude = pos.coordinate.point.position.altitude;
+    } else { // compatibility with old windows8.0 api
+        res.latitude = pos.coordinate.latitude;
+        res.longitude = pos.coordinate.longitude;
+        res.altitude = pos.coordinate.altitude;
+    }
+    
+    return res;
+}
 
 module.exports = {
     getLocation: function (success, fail, args, env) {
@@ -65,16 +86,7 @@ module.exports = {
 
             loc.getGeopositionAsync().then(
                 function (pos) {
-                    success({
-                        latitude: pos.coordinate.latitude,
-                        longitude: pos.coordinate.longitude,
-                        altitude: pos.coordinate.altitude,
-                        accuracy: pos.coordinate.accuracy,
-                        heading: pos.coordinate.heading,
-                        velocity: pos.coordinate.speed,
-                        altitudeAccuracy: pos.coordinate.altitudeAccuracy,
-                        timestamp: pos.coordinate.timestamp
-                    });
+                    success(createResult(pos));
                 },
                 function (err) {
                     fail({
@@ -99,16 +111,7 @@ module.exports = {
             highAccuracy = args[1],
 
             onPositionChanged = function (e) {
-                success({
-                    latitude: e.position.coordinate.latitude,
-                    longitude: e.position.coordinate.longitude,
-                    altitude: e.position.coordinate.altitude,
-                    accuracy: e.position.coordinate.accuracy,
-                    heading: e.position.coordinate.heading,
-                    velocity: e.position.coordinate.speed,
-                    altitudeAccuracy: e.position.coordinate.altitudeAccuracy,
-                    timestamp: e.position.coordinate.timestamp
-                });
+                success(createResult(e.position));
             },
 
             onStatusChanged = function (e) {
