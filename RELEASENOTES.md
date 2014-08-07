@@ -75,3 +75,4 @@
 * CB-7187 Delete unused #import of CDVShared.h
 * CB-6127 Updated translations for docs
 * ios: Changed distanceFilter from none to 5 meters, prevents it from spamming the callback even though nothing changed.
+
