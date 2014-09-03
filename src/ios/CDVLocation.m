@@ -122,6 +122,11 @@
     // first stop, and then start the updating to ensure we get at least one
     // update, even if our location did not change.
     [self.locationManager stopUpdatingLocation];
+    
+    if (IsAtLeastiOSVersion(@"8.0")) {
+        [self.locationManager performSelector:NSSelectorFromString(@"requestWhenInUseAuthorization") withObject:nil afterDelay:0];
+    }
+    
     [self.locationManager startUpdatingLocation];
     __locationStarted = YES;
     if (enableHighAccuracy) {
