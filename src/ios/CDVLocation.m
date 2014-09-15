@@ -267,6 +267,9 @@
 
     if (self.locationData && self.locationData.watchCallbacks && [self.locationData.watchCallbacks objectForKey:timerId]) {
         [self.locationData.watchCallbacks removeObjectForKey:timerId];
+        if([self.locationData.watchCallbacks count] == 0) {
+            [self _stopLocation];
+        }
     }
 }
 
