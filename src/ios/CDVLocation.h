@@ -67,4 +67,7 @@ typedef NSUInteger CDVLocationStatus;
        didFailWithError:(NSError*)error;
 
 - (BOOL)isLocationServicesEnabled;
+
+- (void)geocodeString:(CDVInvokedUrlCommand*)command;
+
 @end

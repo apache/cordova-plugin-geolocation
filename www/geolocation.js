@@ -205,6 +205,14 @@ var geolocation = {
             timers[id].timer = false;
             exec(null, null, "Geolocation", "clearWatch", [id]);
         }
+    },
+    /**
+     * Forward geocodes a string.
+     *
+     * @param {String} _string       The address string to be geocoded
+     */
+    geocodeString: function(successCallback, errorCallback, _string) {
+        exec(successCallback, errorCallback, "Geolocation", "geocodeString", [_string]);
     }
 };
 
