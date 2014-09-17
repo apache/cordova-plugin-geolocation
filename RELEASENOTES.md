@@ -76,3 +76,18 @@
 * CB-6127 Updated translations for docs
 * ios: Changed distanceFilter from none to 5 meters, prevents it from spamming the callback even though nothing changed.
 
+
+### 0.3.10 (Sep 17, 2014)
+* CB-7556 iOS: Clearing all Watches does not stop Location Services
+* CB-7158 Fix geolocation for ios 8
+* Revert CB-6911 partially (keeping Info.plist key installation for iOS 8)
+* CB-6911 - Geolocation fails in iOS 8
+* CB-5114 Windows 8.1 - Use a new proxy as old geolocation methods is deprecated
+* CB-5114 Append Windows 8.1 into plugin.xml + Optimize Windows 8 Geolocation proxy
+* Renamed test dir, added nested plugin.xml
+* added documentation for manual tests
+* CB-7146 Added manual tests
+* Removed js-module for tests from plugin.xml
+* Changing cdvtest format to use module exports
+* register tests using new style
+* Convert tests to new style
