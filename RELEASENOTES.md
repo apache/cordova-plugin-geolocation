@@ -81,7 +81,7 @@
 * CB-7556 iOS: Clearing all Watches does not stop Location Services
 * CB-7158 Fix geolocation for ios 8
 * Revert CB-6911 partially (keeping Info.plist key installation for iOS 8)
-* CB-6911 - Geolocation fails in iOS 8
+* CB-6911 Geolocation fails in iOS 8
 * CB-5114 Windows 8.1 - Use a new proxy as old geolocation methods is deprecated
 * CB-5114 Append Windows 8.1 into plugin.xml + Optimize Windows 8 Geolocation proxy
 * Renamed test dir, added nested plugin.xml
@@ -91,3 +91,5 @@
 * Changing cdvtest format to use module exports
 * register tests using new style
 * Convert tests to new style
+* Removed amazon-fireos code for geolocation.
+* CB-7571 Bump version of nested plugin to match parent plugin
