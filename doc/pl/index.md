@@ -27,16 +27,16 @@ Ten interfejs API jest oparty na [Specyfikacji W3C Geolocation API][1]i tylko wy
 
 **Ostrzeżenie**: zbierania i wykorzystywania danych geolokacyjnych podnosi kwestie prywatności ważne. Polityka prywatności danej aplikacji należy omówić, jak aplikacja używa danych, czy jest on dzielony z innych stron i poziom dokładności danych (na przykład, gruba, porządku, kod pocztowy poziom, itp.). Danych geolokacyjnych ogólnie uznaje wrażliwych, bo to może ujawnić pobytu użytkownika i, jeśli przechowywane, historii ich podróży. W związku z tym oprócz aplikacji prywatności, zdecydowanie warto powiadomienia just-in-time, zanim aplikacja uzyskuje dostęp do danych (jeśli urządzenie system operacyjny nie robi już). Że ogłoszenie powinno zawierać te same informacje, o których wspomniano powyżej, jak również uzyskanie uprawnienia użytkownika (np. poprzez przedstawianie wyborów **OK** i **Nie dzięki**). Aby uzyskać więcej informacji zobacz przewodnik prywatności.
 
-## Instalacji
+## Instalacja
 
     cordova plugin add org.apache.cordova.geolocation
     
 
 ## Obsługiwane platformy
 
-*   Amazon ogień OS
+*   Amazon Fire OS
 *   Android
-*   Jeżyna 10
+*   BlackBerry 10
 *   Firefox OS
 *   iOS
 *   Tizen
@@ -123,7 +123,7 @@ Opcjonalne parametry aby dostosować wyszukiwanie geolocation`Position`.
 
 *   **maximumAge**: przyjąć buforowane pozycji, w których wiek jest nie większa niż określony czas w milisekundach. *(Liczba)*
 
-### Android dziwactwa
+### Dziwactwa Androida
 
 Emulatory Androida 2.x nie zwracają wynik geolokalizacji, chyba że `enableHighAccuracy` jest opcja zestaw do`true`.
 
@@ -182,7 +182,7 @@ A `Coordinates` obiektu jest dołączony do `Position` obiekt, który jest dost�
 
 **altitudeAccuracy**: nie obsługiwane przez Android urządzeń, powrót`null`.
 
-### Android dziwactwa
+### Dziwactwa Androida
 
 **altitudeAccuracy**: nie obsługiwane przez Android urządzeń, powrót`null`.
 
