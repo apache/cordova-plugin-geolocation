@@ -45,6 +45,17 @@ above, as well as obtaining the user's permission (e.g., by presenting
 choices for __OK__ and __No Thanks__).  For more information, please
 see the Privacy Guide.
 
+This plugin defines a global `navigator.geolocation` object (for platforms
+where it is otherwise missing).
+
+Although the object is in the global scope, features provided by this plugin
+are not available until after the `deviceready` event.
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log("navigator.geolocation works well");
+    }
+
 ## Installation
 
     cordova plugin add org.apache.cordova.geolocation
