@@ -39,7 +39,10 @@ module.exports = {
     addWatch: function(success, error, args) {
         var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');        
         var id = args[0];
-        var nativeId = geo.watchPosition(success, error, {
+        function successCallback(position) {
+          success(position.coords);
+        }
+        var nativeId = geo.watchPosition(successCallback, error, {
             enableHighAccuracy: args[1]
         });
 
