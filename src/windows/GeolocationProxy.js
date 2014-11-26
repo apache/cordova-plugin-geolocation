@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2013 Research In Motion Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -111,7 +111,7 @@ module.exports = {
             highAccuracy = args[1],
 
             onPositionChanged = function (e) {
-                success(createResult(e.position));
+                success(createResult(e.position), {keepCallback: true});
             },
 
             onStatusChanged = function (e) {
@@ -141,6 +141,14 @@ module.exports = {
         loc.desiredAccuracy = highAccuracy ?
                 Windows.Devices.Geolocation.PositionAccuracy.high :
                 Windows.Devices.Geolocation.PositionAccuracy.default;
+
+        if (cordova.platformId == 'windows' && WinJS.Utilities.isPhone) {
+            // on Windows Phone 8.1 'positionchanged' event fails with error below if movementThreshold is not set
+            // JavaScript runtime error: Operation aborted
+            // You must set the MovementThreshold property or the ReportInterval property before adding event handlers.
+            // WinRT information: You must set the MovementThreshold property or the ReportInterval property before adding event handlers
+            loc.movementThreshold = loc.movementThreshold || 1; // 1 meter
+        }
 
         loc.addEventListener("positionchanged", onPositionChanged);
         loc.addEventListener("statuschanged", onStatusChanged);
