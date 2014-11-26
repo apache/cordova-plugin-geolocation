@@ -19,4 +19,4 @@
 
 # org.apache.cordova.geolocation
 
-Plugin documentation: [doc/index.md](doc/index.md)
+针对国内地图定位不准确的特殊情况，增加地图纠偏处理使定位精确度达到误差5米内
