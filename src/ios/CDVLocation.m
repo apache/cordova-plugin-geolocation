@@ -6,9 +6,9 @@
  to you under the Apache License, Version 2.0 (the
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
-
+ 
  http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -30,6 +30,9 @@
 
 #pragma mark -
 #pragma mark Categories
+
+const double a = 6378245.0;
+const double ee = 0.00669342162296594323;
 
 @implementation CDVLocationData
 
@@ -70,7 +73,7 @@
 - (BOOL)isAuthorized
 {
     BOOL authorizationStatusClassPropertyAvailable = [CLLocationManager respondsToSelector:@selector(authorizationStatus)]; // iOS 4.2+
-
+    
     if (authorizationStatusClassPropertyAvailable) {
         NSUInteger authStatus = [CLLocationManager authorizationStatus];
 #ifdef __IPHONE_8_0
@@ -80,7 +83,7 @@
 #endif
         return (authStatus == kCLAuthorizationStatusAuthorized) || (authStatus == kCLAuthorizationStatusNotDetermined);
     }
-
+    
     // by default, assume YES (for iOS < 4.2)
     return YES;
 }
@@ -89,7 +92,7 @@
 {
     BOOL locationServicesEnabledInstancePropertyAvailable = [self.locationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 3.x
     BOOL locationServicesEnabledClassPropertyAvailable = [CLLocationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 4.x
-
+    
     if (locationServicesEnabledClassPropertyAvailable) { // iOS 4.x
         return [CLLocationManager locationServicesEnabled];
     } else if (locationServicesEnabledInstancePropertyAvailable) { // iOS 2.x, iOS 3.x
@@ -119,10 +122,10 @@
         }
         // PERMISSIONDENIED is only PositionError that makes sense when authorization denied
         [self returnLocationError:PERMISSIONDENIED withMessage:message];
-
+        
         return;
     }
-
+    
 #ifdef __IPHONE_8_0
     NSUInteger code = [CLLocationManager authorizationStatus];
     if (code == kCLAuthorizationStatusNotDetermined && ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)] || [self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)])) { //iOS8+
@@ -165,7 +168,7 @@
         if (![self isLocationServicesEnabled]) {
             return;
         }
-
+        
         [self.locationManager stopUpdatingLocation];
         __locationStarted = NO;
         __highAccuracyEnabled = NO;
@@ -177,13 +180,13 @@
            fromLocation:(CLLocation*)oldLocation
 {
     CDVLocationData* cData = self.locationData;
-
+    
     cData.locationInfo = newLocation;
     if (self.locationData.locationCallbacks.count > 0) {
         for (NSString* callbackId in self.locationData.locationCallbacks) {
             [self returnLocationInfo:callbackId andKeepCallback:NO];
         }
-
+        
         [self.locationData.locationCallbacks removeAllObjects];
     }
     if (self.locationData.watchCallbacks.count > 0) {
@@ -200,7 +203,7 @@
 {
     NSString* callbackId = command.callbackId;
     BOOL enableHighAccuracy = [[command.arguments objectAtIndex:0] boolValue];
-
+    
     if ([self isLocationServicesEnabled] == NO) {
         NSMutableDictionary* posError = [NSMutableDictionary dictionaryWithCapacity:2];
         [posError setObject:[NSNumber numberWithInt:PERMISSIONDENIED] forKey:@"code"];
@@ -215,7 +218,7 @@
         if (!lData.locationCallbacks) {
             lData.locationCallbacks = [NSMutableArray arrayWithCapacity:1];
         }
-
+        
         if (!__locationStarted || (__highAccuracyEnabled != enableHighAccuracy)) {
             // add the callbackId into the array so we can call back when get data
             if (callbackId != nil) {
@@ -234,19 +237,19 @@
     NSString* callbackId = command.callbackId;
     NSString* timerId = [command.arguments objectAtIndex:0];
     BOOL enableHighAccuracy = [[command.arguments objectAtIndex:1] boolValue];
-
+    
     if (!self.locationData) {
         self.locationData = [[CDVLocationData alloc] init];
     }
     CDVLocationData* lData = self.locationData;
-
+    
     if (!lData.watchCallbacks) {
         lData.watchCallbacks = [NSMutableDictionary dictionaryWithCapacity:1];
     }
-
+    
     // add the callbackId into the dictionary so we can call back whenever get data
     [lData.watchCallbacks setObject:callbackId forKey:timerId];
-
+    
     if ([self isLocationServicesEnabled] == NO) {
         NSMutableDictionary* posError = [NSMutableDictionary dictionaryWithCapacity:2];
         [posError setObject:[NSNumber numberWithInt:PERMISSIONDENIED] forKey:@"code"];
@@ -264,7 +267,7 @@
 - (void)clearWatch:(CDVInvokedUrlCommand*)command
 {
     NSString* timerId = [command.arguments objectAtIndex:0];
-
+    
     if (self.locationData && self.locationData.watchCallbacks && [self.locationData.watchCallbacks objectForKey:timerId]) {
         [self.locationData.watchCallbacks removeObjectForKey:timerId];
         if([self.locationData.watchCallbacks count] == 0) {
@@ -282,7 +285,7 @@
 {
     CDVPluginResult* result = nil;
     CDVLocationData* lData = self.locationData;
-
+    
     if (lData && !lData.locationInfo) {
         // return error
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:POSITIONUNAVAILABLE];
@@ -296,9 +299,11 @@
         [returnInfo setObject:[NSNumber numberWithDouble:lInfo.horizontalAccuracy] forKey:@"accuracy"];
         [returnInfo setObject:[NSNumber numberWithDouble:lInfo.course] forKey:@"heading"];
         [returnInfo setObject:[NSNumber numberWithDouble:lInfo.altitude] forKey:@"altitude"];
-        [returnInfo setObject:[NSNumber numberWithDouble:lInfo.coordinate.latitude] forKey:@"latitude"];
-        [returnInfo setObject:[NSNumber numberWithDouble:lInfo.coordinate.longitude] forKey:@"longitude"];
-
+        //todo patch use mars fix
+        CLLocation  *fixedLocation = [[self class] transformToMars:lInfo];
+        [returnInfo setObject:[NSNumber numberWithDouble:fixedLocation.coordinate.latitude] forKey:@"latitude"];
+        [returnInfo setObject:[NSNumber numberWithDouble:fixedLocation.coordinate.longitude] forKey:@"longitude"];
+        
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnInfo];
         [result setKeepCallbackAsBool:keepCallback];
     }
@@ -310,17 +315,17 @@
 - (void)returnLocationError:(NSUInteger)errorCode withMessage:(NSString*)message
 {
     NSMutableDictionary* posError = [NSMutableDictionary dictionaryWithCapacity:2];
-
+    
     [posError setObject:[NSNumber numberWithUnsignedInteger:errorCode] forKey:@"code"];
     [posError setObject:message ? message:@"" forKey:@"message"];
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:posError];
-
+    
     for (NSString* callbackId in self.locationData.locationCallbacks) {
         [self.commandDelegate sendPluginResult:result callbackId:callbackId];
     }
-
+    
     [self.locationData.locationCallbacks removeAllObjects];
-
+    
     for (NSString* callbackId in self.locationData.watchCallbacks) {
         [self.commandDelegate sendPluginResult:result callbackId:callbackId];
     }
@@ -329,7 +334,7 @@
 - (void)locationManager:(CLLocationManager*)manager didFailWithError:(NSError*)error
 {
     NSLog(@"locationManager::didFailWithError %@", [error localizedFailureReason]);
-
+    
     CDVLocationData* lData = self.locationData;
     if (lData && __locationStarted) {
         // TODO: probably have to once over the various error codes and return one of:
@@ -342,7 +347,7 @@
         }
         [self returnLocationError:positionError withMessage:[error localizedDescription]];
     }
-
+    
     [self.locationManager stopUpdatingLocation];
     __locationStarted = NO;
 }
@@ -364,6 +369,50 @@
 {
     [self _stopLocation];
     [self.locationManager stopUpdatingHeading];
+}
+
+#pragma Location fix
++ (CLLocation *)transformToMars:(CLLocation *)location {
+    //是否在中国大陆之外
+    if ([[self class] outOfChina:location]) {
+        NSLog(@"out china");
+        return location;
+    }
+    double dLat = [[self class] transformLatWithX:location.coordinate.longitude - 105.0 y:location.coordinate.latitude - 35.0];
+    double dLon = [[self class] transformLonWithX:location.coordinate.longitude - 105.0 y:location.coordinate.latitude - 35.0];
+    double radLat = location.coordinate.latitude / 180.0 * M_PI;
+    double magic = sin(radLat);
+    magic = 1 - ee * magic * magic;
+    double sqrtMagic = sqrt(magic);
+    dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * M_PI);
+    dLon = (dLon * 180.0) / (a / sqrtMagic * cos(radLat) * M_PI);
+    return [[CLLocation alloc] initWithLatitude:location.coordinate.latitude + dLat longitude:location.coordinate.longitude + dLon];
+}
+
++ (BOOL)outOfChina:(CLLocation *)location {
+    if (location.coordinate.longitude < 72.004 || location.coordinate.longitude > 137.8347) {
+        return YES;
+    }
+    if (location.coordinate.latitude < 0.8293 || location.coordinate.latitude > 55.8271) {
+        return YES;
+    }
+    return NO;
+}
+
++ (double)transformLatWithX:(double)x y:(double)y {
+    double ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * sqrt(abs(x));
+    ret += (20.0 * sin(6.0 * x * M_PI) + 20.0 * sin(2.0 * x * M_PI)) * 2.0 / 3.0;
+    ret += (20.0 * sin(y * M_PI) + 40.0 * sin(y / 3.0 * M_PI)) * 2.0 / 3.0;
+    ret += (160.0 * sin(y / 12.0 * M_PI) + 320 * sin(y * M_PI / 30.0)) * 2.0 / 3.0;
+    return ret;
+}
+
++ (double)transformLonWithX:(double)x y:(double)y {
+    double ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * sqrt(abs(x));
+    ret += (20.0 * sin(6.0 * x * M_PI) + 20.0 * sin(2.0 * x * M_PI)) * 2.0 / 3.0;
+    ret += (20.0 * sin(x * M_PI) + 40.0 * sin(x / 3.0 * M_PI)) * 2.0 / 3.0;
+    ret += (150.0 * sin(x / 12.0 * M_PI) + 300.0 * sin(x / 30.0 * M_PI)) * 2.0 / 3.0;
+    return ret;
 }
 
 @end
