@@ -17,6 +17,11 @@
          under the License.
 -->
 
-# org.apache.cordova.geolocation
+# fi.avaus.cordova.geolocation
 
 Plugin documentation: [doc/index.md](doc/index.md)
+
+This is a fork of org.apache.cordova.geolocation. This fork fixes a
+problem with native Android's implementation that doesn't call an error
+callback when geolocation is not available (e.g. when it's turned off
+on device level).

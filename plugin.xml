@@ -21,14 +21,14 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
-           id="org.apache.cordova.geolocation"
+           id="fi.avaus.cordova.geolocation"
       version="0.3.11-dev">
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,geolocation</keywords>
-    <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-geolocation.git</repo>
+    <repo>https://github.com/durkiewicz/cordova-plugin-geolocation.git</repo>
     <issue>https://issues.apache.org/jira/browse/CB/component/12320638</issue>
 
     <!-- android -->
