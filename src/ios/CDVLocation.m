@@ -343,8 +343,10 @@
         [self returnLocationError:positionError withMessage:[error localizedDescription]];
     }
 
-    [self.locationManager stopUpdatingLocation];
-    __locationStarted = NO;
+    if (error.code != kCLErrorLocationUnknown) {
+      [self.locationManager stopUpdatingLocation];
+      __locationStarted = NO;
+    }
 }
 
 //iOS8+
