@@ -1,4 +1,4 @@
-﻿/*
+/*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -27,6 +27,7 @@ exports.defineAutoTests = function () {
         expect(true).toBe(true);
         done();
     };
+    var isWindowsStore = (cordova.platformId == "windows8") || (cordova.platformId == "windows" && !WinJS.Utilities.isPhone);
 
     describe('Geolocation (navigator.geolocation)', function () {
 
@@ -56,6 +57,11 @@ exports.defineAutoTests = function () {
         describe('error callback', function () {
 
             it("geolocation.spec.5 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
+                // this test asks for using geolocation and interrupts autotests running.
+                // That's why we have to pending that for Windows Store 8.0/8.1 apps
+                if (isWindowsStore) {
+                    pending();
+                }
                 navigator.geolocation.getCurrentPosition(
                     fail.bind(null, done),
                     succeed.bind(null, done),
@@ -70,6 +76,11 @@ exports.defineAutoTests = function () {
         describe('success callback', function () {
 
             it("geolocation.spec.6 should be called with a Position object", function (done) {
+                // this test asks for using geolocation and interrupts autotests running.
+                // That's why we have to pending that for Windows Store 8.0/8.1 apps
+                if (isWindowsStore) {
+                    pending();
+                }
                 navigator.geolocation.getCurrentPosition(function (p) {
                     expect(p.coords).toBeDefined();
                     expect(p.timestamp).toBeDefined();
@@ -95,6 +106,11 @@ exports.defineAutoTests = function () {
             });
 
             it("geolocation.spec.7 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
+                // this test asks for using geolocation and interrupts autotests running.
+                // That's why we have to pending that for Windows Store 8.0/8.1 apps
+                if (isWindowsStore) {
+                    pending();
+                }
                 errorWatch = navigator.geolocation.watchPosition(
                     fail.bind(null, done),
                     succeed.bind(null, done),
@@ -114,7 +130,11 @@ exports.defineAutoTests = function () {
             });
 
             it("geolocation.spec.8 should be called with a Position object", function (done) {
-
+                // this test asks for using geolocation and interrupts autotests running.
+                // That's why we have to pending that for Windows Store 8.0/8.1 apps
+                if (isWindowsStore) {
+                    pending();
+                }
                 successWatch = navigator.geolocation.watchPosition(
                     function (p) {
                         expect(p.coords).toBeDefined();
