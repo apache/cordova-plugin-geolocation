@@ -76,6 +76,7 @@ are not available until after the `deviceready` event.
 - navigator.geolocation.getCurrentPosition
 - navigator.geolocation.watchPosition
 - navigator.geolocation.clearWatch
+- navigator.geolocation.geocodeString
 
 ## Objects (Read-Only)
 
@@ -218,6 +219,27 @@ Stop watching for changes to the device's location referenced by the
     // ...later on...
 
     navigator.geolocation.clearWatch(watchID);
+
+## navigator.geolocation.geocodeString
+
+Forward geocode a given address to find coordinates.
+
+    navigator.geolocation.geocodeString(addressString);
+
+### Parameters
+
+- __addressString__: The address to be geocoded. (String)
+
+### Example
+
+    function onError(err) {
+        alert(JSON.stringify(err));
+    }
+    function onSuccess(coords) {
+        alert("The location is lat="+coords.latitude+", lon="+coords.longitude);
+    }
+
+    navigator.geolocation.geocodeString(onSuccess, onError, "55418");
 
 ## Position
 
