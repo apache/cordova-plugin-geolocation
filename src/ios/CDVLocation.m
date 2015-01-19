@@ -315,13 +315,23 @@
     [posError setObject:message ? message:@"" forKey:@"message"];
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:posError];
 
-    for (NSString* callbackId in self.locationData.locationCallbacks) {
-        [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+    for (id callbackId in self.locationData.locationCallbacks) {
+        if([callbackId isKindOfClass:[NSNumber class]]) {
+            [self.commandDelegate sendPluginResult:result callbackId:[callbackId stringValue]];
+        }
+        else {
+            [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+        }
         [self.locationData.locationCallbacks removeObject:callbackId];
     }
 
-    for (NSString* callbackId in self.locationData.watchCallbacks) {
-        [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+    for (id callbackId in self.locationData.watchCallbacks) {
+        if([callbackId isKindOfClass:[NSNumber class]]) {
+            [self.commandDelegate sendPluginResult:result callbackId:[callbackId stringValue]];
+        }
+        else {
+            [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+        }
         [self.locationData.watchCallbacks removeObjectForKey:callbackId];
     }
 }
