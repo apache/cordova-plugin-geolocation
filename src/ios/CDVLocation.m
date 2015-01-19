@@ -317,12 +317,12 @@
 
     for (NSString* callbackId in self.locationData.locationCallbacks) {
         [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+        [self.locationData.locationCallbacks removeObject:callbackId];
     }
-
-    [self.locationData.locationCallbacks removeAllObjects];
 
     for (NSString* callbackId in self.locationData.watchCallbacks) {
         [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+        [self.locationData.watchCallbacks removeObjectForKey:callbackId];
     }
 }
 
