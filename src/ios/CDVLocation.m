@@ -199,7 +199,7 @@
 - (void)getLocation:(CDVInvokedUrlCommand*)command
 {
     NSString* callbackId = command.callbackId;
-    BOOL enableHighAccuracy = [[command.arguments objectAtIndex:0] boolValue];
+    BOOL enableHighAccuracy = [[command argumentAtIndex:0] boolValue];
 
     if ([self isLocationServicesEnabled] == NO) {
         NSMutableDictionary* posError = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -232,8 +232,8 @@
 - (void)addWatch:(CDVInvokedUrlCommand*)command
 {
     NSString* callbackId = command.callbackId;
-    NSString* timerId = [command.arguments objectAtIndex:0];
-    BOOL enableHighAccuracy = [[command.arguments objectAtIndex:1] boolValue];
+    NSString* timerId = [command argumentAtIndex:0];
+    BOOL enableHighAccuracy = [[command argumentAtIndex:1] boolValue];
 
     if (!self.locationData) {
         self.locationData = [[CDVLocationData alloc] init];
@@ -263,7 +263,7 @@
 
 - (void)clearWatch:(CDVInvokedUrlCommand*)command
 {
-    NSString* timerId = [command.arguments objectAtIndex:0];
+    NSString* timerId = [command argumentAtIndex:0];
 
     if (self.locationData && self.locationData.watchCallbacks && [self.locationData.watchCallbacks objectForKey:timerId]) {
         [self.locationData.watchCallbacks removeObjectForKey:timerId];
