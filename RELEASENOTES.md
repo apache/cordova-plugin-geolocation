@@ -100,3 +100,6 @@
 * CB-8085 Fix geolocation plugin on **Windows**
 * CB-7977 Mention `deviceready` in plugin docs
 * CB-7700 cordova-plugin-geolocation documentation translation: cordova-plugin-geolocation
+
+### 0.3.12 (Feb 04, 2015)
+* CB-8351 ios: Use argumentForIndex rather than NSArray extension
