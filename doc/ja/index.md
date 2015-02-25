@@ -27,6 +27,16 @@
 
 **警告**: 地理位置情報データの収集と利用を重要なプライバシーの問題を発生させます。 アプリのプライバシー ポリシーは他の当事者とデータ (たとえば、粗い、罰金、郵便番号レベル、等) の精度のレベルでは共有されているかどうか、アプリが地理位置情報データを使用する方法を議論すべきです。 地理位置情報データと一般に見なされる敏感なユーザーの居場所を開示することができますので、彼らの旅行の歴史保存されている場合。 したがって、アプリのプライバシー ポリシーに加えて、強くする必要があります (デバイス オペレーティング システムしない場合そう既に)、アプリケーションに地理位置情報データをアクセスする前に - 時間のお知らせを提供します。 その通知は、上記の (例えば、 **[ok]**を**おかげで**選択肢を提示する) によってユーザーのアクセス許可を取得するだけでなく、同じ情報を提供する必要があります。 詳細については、プライバシーに関するガイドを参照してください。
 
+このプラグインは、グローバル `navigator.geolocation` オブジェクト (プラットフォーム行方不明ですそれ以外の場合) を定義します。
+
+オブジェクトは、グローバル スコープでですが、このプラグインによって提供される機能は、`deviceready` イベントの後まで使用できません。
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log("navigator.geolocation works well");
+    }
+    
+
 ## インストール
 
     cordova plugin add org.apache.cordova.geolocation
@@ -57,9 +67,11 @@
 
 ## navigator.geolocation.getCurrentPosition
 
-デバイスの現在の位置を返します、 `geolocationSuccess` コールバックを `Position` オブジェクトをパラメーターとして。 エラーがある場合、 `geolocationError` コールバックに渡される、 `PositionError` オブジェクト。
+`Position` オブジェクトを `geolocationSuccess` コールバックにパラメーターとしてデバイスの現在位置を返します。 エラーがある場合 `geolocationError` コールバックには、`PositionError` オブジェクトが渡されます。
 
-    navigator.geolocation.getCurrentPosition （geolocationSuccess、[geolocationError] [geolocationOptions]);
+    navigator.geolocation.getCurrentPosition(geolocationSuccess,
+                                             [geolocationError],
+                                             [geolocationOptions]);
     
 
 ### パラメーター
@@ -72,14 +84,38 @@
 
 ### 例
 
-    onSuccess コールバック/このメソッドを含む位置のオブジェクトを受け入れる/、/現在 GPS 座標///var onSuccess function(position) = {警告 (' 緯度: '+ position.coords.latitude + '\n' +' 経度: '+ position.coords.longitude + '\n' +' 高度: '+ position.coords.altitude + '\n' +' 精度: '+ position.coords.accuracy + '\n' +' 高度精度: '+ position.coords.altitudeAccuracy + '\n' +' 見出し: '+ position.coords.heading + '\n' +' 速度: '+ position.coords.speed + '\n' +' タイムスタンプ: ' + position.timestamp + '\n');};onError コールバックが PositionError オブジェクトを受け取る//onError(error) 関数 {警告 (' コード: '+ error.code + '\n' +' メッセージ: ' + error.message + '\n');}navigator.geolocation.getCurrentPosition (onSuccess、onError);
+    // onSuccess Callback
+    // This method accepts a Position object, which contains the
+    // current GPS coordinates
+    //
+    var onSuccess = function(position) {
+        alert('Latitude: '          + position.coords.latitude          + '\n' +
+              'Longitude: '         + position.coords.longitude         + '\n' +
+              'Altitude: '          + position.coords.altitude          + '\n' +
+              'Accuracy: '          + position.coords.accuracy          + '\n' +
+              'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+              'Heading: '           + position.coords.heading           + '\n' +
+              'Speed: '             + position.coords.speed             + '\n' +
+              'Timestamp: '         + position.timestamp                + '\n');
+    };
+    
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
+    
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
     
 
 ## navigator.geolocation.watchPosition
 
-位置の変更が検出された場合は、デバイスの現在位置を返します。 デバイスを新しい場所を取得するとき、 `geolocationSuccess` コールバックを実行すると、 `Position` オブジェクトをパラメーターとして。 エラーがある場合、 `geolocationError` コールバックを実行すると、 `PositionError` オブジェクトをパラメーターとして。
+位置の変更が検出された場合は、デバイスの現在位置を返します。 取得されると、デバイスの新しい場所、`geolocationSuccess` コールバック パラメーターとして `位置` オブジェクトを実行します。 エラーがある場合、`geolocationError` コールバック パラメーターとして `PositionError` オブジェクトで実行します。
 
-    var watchId = navigator.geolocation.watchPosition （geolocationSuccess、[geolocationError] [geolocationOptions]);
+    var watchId = navigator.geolocation.watchPosition(geolocationSuccess,
+                                                      [geolocationError],
+                                                      [geolocationOptions]);
     
 
 ### パラメーター
@@ -96,15 +132,34 @@
 
 ### 例
 
-    onSuccess コールバック//このメソッドを含む '位置' オブジェクトを受け入れる/現在の GPS 座標///onSuccess(position) 関数 {var 要素 = document.getElementById('geolocation');element.innerHTML = '緯度:' + position.coords.latitude + '< br/>' +' 経度: '+ position.coords.longitude +' < br/>' + ' < hr/>' + element.innerHTML;}/onError コールバックが PositionError オブジェクトを受け取る///onError(error) 関数 {警告 (' コード: '+ error.code + '\n' +' メッセージ: ' + error.message + '\n');}オプション: 30 秒ごとの更新を受信しない場合エラーをスローします。
-    var watchID = navigator.geolocation.watchPosition (onError、onSuccess {タイムアウト: 30000});
+    // onSuccess Callback
+    //   This method accepts a `Position` object, which contains
+    //   the current GPS coordinates
+    //
+    function onSuccess(position) {
+        var element = document.getElementById('geolocation');
+        element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
+                            'Longitude: ' + position.coords.longitude     + '<br />' +
+                            '<hr />'      + element.innerHTML;
+    }
+    
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
+    
+    // Options: throw an error if no update is received every 30 seconds.
+    //
+    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
     
 
 ## geolocationOptions
 
-地理位置情報の検索をカスタマイズするための省略可能なパラメーター`Position`.
+地理位置情報 `の位置` の検索をカスタマイズするための省略可能なパラメーター.
 
-    {maximumAge: 3000、タイムアウト: 5000、enableHighAccuracy: true};
+    { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
     
 
 ### オプション
@@ -117,11 +172,11 @@
 
 ### Android の癖
 
-限り android 2.x エミュレーター地理位置情報の結果を返さない、 `enableHighAccuracy` オプションを設定します。`true`.
+`enableHighAccuracy` オプションが `true` に設定しない限り、アンドロイド 2.x エミュレーター地理位置情報の結果を返さない.
 
 ## navigator.geolocation.clearWatch
 
-によって参照される、デバイスの場所への変更を見て停止、 `watchID` パラメーター。
+`watchID` パラメーターによって参照される、デバイスの場所への変更を見て停止します。
 
     navigator.geolocation.clearWatch(watchID);
     
@@ -132,59 +187,63 @@
 
 ### 例
 
-    オプション: の位置では、変更を監視して最も//正確な位置取得法利用可能。
-    var watchID = navigator.geolocation.watchPosition （成功すると、onError、{enableHighAccuracy: true});... うな上.
+    // Options: watch for changes in position, and use the most
+    // accurate position acquisition method available.
+    //
+    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { enableHighAccuracy: true });
+    
+    // ...later on...
     
     navigator.geolocation.clearWatch(watchID);
     
 
 ## Position
 
-含まれています `Position` 座標、地理位置情報 API で作成されたタイムスタンプ。
+`Position` 座標と地理位置情報 API で作成されたタイムスタンプが含まれます。
 
 ### プロパティ
 
 *   **coords**: 地理的座標のセット。*（座標）*
 
-*   **タイムスタンプ**: 作成のタイムスタンプを `coords` 。*（日）*
+*   **timestamp**: 作成のタイムスタンプを `coords` 。*（日）*
 
 ## Coordinates
 
-A `Coordinates` オブジェクトに使用されて、 `Position` は、現在の位置のための要求でコールバック関数を利用可能なオブジェクト。 位置の地理座標を記述するプロパティのセットが含まれています。
+`Coordinates` のオブジェクトは現在の位置のための要求でコールバック関数に使用する `Position` オブジェクトにアタッチされます。 位置の地理座標を記述するプロパティのセットが含まれています。
 
 ### プロパティ
 
-*   **緯度**: 10 度緯度。*(数)*
+*   **latitude**: 10 度緯度。*(数)*
 
-*   **経度**: 10 進度の経度。*(数)*
+*   **longitude**: 10 進度の経度。*(数)*
 
-*   **高度**: 楕円体上のメートルの位置の高さ。*(数)*
+*   **altitude**: 楕円体上のメートルの位置の高さ。*(数)*
 
-*   **精度**: メートルの緯度と経度座標の精度レベル。*(数)*
+*   **accuracy**: メートルの緯度と経度座標の精度レベル。*(数)*
 
 *   **altitudeAccuracy**： メートルの高度座標の精度レベル。*(数)*
 
-*   **見出し**: 進行方向、カウント、真北から時計回りの角度で指定します。*(数)*
+*   **headingし**: 進行方向、カウント、真北から時計回りの角度で指定します。*(数)*
 
-*   **速度**： 毎秒メートルで指定されたデバイスの現在の対地速度。*(数)*
+*   **speed**： 毎秒メートルで指定されたデバイスの現在の対地速度。*(数)*
 
 ### アマゾン火 OS 癖
 
-**altitudeAccuracy**： 返すの Android デバイスでサポートされていません`null`.
+**altitudeAccuracy**: `null` を返すことの Android デバイスでサポートされていません.
 
 ### Android の癖
 
-**altitudeAccuracy**： 返すの Android デバイスでサポートされていません`null`.
+**altitudeAccuracy**: `null` を返すことの Android デバイスでサポートされていません.
 
 ## PositionError
 
-`PositionError`オブジェクトに渡されます、 `geolocationError` navigator.geolocation でエラーが発生した場合のコールバック関数。
+`PositionError` オブジェクト navigator.geolocation でエラーが発生したときに `geolocationError` コールバック関数に渡されます。
 
 ### プロパティ
 
-*   **コード**: 次のいずれかの定義済みのエラー コード。
+*   **code**: 次のいずれかの定義済みのエラー コード。
 
-*   **メッセージ**: 発生したエラーの詳細を説明するエラー メッセージ。
+*   **message**: 発生したエラーの詳細を説明するエラー メッセージ。
 
 ### 定数
 
