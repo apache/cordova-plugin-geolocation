@@ -27,6 +27,16 @@
 
 **경고**: 중요 한 개인 정보 보호 문제를 제기 하는 위치 정보 데이터의 수집 및 사용 합니다. 응용 프로그램의 개인 정보 보호 정책 다른 당사자와의 데이터 (예를 들어, 굵고, 괜 찮 아 요, 우편 번호, 등)의 정밀도 수준을 공유 여부를 app 지리적 데이터를 사용 하는 방법 토론 해야 한다. 그것은 사용자의 행방을 밝힐 수 있기 때문에 및 저장, 그들의 여행 역사 지리적 위치 데이터는 일반적으로 민감한 간주. 따라서, 애플 리 케이 션의 개인 정보 보호 정책 뿐만 아니라 강력 하 게 좋습니다 (해당 되는 경우 장치 운영 체제 이렇게 이미 하지 않는) 응용 프로그램 위치 정보 데이터에 액세스 하기 전에 그냥--시간 통지. 그 통지는 (예를 들어, **확인** 및 **아니오**선택 제시) 하 여 사용자의 허가 취득 뿐만 아니라, 위에서 언급 된 동일한 정보를 제공 해야 합니다. 자세한 내용은 개인 정보 보호 가이드를 참조 하십시오.
 
+이 플러그인 (플랫폼은 그렇지 않으면 누락 된)에 대 한 전역 `navigator.geolocation` 개체를 정의 합니다.
+
+개체가 전역 범위에 있지만,이 플러그인에 의해 제공 되는 기능 하지 사용할 수 있습니다까지 `deviceready` 이벤트 후.
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log("navigator.geolocation works well");
+    }
+    
+
 ## 설치
 
     cordova plugin add org.apache.cordova.geolocation
@@ -57,9 +67,11 @@
 
 ## navigator.geolocation.getCurrentPosition
 
-디바이스의 현재 위치를 반환 합니다는 `geolocationSuccess` 로 콜백은 `Position` 매개 변수로 개체. 오류가 발생 하는 경우는 `geolocationError` 콜백 전달 되는 `PositionError` 개체.
+매개 변수 `Position` 개체와 `geolocationSuccess`를 디바이스의 현재 위치를 반환합니다. 오류가 있는 경우에, `geolocationError` 콜백 `PositionError` 개체에 전달 됩니다.
 
-    navigator.geolocation.getCurrentPosition (geolocationSuccess, [geolocationError] [geolocationOptions]);
+    navigator.geolocation.getCurrentPosition(geolocationSuccess,
+                                             [geolocationError],
+                                             [geolocationOptions]);
     
 
 ### 매개 변수
@@ -72,18 +84,38 @@
 
 ### 예를 들어
 
-    onSuccess 콜백 / /이 메서드 허용 위치 개체를 포함 하는 / 현재 GPS 좌표 / / / var onSuccess function(position) = {경고 (' 위도: ' + position.coords.latitude + '\n' + ' 경도: ' + position.coords.longitude + '\n' + ' 고도: ' + position.coords.altitude + '\n' + ' 정확도: ' + position.coords.accuracy + '\n' + ' 고도 정확도: ' + position.coords.altitudeAccuracy + '\n' + ' 제목: ' + position.coords.heading + '\n' + ' 속도: ' + position.coords.speed + '\n' + ' 타임 스탬프: ' + position.timestamp + '\n');};
+    // onSuccess Callback
+    // This method accepts a Position object, which contains the
+    // current GPS coordinates
+    //
+    var onSuccess = function(position) {
+        alert('Latitude: '          + position.coords.latitude          + '\n' +
+              'Longitude: '         + position.coords.longitude         + '\n' +
+              'Altitude: '          + position.coords.altitude          + '\n' +
+              'Accuracy: '          + position.coords.accuracy          + '\n' +
+              'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+              'Heading: '           + position.coords.heading           + '\n' +
+              'Speed: '             + position.coords.speed             + '\n' +
+              'Timestamp: '         + position.timestamp                + '\n');
+    };
     
-    onError 콜백 수신 PositionError 개체 / / onError(error) 기능 {경고 (' 코드: ' error.code + '\n' + ' 메시지: ' error.message + '\n');}
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
     
-    navigator.geolocation.getCurrentPosition (onSuccess, onError);
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
     
 
 ## navigator.geolocation.watchPosition
 
-위치에 변화를 탐지할 때 소자의 현재 위치를 반환 합니다. 새 위치를 검색 하는 장치는 `geolocationSuccess` 콜백 실행 한 `Position` 매개 변수로 개체. 오류가 발생 하는 경우는 `geolocationError` 콜백 실행 한 `PositionError` 매개 변수로 개체.
+위치에 변화를 탐지할 때 소자의 현재 위치를 반환 합니다. 장치 새 위치를 검색 하는 경우 `geolocationSuccess` 콜백 매개 변수로 개체를 `Position`으로 실행 합니다. 오류가 있는 경우에, `geolocationError` 콜백 매개 변수로 `PositionError` 개체를 실행 합니다.
 
-    var watchId = navigator.geolocation.watchPosition (geolocationSuccess, [geolocationError] [geolocationOptions]);
+    var watchId = navigator.geolocation.watchPosition(geolocationSuccess,
+                                                      [geolocationError],
+                                                      [geolocationOptions]);
     
 
 ### 매개 변수
@@ -100,19 +132,34 @@
 
 ### 예를 들어
 
-    onSuccess 콜백 /이 메서드를 포함 하는 '위치' 개체를 허용 하는 / / 현재 GPS 좌표 / / / onSuccess(position) 기능 {var 요소 = document.getElementById('geolocation');
-        element.innerHTML = ' 위도: ' + position.coords.latitude + ' < br / >' + ' 경도: ' + position.coords.longitude + ' < br / >' + ' < hr / >' + element.innerHTML;
-    } / / onError 콜백 수신 PositionError 개체 / / onError(error) 기능 {경고 (' 코드: ' error.code + '\n' + ' 메시지: ' error.message + '\n');}
+    // onSuccess Callback
+    //   This method accepts a `Position` object, which contains
+    //   the current GPS coordinates
+    //
+    function onSuccess(position) {
+        var element = document.getElementById('geolocation');
+        element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
+                            'Longitude: ' + position.coords.longitude     + '<br />' +
+                            '<hr />'      + element.innerHTML;
+    }
     
-    옵션: 없음 업데이트 30 초 마다 수신 되 면 오류가 throw 합니다.
-    var watchID = navigator.geolocation.watchPosition (onSuccess onError, {타임 아웃: 30000});
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
+    
+    // Options: throw an error if no update is received every 30 seconds.
+    //
+    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
     
 
 ## geolocationOptions
 
-선택적 매개 변수는 위치 정보 검색을 사용자 지정 하려면`Position`.
+지리적 `Position` 검색을 사용자 지정 하는 선택적 매개 변수.
 
-    {maximumAge: 3000, 타임 아웃: 5000, enableHighAccuracy: true};
+    { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
     
 
 ### 옵션
@@ -125,11 +172,11 @@
 
 ### 안 드 로이드 단점
 
-하지 않는 한 안 드 로이드 2.x 에뮬레이터 위치 결과 반환 하지 않습니다는 `enableHighAccuracy` 옵션을 설정`true`.
+`EnableHighAccuracy` 옵션을 `true`로 설정 되어 있지 않으면 안 드 로이드 2.x 에뮬레이터 위치 결과 반환 하지 않는.
 
 ## navigator.geolocation.clearWatch
 
-참조 디바이스의 위치 변경에 대 한 보고 중지는 `watchID` 매개 변수.
+`watchID` 매개 변수에서 참조 하는 소자의 위치 변경에 대 한 보고 중지 합니다.
 
     navigator.geolocation.clearWatch(watchID);
     
@@ -140,61 +187,63 @@
 
 ### 예를 들어
 
-    옵션: 대 한 위치에서 변경 하 고 가장 많이 사용 / / 정확한 위치 수집 방법을 사용할 수 있습니다.
-    var watchID = navigator.geolocation.watchPosition (onSuccess onError, {enableHighAccuracy: true});
+    // Options: watch for changes in position, and use the most
+    // accurate position acquisition method available.
+    //
+    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { enableHighAccuracy: true });
     
-    ....later에...
+    // ...later on...
     
     navigator.geolocation.clearWatch(watchID);
     
 
 ## Position
 
-포함 `Position` 좌표 및 타임 스탬프, geolocation API에 의해 만들어진.
+`Position` 좌표 및 지리적 위치 API에 의해 생성 하는 타임 스탬프를 포함 합니다.
 
 ### 속성
 
 *   **coords**: 지리적 좌표 집합. *(좌표)*
 
-*   **타임 스탬프**: 생성 타임 스탬프에 대 한 `coords` . *(날짜)*
+*   **timestamp**: 생성 타임 스탬프에 대 한 `coords` . *(날짜)*
 
 ## Coordinates
 
-A `Coordinates` 개체에 연결 되는 `Position` 콜백 함수는 현재 위치에 대 한 요청에 사용할 수 있는 개체. 그것은 위치의 지리적 좌표를 설명 하는 속성 집합이 포함 되어 있습니다.
+`Coordinates` 개체를 현재 위치에 대 한 요청에 콜백 함수를 사용할 수 있는 `Position` 개체에 첨부 됩니다. 그것은 위치의 지리적 좌표를 설명 하는 속성 집합이 포함 되어 있습니다.
 
 ### 속성
 
-*   **위도**: 소수점도 위도. *(수)*
+*   **latitude**: 소수점도 위도. *(수)*
 
-*   **경도**: 경도 10 진수 각도. *(수)*
+*   **longitude**: 경도 10 진수 각도. *(수)*
 
-*   **고도**: 높이의 타원 면 미터에 위치. *(수)*
+*   **altitude**: 높이의 타원 면 미터에 위치. *(수)*
 
 *   **정확도**: 정확도 레벨 미터에 위도 및 경도 좌표. *(수)*
 
 *   **altitudeAccuracy**: 미터에 고도 좌표의 정확도 수준. *(수)*
 
-*   **제목**: 여행, 진 북을 기준으로 시계 방향으로 세도에 지정 된 방향으로. *(수)*
+*   **heading**: 여행, 진 북을 기준으로 시계 방향으로 세도에 지정 된 방향으로. *(수)*
 
-*   **속도**: 초당 미터에 지정 된 디바이스의 현재 땅 속도. *(수)*
+*   **speed**: 초당 미터에 지정 된 디바이스의 현재 땅 속도. *(수)*
 
 ### 아마존 화재 OS 단점
 
-**altitudeAccuracy**: 반환 안 드 로이드 장치에 의해 지원 되지 않습니다`null`.
+**altitudeAccuracy**: `null` 반환 안 드 로이드 장치에 의해 지원 되지 않습니다.
 
 ### 안 드 로이드 단점
 
-**altitudeAccuracy**: 반환 안 드 로이드 장치에 의해 지원 되지 않습니다`null`.
+**altitudeAccuracy**: `null` 반환 안 드 로이드 장치에 의해 지원 되지 않습니다.
 
 ## PositionError
 
-`PositionError`개체에 전달 되는 `geolocationError` 콜백 함수 navigator.geolocation 오류가 발생 한 경우.
+`PositionError` 개체는 navigator.geolocation와 함께 오류가 발생 하면 `geolocationError` 콜백 함수에 전달 됩니다.
 
 ### 속성
 
-*   **코드**: 미리 정의 된 오류 코드 중 하나가 아래에 나열 된.
+*   **code**: 미리 정의 된 오류 코드 중 하나가 아래에 나열 된.
 
-*   **메시지**: 발생 한 오류 세부 정보를 설명 하는 오류 메시지.
+*   **message**: 발생 한 오류 세부 정보를 설명 하는 오류 메시지.
 
 ### 상수
 

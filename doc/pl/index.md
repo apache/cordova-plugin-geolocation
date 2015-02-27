@@ -27,6 +27,16 @@ Ten interfejs API jest oparty na [Specyfikacji W3C Geolocation API][1]i tylko wy
 
 **Ostrzeżenie**: zbierania i wykorzystywania danych geolokacyjnych podnosi kwestie prywatności ważne. Polityka prywatności danej aplikacji należy omówić, jak aplikacja używa danych, czy jest on dzielony z innych stron i poziom dokładności danych (na przykład, gruba, porządku, kod pocztowy poziom, itp.). Danych geolokacyjnych ogólnie uznaje wrażliwych, bo to może ujawnić pobytu użytkownika i, jeśli przechowywane, historii ich podróży. W związku z tym oprócz aplikacji prywatności, zdecydowanie warto powiadomienia just-in-time, zanim aplikacja uzyskuje dostęp do danych (jeśli urządzenie system operacyjny nie robi już). Że ogłoszenie powinno zawierać te same informacje, o których wspomniano powyżej, jak również uzyskanie uprawnienia użytkownika (np. poprzez przedstawianie wyborów **OK** i **Nie dzięki**). Aby uzyskać więcej informacji zobacz przewodnik prywatności.
 
+Ten plugin definiuje obiekt globalny `navigator.geolocation` (dla platformy gdzie to inaczej brak).
+
+Mimo, że obiekt jest w globalnym zasięgu, funkcji oferowanych przez ten plugin nie są dostępne dopiero po turnieju `deviceready`.
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log("navigator.geolocation works well");
+    }
+    
+
 ## Instalacja
 
     cordova plugin add org.apache.cordova.geolocation
@@ -53,13 +63,15 @@ Ten interfejs API jest oparty na [Specyfikacji W3C Geolocation API][1]i tylko wy
 
 *   Stanowisko
 *   PositionError
-*   Współrzędne
+*   Coordinates
 
 ## navigator.geolocation.getCurrentPosition
 
-Zwraca aktualną pozycję urządzenia do `geolocationSuccess` wywołania zwrotnego z `Position` obiektu jako parametr. Jeśli występuje błąd, `geolocationError` wywołania zwrotnego jest przekazywany `PositionError` obiektu.
+Zwraca bieżącą pozycję urządzenia do `geolocationSuccess` wywołanie zwrotne z `Position` obiektu jako parametr. Jeśli występuje błąd, wywołania zwrotnego `geolocationError` jest przekazywany obiekt `PositionError`.
 
-    navigator.geolocation.getCurrentPosition (geolocationSuccess, [geolocationError], [geolocationOptions]);
+    navigator.geolocation.getCurrentPosition(geolocationSuccess,
+                                             [geolocationError],
+                                             [geolocationOptions]);
     
 
 ### Parametry
@@ -72,18 +84,38 @@ Zwraca aktualną pozycję urządzenia do `geolocationSuccess` wywołania zwrotne
 
 ### Przykład
 
-    onSuccess Callback / / Metoda ta akceptuje pozycji obiektu, który zawiera / / GPS aktualne współrzędne / / var onSuccess = function(position) {wpisu ("Latitude:" + position.coords.latitude + '\n' + ' długości geograficznej: "+ position.coords.longitude + '\n' +" wysokości: "+ position.coords.altitude + '\n' +" dokładność: "+ position.coords.accuracy + '\n' +" wysokości dokładność: "+ position.coords.altitudeAccuracy + '\n' +" pozycji: "+ position.coords.heading + '\n' +" prędkości: "+ position.coords.speed + '\n' + ' sygnatury czasowej:" + position.timestamp + '\n');};
+    // onSuccess Callback
+    // This method accepts a Position object, which contains the
+    // current GPS coordinates
+    //
+    var onSuccess = function(position) {
+        alert('Latitude: '          + position.coords.latitude          + '\n' +
+              'Longitude: '         + position.coords.longitude         + '\n' +
+              'Altitude: '          + position.coords.altitude          + '\n' +
+              'Accuracy: '          + position.coords.accuracy          + '\n' +
+              'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+              'Heading: '           + position.coords.heading           + '\n' +
+              'Speed: '             + position.coords.speed             + '\n' +
+              'Timestamp: '         + position.timestamp                + '\n');
+    };
     
-    onError wywołania zwrotnego otrzymuje obiekt PositionError / / funkcja onError(error) {wpisu ("kod:" error.code + "\n" + "wiadomość: ' + error.message +"\n");}
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
     
-    navigator.geolocation.getCurrentPosition (onSuccess, onError);
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
     
 
 ## navigator.geolocation.watchPosition
 
-Zwraca bieżącą pozycję urządzenia po wykryciu zmiany pozycji. Gdy urządzenie pobiera nową lokalizację, `geolocationSuccess` wykonuje wywołanie zwrotne z `Position` obiektu jako parametr. Jeśli występuje błąd, `geolocationError` wykonuje wywołanie zwrotne z `PositionError` obiektu jako parametr.
+Zwraca bieżącą pozycję urządzenia po wykryciu zmiany pozycji. Gdy urządzenie pobiera nową lokalizację, wywołania zwrotnego `geolocationSuccess` wykonuje się z `Position` obiektu jako parametr. Jeśli występuje błąd, wywołania zwrotnego `geolocationError` wykonuje się z obiektem `PositionError` jako parametr.
 
-    var watchId = navigator.geolocation.watchPosition (geolocationSuccess, [geolocationError], [geolocationOptions]);
+    var watchId = navigator.geolocation.watchPosition(geolocationSuccess,
+                                                      [geolocationError],
+                                                      [geolocationOptions]);
     
 
 ### Parametry
@@ -100,19 +132,34 @@ Zwraca bieżącą pozycję urządzenia po wykryciu zmiany pozycji. Gdy urządzen
 
 ### Przykład
 
-    onSuccess Callback / / Metoda ta akceptuje obiekt "Stanowisko", który zawiera / / bieżące współrzędne GPS / / funkcja onSuccess(position) {var elementu = document.getElementById('geolocation');
-        element.innerHTML = "Latitude:" + position.coords.latitude + ' < br / >' + ' długości geograficznej: "+ position.coords.longitude +" < br / > "+" < hr / > "+ element.innerHTML;
-    } / / onError wywołania zwrotnego otrzymuje obiekt PositionError / / funkcja onError(error) {wpisu ("kod:" error.code + "\n" + "wiadomość: ' + error.message +"\n");}
+    // onSuccess Callback
+    //   This method accepts a `Position` object, which contains
+    //   the current GPS coordinates
+    //
+    function onSuccess(position) {
+        var element = document.getElementById('geolocation');
+        element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
+                            'Longitude: ' + position.coords.longitude     + '<br />' +
+                            '<hr />'      + element.innerHTML;
+    }
     
-    Opcje: rzucać błąd, jeśli nie aktualizacji jest co 30 sekund.
-    var watchID = navigator.geolocation.watchPosition (onSuccess, onError, {limit czasu: 30000});
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
+    
+    // Options: throw an error if no update is received every 30 seconds.
+    //
+    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
     
 
 ## geolocationOptions
 
-Opcjonalne parametry aby dostosować wyszukiwanie geolocation`Position`.
+Parametry opcjonalne dostosować pobierania geolocation `Position`.
 
-    {maximumAge: 3000, limit: 5000, enableHighAccuracy: true};
+    { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
     
 
 ### Opcje
@@ -125,11 +172,11 @@ Opcjonalne parametry aby dostosować wyszukiwanie geolocation`Position`.
 
 ### Dziwactwa Androida
 
-Emulatory Androida 2.x nie zwracają wynik geolokalizacji, chyba że `enableHighAccuracy` jest opcja zestaw do`true`.
+Emulatory Androida 2.x nie zwracają wynik geolocation, chyba że opcja `enableHighAccuracy` jest ustawiona na `wartość true`.
 
 ## navigator.geolocation.clearWatch
 
-Przestać oglądać zmiany położenia urządzenia przez `watchID` parametru.
+Przestać oglądać zmiany położenia urządzenia określany przez parametr `watchID`.
 
     navigator.geolocation.clearWatch(watchID);
     
@@ -140,17 +187,19 @@ Przestać oglądać zmiany położenia urządzenia przez `watchID` parametru.
 
 ### Przykład
 
-    Opcje: obserwować zmiany w pozycji i najczęściej / / dokładne położenie dostępną metodą nabycia.
-    var watchID = navigator.geolocation.watchPosition (onSuccess, onError, {enableHighAccuracy: true});
+    // Options: watch for changes in position, and use the most
+    // accurate position acquisition method available.
+    //
+    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { enableHighAccuracy: true });
     
-    .. .later na...
+    // ...later on...
     
     navigator.geolocation.clearWatch(watchID);
     
 
 ## Stanowisko
 
-Zawiera `Position` współrzędnych i sygnatury czasowej, stworzony przez geolocation API.
+Zawiera współrzędne `Position` i sygnatury czasowej, stworzony przez geolocation API.
 
 ### Właściwości
 
@@ -158,9 +207,9 @@ Zawiera `Position` współrzędnych i sygnatury czasowej, stworzony przez geoloc
 
 *   **sygnatura czasowa**: Sygnatura czasowa utworzenia dla `coords` . *(Data)*
 
-## Współrzędne
+## Coordinates
 
-A `Coordinates` obiektu jest dołączony do `Position` obiekt, który jest dostępny dla funkcji wywołania zwrotnego w prośby o aktualnej pozycji. Zawiera zestaw właściwości, które opisują geograficzne współrzędne pozycji.
+`Coordinates` obiektu jest dołączone do `Position` obiektu, który jest dostępny dla funkcji wywołania zwrotnego w prośby o aktualnej pozycji. Zawiera zestaw właściwości, które opisują geograficzne współrzędne pozycji.
 
 ### Właściwości
 
@@ -180,15 +229,15 @@ A `Coordinates` obiektu jest dołączony do `Position` obiekt, który jest dost�
 
 ### Amazon ogień OS dziwactwa
 
-**altitudeAccuracy**: nie obsługiwane przez Android urządzeń, powrót`null`.
+**altitudeAccuracy**: nie obsługiwane przez Android urządzeń, zwracanie `wartości null`.
 
 ### Dziwactwa Androida
 
-**altitudeAccuracy**: nie obsługiwane przez Android urządzeń, powrót`null`.
+**altitudeAccuracy**: nie obsługiwane przez Android urządzeń, zwracanie `wartości null`.
 
 ## PositionError
 
-`PositionError`Obiekt jest przekazywany do `geolocationError` funkcji wywołania zwrotnego, gdy wystąpi błąd z navigator.geolocation.
+`PositionError` obiekt jest przekazywany do funkcji wywołania zwrotnego `geolocationError`, gdy wystąpi błąd z navigator.geolocation.
 
 ### Właściwości
 
