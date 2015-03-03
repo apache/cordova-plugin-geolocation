@@ -19,4 +19,6 @@
 
 # org.apache.cordova.geolocation
 
+[![Build Status](https://travis-ci.org/apache/cordova-plugin-geolocation.svg)](https://travis-ci.org/apache/cordova-plugin-geolocation)
+
 Plugin documentation: [doc/index.md](doc/index.md)
