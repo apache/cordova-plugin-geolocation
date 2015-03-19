@@ -72,6 +72,7 @@ are not available until after the `deviceready` event.
 - Tizen
 - Windows Phone 7 and 8
 - Windows 8
+- Windows
 
 ## Methods
 
