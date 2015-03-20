@@ -19,18 +19,41 @@
  *
 */
 exports.defineAutoTests = function () {
-    var fail = function (done) {
-        expect(true).toBe(false);
-        done();
-    },
-    succeed = function (done) {
-        expect(true).toBe(true);
-        // callback could be called sync so we invoke done async to make sure we know watcher id to .clear in afterEach 
-        setTimeout(function () {
-            done();
-        });
-    };
-    var isWindowsStore = (cordova.platformId == "windows8") || (cordova.platformId == "windows" && !WinJS.Utilities.isPhone);
+    var fail = function (done, context, message) {
+            // prevents done() to be called several times
+            if (context) {
+                if (context.done) return;
+                context.done = true;
+            }
+
+            if (message) {
+                expect(false).toBe(true, message);
+            } else {
+                expect(false).toBe(true);
+            }
+
+            // watchPosition could call its callback sync (before returning the value)
+            // so we invoke done async to make sure we know watcher id to .clear in afterEach
+            setTimeout(function () {
+                done();
+            });
+        },
+        succeed = function (done, context) {
+            // prevents done() to be called several times
+            if (context) {
+                if (context.done) return;
+                context.done = true;
+            }
+
+            expect(true).toBe(true);
+
+            // watchPosition could call its callback sync (before returning the value)
+            // so we invoke done async to make sure we know watcher id to .clear in afterEach
+            setTimeout(function () {
+                done();
+            });
+        },
+        isWindowsStore = (cordova.platformId == "windows8") || (cordova.platformId == "windows" && !WinJS.Utilities.isPhone);
 
     describe('Geolocation (navigator.geolocation)', function () {
 
@@ -65,6 +88,7 @@ exports.defineAutoTests = function () {
                 if (isWindowsStore) {
                     pending();
                 }
+
                 navigator.geolocation.getCurrentPosition(
                     fail.bind(null, done),
                     succeed.bind(null, done),
@@ -84,6 +108,7 @@ exports.defineAutoTests = function () {
                 if (isWindowsStore) {
                     pending();
                 }
+
                 navigator.geolocation.getCurrentPosition(function (p) {
                     expect(p.coords).toBeDefined();
                     expect(p.timestamp).toBeDefined();
@@ -91,15 +116,22 @@ exports.defineAutoTests = function () {
                 },
                 fail.bind(null, done),
                 {
-                    maximumAge: 300000 // 5 minutes maximum age of cached position
+                    maximumAge: (5 * 60 * 1000) // 5 minutes maximum age of cached position
                 });
-            });
-
+            }, 25000); // first geolocation call can take several seconds on some devices
         });
 
     });
 
     describe('watchPosition method', function () {
+
+        beforeEach(function(done) {
+            // This timeout is set to lessen the load on platform's geolocation services
+            // which were causing occasional test failures
+            setTimeout(function() {
+                done();
+            }, 100);
+        });
 
         describe('error callback', function () {
 
@@ -114,9 +146,11 @@ exports.defineAutoTests = function () {
                 if (isWindowsStore) {
                     pending();
                 }
+
+                var context = this;
                 errorWatch = navigator.geolocation.watchPosition(
-                    fail.bind(null, done),
-                    succeed.bind(null, done),
+                    fail.bind(null, done, context, 'Unexpected win'),
+                    succeed.bind(null, done, context),
                     {
                         maximumAge: 0,
                         timeout: 0
@@ -138,26 +172,25 @@ exports.defineAutoTests = function () {
                 if (isWindowsStore) {
                     pending();
                 }
-                var self = this;
+
+                var context = this;
                 successWatch = navigator.geolocation.watchPosition(
                     function (p) {
                         // prevents done() to be called several times
-                        if (self.done) return;
-                        self.done = true;
+                        if (context.done) return;
+                        context.done = true;
 
                         expect(p.coords).toBeDefined();
                         expect(p.timestamp).toBeDefined();
                         // callback could be called sync so we invoke done async to make sure we know watcher id to .clear in afterEach 
                         setTimeout(function () {
                             done();
-                        })
-                        
+                        });
                     },
-                    fail.bind(null, done),
+                    fail.bind(null, done, context, 'Unexpected fail callback'),
                     {
                         maximumAge: (5 * 60 * 1000) // 5 minutes maximum age of cached position
                     });
-
             });
 
         });
