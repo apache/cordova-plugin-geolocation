@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.geolocation
+# cordova-plugin-geolocation
 
 이 플러그인 위도 및 경도 등의 소자의 위치에 대 한 정보를 제공합니다. 일반적인 위치 정보 등 글로벌 포지셔닝 시스템 (GPS) 및 위치와 같은 IP 주소, RFID, WiFi 및 블루투스 MAC 주소 및 GSM/CDMA 셀 Id 네트워크 신호에서 유추 합니다. 보장은 없다는 API 소자의 실제 위치를 반환 합니다.
 
@@ -39,7 +39,7 @@
 
 ## 설치
 
-    cordova plugin add org.apache.cordova.geolocation
+    cordova plugin add cordova-plugin-geolocation
     
 
 ## 지원 되는 플랫폼

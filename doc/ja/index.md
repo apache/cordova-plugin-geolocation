@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.geolocation
+# cordova-plugin-geolocation
 
 このプラグインは緯度や経度などのデバイスの場所に関する情報を提供します。 位置情報の共通のソースはグローバル ポジショニング システム （GPS） と IP アドレス、RFID、WiFi および Bluetooth の MAC アドレス、および GSM/cdma 方式携帯 Id などのネットワーク信号から推定される場所にもあります。 API は、デバイスの実際の場所を返すことの保証はありません。
 
@@ -39,7 +39,7 @@
 
 ## インストール
 
-    cordova plugin add org.apache.cordova.geolocation
+    cordova plugin add cordova-plugin-geolocation
     
 
 ## サポートされているプラットフォーム

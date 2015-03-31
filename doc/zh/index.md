@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.geolocation
+# cordova-plugin-geolocation
 
 這個外掛程式提供了有關該設備的位置，例如緯度和經度資訊。 常見的位置資訊來源包括全球定位系統 (GPS) 和網路信號，如 IP 位址、 RFID、 WiFi 和藍牙 MAC 位址和 GSM/CDMA 儲存格 Id 從推斷出的位置。 沒有任何保證，API 返回設備的實際位置。
 
@@ -39,7 +39,7 @@
 
 ## 安裝
 
-    cordova plugin add org.apache.cordova.geolocation
+    cordova plugin add cordova-plugin-geolocation
     
 
 ## 支援的平臺

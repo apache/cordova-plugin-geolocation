@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.geolocation
+# cordova-plugin-geolocation
 
 Этот плагин предоставляет информацию о местоположении устройства, например, Широта и Долгота. Общие источники информации о местонахождении включают глобальной системы позиционирования (GPS) и местоположение, выведено из сети сигналов, таких как IP-адрес, RFID, WiFi и Bluetooth MAC-адреса и идентификаторы базовых станций сотовой GSM/CDMA. Нет никакой гарантии, что API возвращает фактическое местоположение устройства.
 
@@ -29,7 +29,7 @@
 
 ## Установка
 
-    cordova plugin add org.apache.cordova.geolocation
+    cordova plugin add cordova-plugin-geolocation
     
 
 ## Поддерживаемые платформы

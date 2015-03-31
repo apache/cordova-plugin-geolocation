@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.geolocation
+# cordova-plugin-geolocation
 
 Este plugin proporciona información sobre la ubicación del dispositivo, tales como la latitud y longitud. Fuentes comunes de información de localización incluyen el sistema de posicionamiento Global (GPS) y ubicación deducido de las señales de la red como dirección IP, direcciones de RFID, WiFi y Bluetooth MAC y celulares GSM/CDMA IDs. No hay ninguna garantía de que la API devuelve la ubicación real del dispositivo.
 
@@ -37,7 +37,7 @@ Aunque el objeto está en el ámbito global, características proporcionadas por
 
 ## Instalación
 
-    Cordova plugin agregar org.apache.cordova.geolocation
+    Cordova plugin agregar cordova-plugin-geolocation
     
 
 ## Plataformas soportadas
