@@ -21,7 +21,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    id="org.apache.cordova.geolocation.tests"
+    id="cordova-plugin-geolocation-tests"
     version="0.3.13-dev">
     <name>Cordova Geolocation Plugin Tests</name>
     <license>Apache 2.0</license>

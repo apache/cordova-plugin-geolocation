@@ -3,7 +3,7 @@
   "version": "0.3.13-dev",
   "description": "Cordova Geolocation Plugin",
   "cordova": {
-    "id": "org.apache.cordova.geolocation",
+    "id": "cordova-plugin-geolocation",
     "platforms": [
       "android",
       "amazon-fireos",
