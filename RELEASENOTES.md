@@ -103,3 +103,20 @@
 
 ### 0.3.12 (Feb 04, 2015)
 * CB-8351 ios: Use argumentForIndex rather than NSArray extension
+
+### 1.0.0 (Apr 15, 2015)
+* CB-8746 gave plugin major version bump
+* CB-8683 changed plugin-id to pacakge-name
+* CB-8653 properly updated translated docs to use new id
+* CB-8653 updated translated docs to use new id
+* Use TRAVIS_BUILD_DIR, install paramedic by npm
+* CB-8681 Fixed occasional test failures
+* docs: added Windows to supported platforms
+* CB-8653 Updated Readme
+* CB-8659: ios: 4.0.x Compatibility: Remove use of initWebView method
+* CB-8659: ios: 4.0.x Compatibility: Remove use of deprecated headers
+* Wrong parameter in Firefox OS plugin
+* CB-8568 Integrate TravisCI
+* CB-8438 cordova-plugin-geolocation documentation translation: cordova-plugin-geolocation
+* CB-8538 Added package.json file
+* CB-8443 Geolocation tests fail on Windows due to done is called multiple times
