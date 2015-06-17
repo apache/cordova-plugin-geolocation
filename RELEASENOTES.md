@@ -120,3 +120,10 @@
 * CB-8438 cordova-plugin-geolocation documentation translation: cordova-plugin-geolocation
 * CB-8538 Added package.json file
 * CB-8443 Geolocation tests fail on Windows due to done is called multiple times
+
+### 1.0.1 (Jun 17, 2015)
+* CB-9128 cordova-plugin-geolocation documentation translation: cordova-plugin-geolocation
+* fix npm md issue
+* CB-8845 Updated comment why Android tests are currently pended
+* CB-8845 Pended tests for Android
+* Add more install text for legacy versions of cordova tools. This closes #36
