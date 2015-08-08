@@ -1,29 +1,29 @@
-<!---
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+<!--
+# license: Licensed to the Apache Software Foundation (ASF) under one
+#         or more contributor license agreements.  See the NOTICE file
+#         distributed with this work for additional information
+#         regarding copyright ownership.  The ASF licenses this file
+#         to you under the Apache License, Version 2.0 (the
+#         "License"); you may not use this file except in compliance
+#         with the License.  You may obtain a copy of the License at
+#
+#           http://www.apache.org/licenses/LICENSE-2.0
+#
+#         Unless required by applicable law or agreed to in writing,
+#         software distributed under the License is distributed on an
+#         "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#         KIND, either express or implied.  See the License for the
+#         specific language governing permissions and limitations
+#         under the License.
 -->
 
 # cordova-plugin-geolocation
 
+[![Build Status](https://travis-ci.org/apache/cordova-plugin-geolocation.svg)](https://travis-ci.org/apache/cordova-plugin-geolocation)
+
 Ten plugin zawiera informacje o lokalizacji urządzenia, takie jak szerokość i długość geograficzną. Najczęstsze źródła informacji o lokalizacji obejmują Global Positioning System (GPS) i lokalizacji wywnioskować z sieci sygnały, takie jak adres IP, RFID, WiFi i Bluetooth MAC adresy, a komórki GSM/CDMA identyfikatorów. Nie ma żadnej gwarancji, że API zwraca rzeczywistej lokalizacji urządzenia.
 
-Ten interfejs API jest oparty na [Specyfikacji W3C Geolocation API][1]i tylko wykonuje na urządzeniach, które już nie zapewniają implementacja.
-
- [1]: http://dev.w3.org/geo/api/spec-source.html
+Ten interfejs API jest oparty na [Specyfikacji W3C Geolocation API](http://dev.w3.org/geo/api/spec-source.html)i tylko wykonuje na urządzeniach, które już nie zapewniają implementacja.
 
 **Ostrzeżenie**: zbierania i wykorzystywania danych geolokacyjnych podnosi kwestie prywatności ważne. Polityka prywatności danej aplikacji należy omówić, jak aplikacja używa danych, czy jest on dzielony z innych stron i poziom dokładności danych (na przykład, gruba, porządku, kod pocztowy poziom, itp.). Danych geolokacyjnych ogólnie uznaje wrażliwych, bo to może ujawnić pobytu użytkownika i, jeśli przechowywane, historii ich podróży. W związku z tym oprócz aplikacji prywatności, zdecydowanie warto powiadomienia just-in-time, zanim aplikacja uzyskuje dostęp do danych (jeśli urządzenie system operacyjny nie robi już). Że ogłoszenie powinno zawierać te same informacje, o których wspomniano powyżej, jak również uzyskanie uprawnienia użytkownika (np. poprzez przedstawianie wyborów **OK** i **Nie dzięki**). Aby uzyskać więcej informacji zobacz przewodnik prywatności.
 
@@ -39,31 +39,44 @@ Mimo, że obiekt jest w globalnym zasięgu, funkcji oferowanych przez ten plugin
 
 ## Instalacja
 
+Wymaga to cordova 5.0 + (bieżącej stabilnej 1.0.0)
+
     cordova plugin add cordova-plugin-geolocation
+    
+
+Starsze wersje cordova nadal można zainstalować za pomocą niezalecany identyfikator (starych 0.3.12)
+
+    cordova plugin add org.apache.cordova.geolocation
+    
+
+Jest również możliwość instalacji za pośrednictwem repo url bezpośrednio (niestabilny)
+
+    cordova plugin add https://github.com/apache/cordova-plugin-geolocation.git
     
 
 ## Obsługiwane platformy
 
-*   Amazon Fire OS
-*   Android
-*   BlackBerry 10
-*   Firefox OS
-*   iOS
-*   Tizen
-*   Windows Phone 7 i 8
-*   Windows 8
+  * Amazon Fire OS
+  * Android
+  * BlackBerry 10
+  * Firefox OS
+  * iOS
+  * Tizen
+  * Windows Phone 7 i 8
+  * Windows 8
+  * Windows
 
 ## Metody
 
-*   navigator.geolocation.getCurrentPosition
-*   navigator.geolocation.watchPosition
-*   navigator.geolocation.clearWatch
+  * navigator.geolocation.getCurrentPosition
+  * navigator.geolocation.watchPosition
+  * navigator.geolocation.clearWatch
 
 ## Obiekty (tylko do odczytu)
 
-*   Stanowisko
-*   PositionError
-*   Coordinates
+  * Position
+  * PositionError
+  * Coordinates
 
 ## navigator.geolocation.getCurrentPosition
 
@@ -76,11 +89,11 @@ Zwraca bieżącą pozycję urządzenia do `geolocationSuccess` wywołanie zwrotn
 
 ### Parametry
 
-*   **geolocationSuccess**: wywołania zwrotnego, który jest przekazywany aktualnej pozycji.
+  * **geolocationSuccess**: wywołania zwrotnego, który jest przekazywany aktualnej pozycji.
 
-*   **geolocationError**: *(opcjonalne)* wywołania zwrotnego, która wykonuje w przypadku wystąpienia błędu.
+  * **geolocationError**: *(opcjonalne)* wywołania zwrotnego, która wykonuje w przypadku wystąpienia błędu.
 
-*   **geolocationOptions**: *(opcjonalne)* opcji geolokalizacji.
+  * **geolocationOptions**: *(opcjonalne)* opcji geolokalizacji.
 
 ### Przykład
 
@@ -120,15 +133,15 @@ Zwraca bieżącą pozycję urządzenia po wykryciu zmiany pozycji. Gdy urządzen
 
 ### Parametry
 
-*   **geolocationSuccess**: wywołania zwrotnego, który jest przekazywany aktualnej pozycji.
+  * **geolocationSuccess**: wywołania zwrotnego, który jest przekazywany aktualnej pozycji.
 
-*   **geolocationError**: (opcjonalne) wywołania zwrotnego, która wykonuje w przypadku wystąpienia błędu.
+  * **geolocationError**: (opcjonalne) wywołania zwrotnego, która wykonuje w przypadku wystąpienia błędu.
 
-*   **geolocationOptions**: (opcjonalne) geolocation opcje.
+  * **geolocationOptions**: (opcjonalne) geolocation opcje.
 
 ### Zwraca
 
-*   **Napis**: zwraca identyfikator zegarek, który odwołuje się oglądać pozycji interwał. Identyfikator zegarek powinny być używane z `navigator.geolocation.clearWatch` Aby przestać oglądać do zmiany pozycji.
+  * **Napis**: zwraca identyfikator zegarek, który odwołuje się oglądać pozycji interwał. Identyfikator zegarek powinny być używane z `navigator.geolocation.clearWatch` Aby przestać oglądać do zmiany pozycji.
 
 ### Przykład
 
@@ -164,11 +177,11 @@ Parametry opcjonalne dostosować pobierania geolocation `Position`.
 
 ### Opcje
 
-*   **enableHighAccuracy**: stanowi wskazówkę, że aplikacja musi możliwie najlepszych rezultatów. Domyślnie, urządzenie próbuje pobrać `Position` przy użyciu metody oparte na sieci. Ustawienie tej właściwości na `true` mówi ramach dokładniejszych metod, takich jak pozycjonowanie satelitarne. *(Wartość logiczna)*
+  * **enableHighAccuracy**: stanowi wskazówkę, że aplikacja musi możliwie najlepszych rezultatów. Domyślnie, urządzenie próbuje pobrać `Position` przy użyciu metody oparte na sieci. Ustawienie tej właściwości na `true` mówi ramach dokładniejszych metod, takich jak pozycjonowanie satelitarne. *(Wartość logiczna)*
 
-*   **Limit czasu**: maksymalna długość czas (w milisekundach), który może przekazać wywołanie `navigator.geolocation.getCurrentPosition` lub `geolocation.watchPosition` do odpowiednich `geolocationSuccess` wykonuje wywołanie zwrotne. Jeśli `geolocationSuccess` wywołania zwrotnego nie jest wywoływany w tej chwili, `geolocationError` wywołania zwrotnego jest przekazywany `PositionError.TIMEOUT` kod błędu. (Należy zauważyć, że w połączeniu z `geolocation.watchPosition` , `geolocationError` wywołania zwrotnego można nazwać w odstępie co `timeout` milisekund!) *(Liczba)*
+  * **Limit czasu**: maksymalna długość czas (w milisekundach), który może przekazać wywołanie `navigator.geolocation.getCurrentPosition` lub `geolocation.watchPosition` do odpowiednich `geolocationSuccess` wykonuje wywołanie zwrotne. Jeśli `geolocationSuccess` wywołania zwrotnego nie jest wywoływany w tej chwili, `geolocationError` wywołania zwrotnego jest przekazywany `PositionError.TIMEOUT` kod błędu. (Należy zauważyć, że w połączeniu z `geolocation.watchPosition` , `geolocationError` wywołania zwrotnego można nazwać w odstępie co `timeout` milisekund!) *(Liczba)*
 
-*   **maximumAge**: przyjąć buforowane pozycji, w których wiek jest nie większa niż określony czas w milisekundach. *(Liczba)*
+  * **maximumAge**: przyjąć buforowane pozycji, w których wiek jest nie większa niż określony czas w milisekundach. *(Liczba)*
 
 ### Dziwactwa Androida
 
@@ -183,7 +196,7 @@ Przestać oglądać zmiany położenia urządzenia określany przez parametr `wa
 
 ### Parametry
 
-*   **watchID**: identyfikator `watchPosition` Interwał jasne. (String)
+  * **watchID**: identyfikator `watchPosition` Interwał jasne. (String)
 
 ### Przykład
 
@@ -197,15 +210,15 @@ Przestać oglądać zmiany położenia urządzenia określany przez parametr `wa
     navigator.geolocation.clearWatch(watchID);
     
 
-## Stanowisko
+## Position
 
 Zawiera współrzędne `Position` i sygnatury czasowej, stworzony przez geolocation API.
 
 ### Właściwości
 
-*   **coords**: zestaw współrzędnych geograficznych. *(Współrzędne)*
+  * **coords**: zestaw współrzędnych geograficznych. *(Współrzędne)*
 
-*   **sygnatura czasowa**: Sygnatura czasowa utworzenia dla `coords` . *(Data)*
+  * **timestamp**: Sygnatura czasowa utworzenia dla `coords` . *(Data)*
 
 ## Coordinates
 
@@ -213,19 +226,19 @@ Zawiera współrzędne `Position` i sygnatury czasowej, stworzony przez geolocat
 
 ### Właściwości
 
-*   **szerokość geograficzna**: Latitude w stopniach dziesiętnych. *(Liczba)*
+  * **szerokość geograficzna**: Latitude w stopniach dziesiętnych. *(Liczba)*
 
-*   **długość geograficzna**: długość geograficzna w stopniach dziesiętnych. *(Liczba)*
+  * **długość geograficzna**: długość geograficzna w stopniach dziesiętnych. *(Liczba)*
 
-*   **wysokość**: wysokość pozycji metrów nad elipsoidalny. *(Liczba)*
+  * **wysokość**: wysokość pozycji metrów nad elipsoidalny. *(Liczba)*
 
-*   **dokładność**: poziom dokładności współrzędnych szerokości i długości geograficznej w metrach. *(Liczba)*
+  * **dokładność**: poziom dokładności współrzędnych szerokości i długości geograficznej w metrach. *(Liczba)*
 
-*   **altitudeAccuracy**: poziom dokładności Współrzędna wysokość w metrach. *(Liczba)*
+  * **altitudeAccuracy**: poziom dokładności Współrzędna wysokość w metrach. *(Liczba)*
 
-*   **pozycja**: kierunek podróży, określonego w stopni licząc ruchu wskazówek zegara względem północy rzeczywistej. *(Liczba)*
+  * **pozycja**: kierunek podróży, określonego w stopni licząc ruchu wskazówek zegara względem północy rzeczywistej. *(Liczba)*
 
-*   **prędkość**: Aktualna prędkość ziemi urządzenia, określone w metrach na sekundę. *(Liczba)*
+  * **prędkość**: Aktualna prędkość ziemi urządzenia, określone w metrach na sekundę. *(Liczba)*
 
 ### Amazon ogień OS dziwactwa
 
@@ -241,15 +254,15 @@ Zawiera współrzędne `Position` i sygnatury czasowej, stworzony przez geolocat
 
 ### Właściwości
 
-*   **Kod**: jeden z kodów błędów wstępnie zdefiniowanych poniżej.
+  * **Kod**: jeden z kodów błędów wstępnie zdefiniowanych poniżej.
 
-*   **wiadomość**: komunikat o błędzie, opisując szczegóły wystąpił błąd.
+  * **wiadomość**: komunikat o błędzie, opisując szczegóły wystąpił błąd.
 
 ### Stałe
 
-*   `PositionError.PERMISSION_DENIED` 
-    *   Zwracane, gdy użytkownicy nie zezwalają aplikacji do pobierania informacji o pozycji. Jest to zależne od platformy.
-*   `PositionError.POSITION_UNAVAILABLE` 
-    *   Zwracane, gdy urządzenie jest w stanie pobrać pozycji. Ogólnie rzecz biorąc oznacza to urządzenie nie jest podłączone do sieci lub nie może uzyskać satelita utrwalić.
-*   `PositionError.TIMEOUT` 
-    *   Zwracane, gdy urządzenie jest w stanie pobrać pozycji w czasie określonym przez `timeout` w `geolocationOptions` . Gdy używana z `navigator.geolocation.watchPosition` , ten błąd może być wielokrotnie przekazywane do `geolocationError` zwrotne co `timeout` milisekund.
+  * `PositionError.PERMISSION_DENIED` 
+      * Zwracane, gdy użytkownicy nie zezwalają aplikacji do pobierania informacji o pozycji. Jest to zależne od platformy.
+  * `PositionError.POSITION_UNAVAILABLE` 
+      * Zwracane, gdy urządzenie jest w stanie pobrać pozycji. Ogólnie rzecz biorąc oznacza to urządzenie nie jest podłączone do sieci lub nie może uzyskać satelita utrwalić.
+  * `PositionError.TIMEOUT` 
+      * Zwracane, gdy urządzenie jest w stanie pobrać pozycji w czasie określonym przez `timeout` w `geolocationOptions` . Gdy używana z `navigator.geolocation.watchPosition` , ten błąd może być wielokrotnie przekazywane do `geolocationError` zwrotne co `timeout` milisekund.

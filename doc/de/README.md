@@ -1,29 +1,29 @@
-<!---
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+<!--
+# license: Licensed to the Apache Software Foundation (ASF) under one
+#         or more contributor license agreements.  See the NOTICE file
+#         distributed with this work for additional information
+#         regarding copyright ownership.  The ASF licenses this file
+#         to you under the Apache License, Version 2.0 (the
+#         "License"); you may not use this file except in compliance
+#         with the License.  You may obtain a copy of the License at
+#
+#           http://www.apache.org/licenses/LICENSE-2.0
+#
+#         Unless required by applicable law or agreed to in writing,
+#         software distributed under the License is distributed on an
+#         "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#         KIND, either express or implied.  See the License for the
+#         specific language governing permissions and limitations
+#         under the License.
 -->
 
 # cordova-plugin-geolocation
 
+[![Build Status](https://travis-ci.org/apache/cordova-plugin-geolocation.svg)](https://travis-ci.org/apache/cordova-plugin-geolocation)
+
 Dieses Plugin bietet Informationen über das Gerät an den Speicherort, z. B. breiten- und Längengrad. Gemeinsame Quellen von Standortinformationen sind Global Positioning System (GPS) und Lage von Netzwerk-Signale wie IP-Adresse, RFID, WLAN und Bluetooth MAC-Adressen und GSM/CDMA Zelle IDs abgeleitet. Es gibt keine Garantie, dass die API des Geräts tatsächliche Position zurückgibt.
 
-Diese API basiert auf der [W3C Geolocation API-Spezifikation][1], und nur auf Geräten, die nicht bereits eine Implementierung bieten führt.
-
- [1]: http://dev.w3.org/geo/api/spec-source.html
+Diese API basiert auf der [W3C Geolocation API-Spezifikation](http://dev.w3.org/geo/api/spec-source.html), und nur auf Geräten, die nicht bereits eine Implementierung bieten führt.
 
 **Warnung**: Erhebung und Nutzung von Geolocation-Daten wichtige Privatsphäre wirft. Wie die app benutzt Geolocation-Daten, Ihre app-Datenschutzrichtlinien zu diskutieren, ob es mit allen anderen Parteien und das Niveau der Genauigkeit der Daten (z. B. grob, fein, Postleitzahl, etc..) freigegeben ist. Geolocation-Daten gilt allgemein als empfindlich, weil es den Aufenthaltsort des Benutzers erkennen lässt und wenn gespeichert, die Geschichte von ihren Reisen. Daher neben der app-Privacy Policy sollten stark Sie Bereitstellung einer just-in-Time-Bekanntmachung, bevor die app Geolocation-Daten zugreift (wenn das Betriebssystem des Geräts bereits tun nicht). Diese Benachrichtigung sollte der gleichen Informationen, die vorstehend, sowie die Zustimmung des Benutzers (z.B. durch Präsentation Entscheidungen für das **OK** und **Nein danke**). Weitere Informationen finden Sie in der Datenschutz-Guide.
 
@@ -39,31 +39,44 @@ Obwohl das Objekt im globalen Gültigkeitsbereich ist, stehen Features von diese
 
 ## Installation
 
+Dies erfordert Cordova 5.0 + (aktuelle stabile 1.0.0)
+
     cordova plugin add cordova-plugin-geolocation
+    
+
+Ältere Versionen von Cordova können noch über die veraltete Id (veraltete 0.3.12) installieren.
+
+    cordova plugin add org.apache.cordova.geolocation
+    
+
+Es ist auch möglich, über Repo Url direkt zu installieren (unstable)
+
+    cordova plugin add https://github.com/apache/cordova-plugin-geolocation.git
     
 
 ## Unterstützte Plattformen
 
-*   Amazon Fire OS
-*   Android
-*   BlackBerry 10
-*   Firefox OS
-*   iOS
-*   Tizen
-*   Windows Phone 7 und 8
-*   Windows 8
+  * Amazon Fire OS
+  * Android
+  * BlackBerry 10
+  * Firefox OS
+  * iOS
+  * Tizen
+  * Windows Phone 7 und 8
+  * Windows 8
+  * Windows
 
 ## Methoden
 
-*   navigator.geolocation.getCurrentPosition
-*   navigator.geolocation.watchPosition
-*   navigator.geolocation.clearWatch
+  * navigator.geolocation.getCurrentPosition
+  * navigator.geolocation.watchPosition
+  * navigator.geolocation.clearWatch
 
 ## Objekte (schreibgeschützt)
 
-*   Position
-*   Positionsfehler
-*   Coordinates
+  * Position
+  * Positionsfehler
+  * Coordinates
 
 ## navigator.geolocation.getCurrentPosition
 
@@ -76,11 +89,11 @@ Gibt das Gerät aktuelle Position an den `geolocationSuccess`-Rückruf mit einem
 
 ### Parameter
 
-*   **GeolocationSuccess**: der Rückruf, der die aktuelle Position übergeben wird.
+  * **GeolocationSuccess**: der Rückruf, der die aktuelle Position übergeben wird.
 
-*   **GeolocationError**: *(Optional)* der Rückruf, der ausgeführt wird, wenn ein Fehler auftritt.
+  * **GeolocationError**: *(Optional)* der Rückruf, der ausgeführt wird, wenn ein Fehler auftritt.
 
-*   **GeolocationOptions**: *(Optional)* die Geolocation-Optionen.
+  * **GeolocationOptions**: *(Optional)* die Geolocation-Optionen.
 
 ### Beispiel
 
@@ -120,15 +133,15 @@ Gibt das Gerät aktuelle Position zurück, wenn eine Änderung erkannt wird. Wen
 
 ### Parameter
 
-*   **GeolocationSuccess**: der Rückruf, der die aktuelle Position übergeben wird.
+  * **GeolocationSuccess**: der Rückruf, der die aktuelle Position übergeben wird.
 
-*   **GeolocationError**: (Optional) der Rückruf, der ausgeführt wird, wenn ein Fehler auftritt.
+  * **GeolocationError**: (Optional) der Rückruf, der ausgeführt wird, wenn ein Fehler auftritt.
 
-*   **GeolocationOptions**: (Optional) die Geolocation-Optionen.
+  * **GeolocationOptions**: (Optional) die Geolocation-Optionen.
 
 ### Gibt
 
-*   **String**: gibt eine Uhr-Id, die das Uhr Position Intervall verweist zurück. Die Uhr-Id sollte verwendet werden, mit `navigator.geolocation.clearWatch` , gerade für Änderungen zu stoppen.
+  * **String**: gibt eine Uhr-Id, die das Uhr Position Intervall verweist zurück. Die Uhr-Id sollte verwendet werden, mit `navigator.geolocation.clearWatch` , gerade für Änderungen zu stoppen.
 
 ### Beispiel
 
@@ -164,11 +177,11 @@ Optionalen Parametern, um das Abrufen von Geolocation `Position`.
 
 ### Optionen
 
-*   **EnableHighAccuracy**: stellt einen Hinweis, dass die Anwendung die bestmöglichen Ergebnisse benötigt. Standardmäßig versucht das Gerät abzurufen ein `Position` mit netzwerkbasierte Methoden. Wenn diese Eigenschaft auf `true` erzählt den Rahmenbedingungen genauere Methoden, z. B. Satellitenortung verwenden. *(Boolean)*
+  * **EnableHighAccuracy**: stellt einen Hinweis, dass die Anwendung die bestmöglichen Ergebnisse benötigt. Standardmäßig versucht das Gerät abzurufen ein `Position` mit netzwerkbasierte Methoden. Wenn diese Eigenschaft auf `true` erzählt den Rahmenbedingungen genauere Methoden, z. B. Satellitenortung verwenden. *(Boolean)*
 
-*   **Timeout**: die maximale Länge der Zeit (in Millisekunden), die zulässig ist, übergeben Sie den Aufruf von `navigator.geolocation.getCurrentPosition` oder `geolocation.watchPosition` bis zu den entsprechenden `geolocationSuccess` Rückruf führt. Wenn die `geolocationSuccess` Rückruf wird nicht aufgerufen, in dieser Zeit die `geolocationError` Rückruf wird übergeben ein `PositionError.TIMEOUT` Fehlercode. (Beachten Sie, dass in Verbindung mit `geolocation.watchPosition` , die `geolocationError` Rückruf könnte auf ein Intervall aufgerufen werden alle `timeout` Millisekunden!) *(Anzahl)*
+  * **Timeout**: die maximale Länge der Zeit (in Millisekunden), die zulässig ist, übergeben Sie den Aufruf von `navigator.geolocation.getCurrentPosition` oder `geolocation.watchPosition` bis zu den entsprechenden `geolocationSuccess` Rückruf führt. Wenn die `geolocationSuccess` Rückruf wird nicht aufgerufen, in dieser Zeit die `geolocationError` Rückruf wird übergeben ein `PositionError.TIMEOUT` Fehlercode. (Beachten Sie, dass in Verbindung mit `geolocation.watchPosition` , die `geolocationError` Rückruf könnte auf ein Intervall aufgerufen werden alle `timeout` Millisekunden!) *(Anzahl)*
 
-*   **MaximumAge**: eine zwischengespeicherte Position, deren Alter nicht größer als die angegebene Zeit in Millisekunden ist, zu akzeptieren. *(Anzahl)*
+  * **MaximumAge**: eine zwischengespeicherte Position, deren Alter nicht größer als die angegebene Zeit in Millisekunden ist, zu akzeptieren. *(Anzahl)*
 
 ### Android Eigenarten
 
@@ -183,7 +196,7 @@ Stoppen Sie, gerade für Änderungen an dem Gerät Speicherort verweist mithilfe
 
 ### Parameter
 
-*   **WatchID**: die Id der `watchPosition` Intervall löschen. (String)
+  * **WatchID**: die Id der `watchPosition` Intervall löschen. (String)
 
 ### Beispiel
 
@@ -203,9 +216,9 @@ Enthält `Position` koordinaten und Timestamp, erstellt von der Geolocation API.
 
 ### Eigenschaften
 
-*   **coords**: eine Reihe von geographischen Koordinaten. *(Coordinates)*
+  * **coords**: eine Reihe von geographischen Koordinaten. *(Coordinates)*
 
-*   **timestamp**: Zeitstempel der Erstellung für `coords` . *(Date)*
+  * **timestamp**: Zeitstempel der Erstellung für `coords` . *(Date)*
 
 ## Coordinates
 
@@ -213,19 +226,19 @@ Ein `Coordinates`-Objekt ist ein `Position`-Objekt zugeordnet, die Callback-Funk
 
 ### Eigenschaften
 
-*   **latitude**: Latitude in Dezimalgrad. *(Anzahl)*
+  * **latitude**: Latitude in Dezimalgrad. *(Anzahl)*
 
-*   **longitude**: Länge in Dezimalgrad. *(Anzahl)*
+  * **longitude**: Länge in Dezimalgrad. *(Anzahl)*
 
-*   **altitude**: Höhe der Position in Meter über dem Ellipsoid. *(Anzahl)*
+  * **altitude**: Höhe der Position in Meter über dem Ellipsoid. *(Anzahl)*
 
-*   **accuracy**: Genauigkeit der breiten- und Längengrad Koordinaten in Metern. *(Anzahl)*
+  * **accuracy**: Genauigkeit der breiten- und Längengrad Koordinaten in Metern. *(Anzahl)*
 
-*   **AltitudeAccuracy**: Genauigkeit der Koordinate Höhe in Metern. *(Anzahl)*
+  * **AltitudeAccuracy**: Genauigkeit der Koordinate Höhe in Metern. *(Anzahl)*
 
-*   **heading**: Fahrtrichtung, angegeben in Grad relativ zu den Norden im Uhrzeigersinn gezählt. *(Anzahl)*
+  * **heading**: Fahrtrichtung, angegeben in Grad relativ zu den Norden im Uhrzeigersinn gezählt. *(Anzahl)*
 
-*   **speed**: aktuelle Geschwindigkeit über Grund des Geräts, in Metern pro Sekunde angegeben. *(Anzahl)*
+  * **speed**: aktuelle Geschwindigkeit über Grund des Geräts, in Metern pro Sekunde angegeben. *(Anzahl)*
 
 ### Amazon Fire OS Macken
 
@@ -241,15 +254,15 @@ Das `PositionError`-Objekt wird an die `geolocationError`-Callback-Funktion übe
 
 ### Eigenschaften
 
-*   **Code**: einer der vordefinierten Fehlercodes aufgeführt.
+  * **Code**: einer der vordefinierten Fehlercodes aufgeführt.
 
-*   **Nachricht**: Fehlermeldung, die die Informationen über den aufgetretenen Fehler beschreibt.
+  * **Nachricht**: Fehlermeldung, die die Informationen über den aufgetretenen Fehler beschreibt.
 
 ### Konstanten
 
-*   `PositionError.PERMISSION_DENIED` 
-    *   Zurückgegeben, wenn Benutzer erlauben nicht die app Positionsinformationen abgerufen werden. Dies ist abhängig von der Plattform.
-*   `PositionError.POSITION_UNAVAILABLE` 
-    *   Zurückgegeben, wenn das Gerät nicht in der Lage, eine Position abzurufen ist. Im Allgemeinen bedeutet dies, dass das Gerät nicht mit einem Netzwerk verbunden ist oder ein Satelliten-Update kann nicht abgerufen werden.
-*   `PositionError.TIMEOUT` 
-    *   Zurückgegeben, wenn das Gerät nicht in der Lage, eine Position innerhalb der festgelegten Zeit abzurufen ist die `timeout` enthalten `geolocationOptions` . Bei Verwendung mit `navigator.geolocation.watchPosition` , könnte dieser Fehler wiederholt übergeben werden, zu der `geolocationError` Rückruf jedes `timeout` Millisekunden.
+  * `PositionError.PERMISSION_DENIED` 
+      * Zurückgegeben, wenn Benutzer erlauben nicht die app Positionsinformationen abgerufen werden. Dies ist abhängig von der Plattform.
+  * `PositionError.POSITION_UNAVAILABLE` 
+      * Zurückgegeben, wenn das Gerät nicht in der Lage, eine Position abzurufen ist. Im Allgemeinen bedeutet dies, dass das Gerät nicht mit einem Netzwerk verbunden ist oder ein Satelliten-Update kann nicht abgerufen werden.
+  * `PositionError.TIMEOUT` 
+      * Zurückgegeben, wenn das Gerät nicht in der Lage, eine Position innerhalb der festgelegten Zeit abzurufen ist die `timeout` enthalten `geolocationOptions` . Bei Verwendung mit `navigator.geolocation.watchPosition` , könnte dieser Fehler wiederholt übergeben werden, zu der `geolocationError` Rückruf jedes `timeout` Millisekunden.

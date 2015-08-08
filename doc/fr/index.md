@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.geolocation
+# cordova-plugin-geolocation
 
 Ce plugin fournit des informations sur l'emplacement de l'appareil, tels que la latitude et la longitude. Les sources habituelles d'information incluent le Système de Positionnement Global (GPS) et la position déduite de signaux des réseaux tels que l'adresse IP, RFID, les adresses MAC WiFi et Bluetooth et les IDs cellulaires GSM/CDMA. Il n'y a cependant aucune garantie que cette API renvoie la position réelle de l'appareil.
 
@@ -27,9 +27,17 @@ Cette API est basée sur la [Spécification de l'API Geolocation du W3C][1] et s
 
 **Avertissement**: collecte et utilisation des données de géolocalisation soulève des questions importantes de la vie privée. La politique de confidentialité de votre application devrait traiter de la manière dont l'application utilise les données de géolocalisation, si elle les partage avec d'autres parties ou non et définir le niveau de précision de celles-ci (par exemple grossier, fin, restreint au code postal, etc.). Données de géolocalisation sont généralement considéré comme sensibles car elle peut révéler la localisation de l'utilisateur et, si stocké, l'histoire de leurs voyages. Par conséquent, en plus de la politique de confidentialité de l'application, vous devez envisager fortement fournissant un avis juste-à-temps, avant que l'application accède aux données de géolocalisation (si le système d'exploitation de périphérique n'est pas faire déjà). Cette notice devrait contenir les informations susmentionnées, ainsi que permettre de recueillir l'autorisation de l'utilisateur (par exemple, en offrant les possibilités **OK** et **Non merci**). Pour plus d'informations, veuillez vous référer à la section "Guide du respect de la vie privée".
 
+Ce plugin définit un global `navigator.geolocation` objet (pour les plateformes où il est autrement manquant).
+
+Bien que l'objet est dans la portée globale, les fonctions offertes par ce plugin ne sont pas disponibles jusqu'après la `deviceready` événement.
+
+    document.addEventListener (« deviceready », onDeviceReady, false) ;
+    function onDeviceReady() {console.log ("navigator.geolocation fonctionne bien");}
+    
+
 ## Installation
 
-    cordova plugin add org.apache.cordova.geolocation
+    Cordova plugin ajouter cordova-plugin-geolocation
     
 
 ## Plates-formes prises en charge
@@ -105,14 +113,14 @@ Retourne la position actuelle de l'appareil lorsqu'un changement de position est
     } / / onError rappel reçoit un objet PositionError / / function onError(error) {alert ('code: ' + error.code + « \n » + "message: ' + error.message + « \n »);}
     
     Options : lever une erreur si aucune mise à jour n'est reçu toutes les 30 secondes.
-    var watchID = navigator.geolocation.watchPosition (onSuccess, onError, {timeout : 30000}) ;
+    var watchID = navigator.geolocation.watchPosition (onSuccess, onError, { timeout: 30000 }) ;
     
 
 ## geolocationOptions
 
 Paramètres optionnels pour personnaliser la récupération de la géolocalisation`Position`.
 
-    {maximumAge : 3000, délai d'attente : 5000, enableHighAccuracy : true} ;
+    { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true } ;
     
 
 ### Options
@@ -141,7 +149,7 @@ Arrêter de regarder pour les modifications à l'emplacement de l'appareil réf�
 ### Exemple
 
     Options : suivi des modifications dans la position et utilise le plus / / exacte position méthode d'acquisition disponible.
-    var watchID = navigator.geolocation.watchPosition (onSuccess, onError, {enableHighAccuracy : true}) ;
+    var watchID = navigator.geolocation.watchPosition (onSuccess, onError, { enableHighAccuracy: true }) ;
     
     .. plus sur...
     
@@ -184,7 +192,7 @@ A `Coordinates` objet est attaché à un `Position` objet qui n'existe pas de fo
 
 ### Quirks Android
 
-**altitudeAccuracy** : n'est pas prise en charge par les appareils Android, renvoie alors `null`.
+**altitudeAccuracy**: ne pas pris en charge par les appareils Android, retour`null`.
 
 ## PositionError
 
