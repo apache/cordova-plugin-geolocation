@@ -52,6 +52,8 @@
 @implementation CDVLocation
 
 static NSString* currentTransactionId;
+static int locationFailsLimit = 20;
+static int locationFails = 0;
 
 @synthesize locationManager, locationData;
 
@@ -254,7 +256,7 @@ static NSString* currentTransactionId;
 
 - (void)getLocationForTransaction: (NSString*) transactionId{
     currentTransactionId = transactionId;
-    
+    locationFails = 0;
     [self getLocation: nil];
 }
 
@@ -393,8 +395,8 @@ static NSString* currentTransactionId;
 
 - (void)locationManager:(CLLocationManager*)manager didFailWithError:(NSError*)error
 {
-    NSLog(@"locationManager::didFailWithError %@", [error localizedFailureReason]);
-
+    NSLog(@"locationManager::didFailWithError %@", error);
+    locationFails += 1;
     CDVLocationData* lData = self.locationData;
     if (lData && __locationStarted) {
         // TODO: probably have to once over the various error codes and return one of:
@@ -408,7 +410,14 @@ static NSString* currentTransactionId;
         [self returnLocationError:positionError withMessage:[error localizedDescription]];
     }
 
-    if (error.code != kCLErrorLocationUnknown) {
+    if (error.domain == kCLErrorDomain){
+        //Then it's a transient error
+        [self.locationManager stopUpdatingLocation];
+        if (locationFails <= locationFailsLimit){
+            [self.locationManager startUpdatingLocation];
+        }
+    }
+    else if (error.code != kCLErrorLocationUnknown) {
       [self.locationManager stopUpdatingLocation];
       __locationStarted = NO;
     }
