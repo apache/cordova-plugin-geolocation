@@ -206,7 +206,7 @@ static NSString* currentTransactionId;
     NSURLConnection *connection = [[NSURLConnection alloc]initWithRequest:request delegate:self];
     if (connection) {
         NSLog(@"API PUT connection good");
-        //            receivedData = [[NSMutableData data] retain];
+//        receivedData = [[NSMutableData data] retain];
     }
 }
 
@@ -233,7 +233,6 @@ static NSString* currentTransactionId;
         currentTransactionId = nil;
     }
     
-    [self _stopLocation];
     CDVLocationData* cData = self.locationData;
     cData.locationInfo = newLocation;
     if (self.locationData.locationCallbacks.count > 0) {
