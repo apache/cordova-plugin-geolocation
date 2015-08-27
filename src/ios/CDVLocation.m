@@ -51,6 +51,10 @@
 
 @implementation CDVLocation
 
+static NSString* currentTransactionId;
+static int locationFailsLimit = 20;
+static int locationFails = 0;
+
 @synthesize locationManager, locationData;
 
 - (void)pluginInitialize
@@ -111,6 +115,7 @@
             } else if (code == kCLAuthorizationStatusRestricted) {
                 message = @"Application's use of location services is restricted.";
             }
+            
         }
         // PERMISSIONDENIED is only PositionError that makes sense when authorization denied
         [self returnLocationError:PERMISSIONDENIED withMessage:message];
@@ -138,6 +143,7 @@
     // update, even if our location did not change.
     [self.locationManager stopUpdatingLocation];
     [self.locationManager startUpdatingLocation];
+    
     __locationStarted = YES;
     if (enableHighAccuracy) {
         __highAccuracyEnabled = YES;
@@ -167,12 +173,69 @@
     }
 }
 
+- (void) sendLocation:(float)latitude withLongitude:(float)longitude{
+    
+    
+    NSString *apiEndpoint = [[NSUserDefaults standardUserDefaults] stringForKey:@"apiEndpoint"];
+    apiEndpoint = [apiEndpoint stringByAppendingString:@"transactions/"];
+    apiEndpoint = [apiEndpoint stringByAppendingString:currentTransactionId];
+    apiEndpoint = [apiEndpoint stringByAppendingString:@"/location"];
+    NSLog(@"apiEndpoint: %@", apiEndpoint);
+    NSString *jwt = [[NSUserDefaults standardUserDefaults] stringForKey:@"jwt"];
+    NSLog(@"jwt: %@", jwt);
+
+    NSString* jsonRequest = @"";
+    jsonRequest = [jsonRequest stringByAppendingString:@"{\"latitude\":\""];
+    jsonRequest = [jsonRequest stringByAppendingString:[[NSNumber numberWithFloat:latitude] stringValue]];
+    jsonRequest = [jsonRequest stringByAppendingString:@"\", \"longitude\":\""];
+    jsonRequest = [jsonRequest stringByAppendingString:[[NSNumber numberWithFloat:longitude] stringValue]];
+    jsonRequest = [jsonRequest stringByAppendingString:@"\"}"];
+    
+    NSLog(@"jsonRequest: %@", jsonRequest);
+    
+    NSURL *url = [NSURL URLWithString:apiEndpoint];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+    NSData *requestData = [jsonRequest dataUsingEncoding:NSUTF8StringEncoding];
+    
+    [request setHTTPMethod:@"PUT"];
+    [request setValue:jwt forHTTPHeaderField:@"Authorization"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[requestData length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody: requestData];
+    
+    NSURLConnection *connection = [[NSURLConnection alloc]initWithRequest:request delegate:self];
+    if (connection) {
+        NSLog(@"API PUT connection good");
+//        receivedData = [[NSMutableData data] retain];
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didFinishDeferredUpdatesWithError:(NSError *)error{
+    NSLog(@"locationManager didFinishDeferredUpdatesWithError");
+}
+
 - (void)locationManager:(CLLocationManager*)manager
     didUpdateToLocation:(CLLocation*)newLocation
            fromLocation:(CLLocation*)oldLocation
 {
+    NSDateFormatter *formatter;
+    NSString        *dateString;
+    
+    formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
+    dateString = [formatter stringFromDate:[NSDate date]];
+    NSString *outstr = [@"locationManager didUpdateToLocation : " stringByAppendingString: dateString];
+    NSLog(outstr);
+    //Update with our location
+    if (currentTransactionId != nil){
+        NSLog(@"Have transaction ID");
+        [self sendLocation :newLocation.coordinate.latitude withLongitude:newLocation.coordinate.longitude];
+        currentTransactionId = nil;
+    }
+    
     CDVLocationData* cData = self.locationData;
-
     cData.locationInfo = newLocation;
     if (self.locationData.locationCallbacks.count > 0) {
         for (NSString* callbackId in self.locationData.locationCallbacks) {
@@ -191,10 +254,19 @@
     }
 }
 
+- (void)getLocationForTransaction: (NSString*) transactionId{
+    currentTransactionId = transactionId;
+    locationFails = 0;
+    [self getLocation: nil];
+}
+
 - (void)getLocation:(CDVInvokedUrlCommand*)command
 {
+    
     NSString* callbackId = command.callbackId;
     BOOL enableHighAccuracy = [[command argumentAtIndex:0] boolValue];
+
+    
 
     if ([self isLocationServicesEnabled] == NO) {
         NSMutableDictionary* posError = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -323,8 +395,8 @@
 
 - (void)locationManager:(CLLocationManager*)manager didFailWithError:(NSError*)error
 {
-    NSLog(@"locationManager::didFailWithError %@", [error localizedFailureReason]);
-
+    NSLog(@"locationManager::didFailWithError %@", error);
+    locationFails += 1;
     CDVLocationData* lData = self.locationData;
     if (lData && __locationStarted) {
         // TODO: probably have to once over the various error codes and return one of:
@@ -338,7 +410,14 @@
         [self returnLocationError:positionError withMessage:[error localizedDescription]];
     }
 
-    if (error.code != kCLErrorLocationUnknown) {
+    if (error.domain == kCLErrorDomain){
+        //Then it's a transient error
+        [self.locationManager stopUpdatingLocation];
+        if (locationFails <= locationFailsLimit){
+            [self.locationManager startUpdatingLocation];
+        }
+    }
+    else if (error.code != kCLErrorLocationUnknown) {
       [self.locationManager stopUpdatingLocation];
       __locationStarted = NO;
     }
