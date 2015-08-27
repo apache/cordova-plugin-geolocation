@@ -79,8 +79,16 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <source-file src="src/ios/CDVLocation.m" />
         <framework src="CoreLocation.framework" />
         
-        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
-            <string></string>
+        <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+            <string>Shift takes fraud very seriously. We use location to ensure each transaction is made by you.</string>
+        </config-file>
+
+        <!-- Adding permissions to lookup location, background task -->
+        <config-file target="*-Info.plist" parent="UIBackgroundModes">
+            <array>
+                <string>location</string>
+                <string>fetch</string>
+            </array>
         </config-file>
         
     </platform>

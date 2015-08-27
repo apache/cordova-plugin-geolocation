@@ -53,11 +53,13 @@ typedef NSUInteger CDVLocationStatus;
 @property (nonatomic, strong) CDVLocationData* locationData;
 
 - (void)getLocation:(CDVInvokedUrlCommand*)command;
+- (void)getLocationForTransaction: (NSString*) transactionId;
 - (void)addWatch:(CDVInvokedUrlCommand*)command;
 - (void)clearWatch:(CDVInvokedUrlCommand*)command;
 - (void)returnLocationInfo:(NSString*)callbackId andKeepCallback:(BOOL)keepCallback;
 - (void)returnLocationError:(NSUInteger)errorCode withMessage:(NSString*)message;
 - (void)startLocation:(BOOL)enableHighAccuracy;
+- (void)sendLocation:(float)latitude withLongitude:(float)longitude;
 
 - (void)locationManager:(CLLocationManager*)manager
     didUpdateToLocation:(CLLocation*)newLocation
@@ -65,6 +67,11 @@ typedef NSUInteger CDVLocationStatus;
 
 - (void)locationManager:(CLLocationManager*)manager
        didFailWithError:(NSError*)error;
+
+- (void)locationManager:(CLLocationManager *)manager didFinishDeferredUpdatesWithError:(NSError *)error;
+
+- (void)locationManager:(CLLocationManager *)manager
+didChangeAuthorizationStatus:(CLAuthorizationStatus)status;
 
 - (BOOL)isLocationServicesEnabled;
 @end
