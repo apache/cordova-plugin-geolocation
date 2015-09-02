@@ -82,14 +82,21 @@
 
 - (BOOL)isLocationServicesEnabled
 {
-    BOOL locationServicesEnabledInstancePropertyAvailable = [self.locationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 3.x
-    BOOL locationServicesEnabledClassPropertyAvailable = [CLLocationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 4.x
 
+#ifdef __IPHONE_4_0
+    BOOL locationServicesEnabledClassPropertyAvailable = [CLLocationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 4.x
     if (locationServicesEnabledClassPropertyAvailable) { // iOS 4.x
         return [CLLocationManager locationServicesEnabled];
-    } else if (locationServicesEnabledInstancePropertyAvailable) { // iOS 2.x, iOS 3.x
+    }
+#endif
+#ifndef __IPHONE_4_0
+    BOOL locationServicesEnabledInstancePropertyAvailable = [self.locationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 3.x
+
+    if (locationServicesEnabledInstancePropertyAvailable) { // iOS 2.x, iOS 3.x
         return [(id)self.locationManager locationServicesEnabled];
-    } else {
+    }
+#endif
+    else {
         return NO;
     }
 }
