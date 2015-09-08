@@ -191,6 +191,31 @@
     }
 }
 
+- (void)locationManager:(CLLocationManager*)manager
+     didUpdateLocations:(NSArray*)locations
+{
+    CLLocation* newLocation = [locations lastObject];
+
+    CDVLocationData* cData = self.locationData;
+    
+    cData.locationInfo = newLocation;
+    if (self.locationData.locationCallbacks.count > 0) {
+        for (NSString* callbackId in self.locationData.locationCallbacks) {
+            [self returnLocationInfo:callbackId andKeepCallback:NO];
+        }
+        
+        [self.locationData.locationCallbacks removeAllObjects];
+    }
+    if (self.locationData.watchCallbacks.count > 0) {
+        for (NSString* timerId in self.locationData.watchCallbacks) {
+            [self returnLocationInfo:[self.locationData.watchCallbacks objectForKey:timerId] andKeepCallback:YES];
+        }
+    } else {
+        // No callbacks waiting on us anymore, turn off listening.
+        [self _stopLocation];
+    }
+}
+
 - (void)getLocation:(CDVInvokedUrlCommand*)command
 {
     NSString* callbackId = command.callbackId;
