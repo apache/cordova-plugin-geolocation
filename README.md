@@ -56,6 +56,8 @@ are not available until after the `deviceready` event.
         console.log("navigator.geolocation works well");
     }
 
+:warning: Report issues on the [Apache Cordova issue tracker](https://issues.apache.org/jira/issues/?jql=project%20%3D%20CB%20AND%20status%20in%20%28Open%2C%20%22In%20Progress%22%2C%20Reopened%29%20AND%20resolution%20%3D%20Unresolved%20AND%20component%20%3D%20%22Plugin%20Geolocation%22%20ORDER%20BY%20priority%20DESC%2C%20summary%20ASC%2C%20updatedDate%20DESC)
+
 ## Installation
 
 This requires cordova 5.0+ ( current stable 1.0.0 )
