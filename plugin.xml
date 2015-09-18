@@ -39,6 +39,19 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
         </config-file>
 
+        <config-file target="res/xml/config.xml" parent="/*">
+          <feature name="Geolocation">
+              <param name="android-package" value="org.apache.cordova.geolocation.Geolocation" />
+          </feature>
+        </config-file>
+
+        <source-file src="src/android/Geolocation.java" target-dir="src/org/apache/cordova/geolocation/" />
+
+        <js-module src="www/android/geolocation.js" name="geolocation">
+            <clobbers target="navigator.geolocation" />
+        </js-module>
+
+
     </platform>
 
      <!-- amazon-fireos -->
