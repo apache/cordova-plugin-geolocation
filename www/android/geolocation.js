@@ -37,10 +37,10 @@ module.exports = {
         exec(win, error, "Geolocation", "getPermission", []);
     },
 
-    addWatch: function(success, error, args) {
+    watchPosition: function(success, error, args) {
         var win = function() {
             var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
-            geo.watchPosition(successCallback, error, {
+            geo.watchPosition(success, error, {
                 enableHighAccuracy: args[1]
             });
         };
