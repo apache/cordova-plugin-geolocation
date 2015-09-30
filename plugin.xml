@@ -31,6 +31,11 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-geolocation.git</repo>
     <issue>https://issues.apache.org/jira/browse/CB/component/12320638</issue>
 
+    <engines>
+      <engine name="cordova-android" version=">=5.0.0-dev" />
+    </engines>
+
+
     <!-- android -->
     <platform name="android">
 
@@ -38,6 +43,19 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
         </config-file>
+
+        <config-file target="res/xml/config.xml" parent="/*">
+          <feature name="Geolocation">
+              <param name="android-package" value="org.apache.cordova.geolocation.Geolocation" />
+          </feature>
+        </config-file>
+
+        <source-file src="src/android/Geolocation.java" target-dir="src/org/apache/cordova/geolocation/" />
+
+        <js-module src="www/android/geolocation.js" name="geolocation">
+            <clobbers target="navigator.geolocation" />
+        </js-module>
+
 
     </platform>
 
@@ -71,9 +89,9 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </js-module>
 
         <config-file target="config.xml" parent="/*">
-	        <feature name="Geolocation">
-	            <param name="ios-package" value="CDVLocation"/>
-	        </feature>
+                <feature name="Geolocation">
+                    <param name="ios-package" value="CDVLocation"/>
+                </feature>
         </config-file>
         <header-file src="src/ios/CDVLocation.h" />
         <source-file src="src/ios/CDVLocation.m" />
