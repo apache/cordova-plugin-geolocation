@@ -37,14 +37,7 @@ public class Geolocation extends CordovaPlugin {
     String TAG = "GeolocationPlugin";
     CallbackContext context;
 
-    String [] permissions;
-
-    public Geolocation()
-    {
-        permissions = new String[2];
-        permissions[0] = Manifest.permission.ACCESS_COARSE_LOCATION;
-        permissions[1] = Manifest.permission.ACCESS_FINE_LOCATION;
-    }
+    String [] permissions = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION };
 
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -58,15 +51,11 @@ public class Geolocation extends CordovaPlugin {
                 return true;
             }
             else {
-                cordova.requestPermissions(this, 0);
+                cordova.requestPermissions(this, 0, permissions);
             }
             return true;
         }
         return false;
-    }
-
-    public String[] getPermissionRequest() {
-        return permissions;
     }
 
 
@@ -86,22 +75,6 @@ public class Geolocation extends CordovaPlugin {
         }
         result = new PluginResult(PluginResult.Status.OK);
         context.sendPluginResult(result);
-    }
-
-    public boolean hasPermisssion() {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-        {
-            return true;
-        }
-        for(String p : permissions)
-        {
-            if(PackageManager.PERMISSION_DENIED == cordova.getActivity().checkSelfPermission(p))
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 
 
