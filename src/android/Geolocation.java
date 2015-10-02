@@ -77,5 +77,21 @@ public class Geolocation extends CordovaPlugin {
         context.sendPluginResult(result);
     }
 
+    public boolean hasPermisssion() {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+        {
+            return true;
+        }
+        for(String p : permissions)
+        {
+            if(PackageManager.PERMISSION_DENIED == cordova.getActivity().checkSelfPermission(p))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
 }
