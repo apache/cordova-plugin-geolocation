@@ -174,6 +174,11 @@ var geolocation = {
             if (options.timeout !== Infinity) {
                 timers[id].timer = createTimeout(fail, options.timeout);
             }
+
+            if (geolocation.lastPosition && options.maximumAge && (((new Date()).getTime() - geolocation.lastPosition.timestamp.getTime()) <= options.maximumAge)) {
+            	return;
+            }
+
             var pos = new Position(
                 {
                     latitude:p.latitude,

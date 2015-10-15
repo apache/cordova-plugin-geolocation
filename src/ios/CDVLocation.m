@@ -132,13 +132,7 @@
         return;
     }
 #endif
-    
-    // Tell the location manager to start notifying us of location updates. We
-    // first stop, and then start the updating to ensure we get at least one
-    // update, even if our location did not change.
-    [self.locationManager stopUpdatingLocation];
-    [self.locationManager startUpdatingLocation];
-    __locationStarted = YES;
+
     if (enableHighAccuracy) {
         __highAccuracyEnabled = YES;
         // Set distance filter to 5 for a high accuracy. Setting it to "kCLDistanceFilterNone" could provide a
@@ -152,6 +146,30 @@
         self.locationManager.distanceFilter = 10;
         self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
     }
+
+    self.locationManager.allowsBackgroundLocationUpdates = YES;
+    self.locationManager.pausesLocationUpdatesAutomatically = NO;
+
+    // Tell the location manager to start notifying us of location updates. We
+    // first stop, and then start the updating to ensure we get at least one
+    // update, even if our location did not change.
+    
+    [self.locationManager stopUpdatingLocation];
+    [self.locationManager startUpdatingLocation];
+
+    if([CLLocationManager deferredLocationUpdatesAvailable]) {
+        self.locationManager.distanceFilter = kCLDistanceFilterNone;
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        [self.locationManager disallowDeferredLocationUpdates];
+        [self.locationManager allowDeferredLocationUpdatesUntilTraveled:CLLocationDistanceMax timeout:60];//60秒
+    }
+
+    if (CLLocationManager.significantLocationChangeMonitoringAvailable) {
+        [self.locationManager stopMonitoringSignificantLocationChanges];
+        [self.locationManager startMonitoringSignificantLocationChanges];
+    }
+
+    __locationStarted = YES;
 }
 
 - (void)_stopLocation
@@ -167,13 +185,27 @@
     }
 }
 
-- (void)locationManager:(CLLocationManager*)manager
-    didUpdateToLocation:(CLLocation*)newLocation
-           fromLocation:(CLLocation*)oldLocation
+- (void)didUpdateLocation:(CLLocation*)location
 {
-    CDVLocationData* cData = self.locationData;
+    BOOL isInBackground = NO;
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)
+    {
+        isInBackground = YES;
+    }
+    
+    UIBackgroundTaskIdentifier bgTask = UIBackgroundTaskInvalid;
+    if (isInBackground)
+    {
+        bgTask = [[UIApplication sharedApplication]
+                  beginBackgroundTaskWithExpirationHandler:
+                  ^{
+                      [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+                  }];
+    }
 
-    cData.locationInfo = newLocation;
+    CDVLocationData* cData = self.locationData;
+    cData.locationInfo = location;
+
     if (self.locationData.locationCallbacks.count > 0) {
         for (NSString* callbackId in self.locationData.locationCallbacks) {
             [self returnLocationInfo:callbackId andKeepCallback:NO];
@@ -189,31 +221,29 @@
         // No callbacks waiting on us anymore, turn off listening.
         [self _stopLocation];
     }
+
+    if (isInBackground)
+    {
+        if (bgTask != UIBackgroundTaskInvalid)
+        {
+            [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+            bgTask = UIBackgroundTaskInvalid;
+        }
+    }
+}
+
+- (void)locationManager:(CLLocationManager*)manager
+    didUpdateToLocation:(CLLocation*)newLocation
+           fromLocation:(CLLocation*)oldLocation
+{
+    [self didUpdateLocation:newLocation];
 }
 
 - (void)locationManager:(CLLocationManager*)manager
      didUpdateLocations:(NSArray*)locations
 {
     CLLocation* newLocation = [locations lastObject];
-
-    CDVLocationData* cData = self.locationData;
-    
-    cData.locationInfo = newLocation;
-    if (self.locationData.locationCallbacks.count > 0) {
-        for (NSString* callbackId in self.locationData.locationCallbacks) {
-            [self returnLocationInfo:callbackId andKeepCallback:NO];
-        }
-        
-        [self.locationData.locationCallbacks removeAllObjects];
-    }
-    if (self.locationData.watchCallbacks.count > 0) {
-        for (NSString* timerId in self.locationData.watchCallbacks) {
-            [self returnLocationInfo:[self.locationData.watchCallbacks objectForKey:timerId] andKeepCallback:YES];
-        }
-    } else {
-        // No callbacks waiting on us anymore, turn off listening.
-        [self _stopLocation];
-    }
+    [self didUpdateLocation:newLocation];
 }
 
 - (void)getLocation:(CDVInvokedUrlCommand*)command
