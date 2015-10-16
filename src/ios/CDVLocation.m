@@ -161,7 +161,7 @@
         self.locationManager.distanceFilter = kCLDistanceFilterNone;
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
         [self.locationManager disallowDeferredLocationUpdates];
-        [self.locationManager allowDeferredLocationUpdatesUntilTraveled:CLLocationDistanceMax timeout:60];//60秒
+        [self.locationManager allowDeferredLocationUpdatesUntilTraveled:CLLocationDistanceMax timeout:180];//180秒
     }
 
     if (CLLocationManager.significantLocationChangeMonitoringAvailable) {
