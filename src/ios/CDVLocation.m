@@ -94,7 +94,7 @@
     }
 }
 
-- (void)startLocation:(BOOL)enableHighAccuracy
+- (void)startLocation:(BOOL)enableHighAccuracy background:(BOOL)background
 {
     if (![self isLocationServicesEnabled]) {
         [self returnLocationError:PERMISSIONDENIED withMessage:@"Location services are not enabled."];
@@ -147,27 +147,31 @@
         self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
     }
 
-    self.locationManager.allowsBackgroundLocationUpdates = YES;
-    self.locationManager.pausesLocationUpdatesAutomatically = NO;
-
-    // Tell the location manager to start notifying us of location updates. We
-    // first stop, and then start the updating to ensure we get at least one
-    // update, even if our location did not change.
-    
-    [self.locationManager stopUpdatingLocation];
-    [self.locationManager startUpdatingLocation];
-
-    if([CLLocationManager deferredLocationUpdatesAvailable]) {
-        self.locationManager.distanceFilter = kCLDistanceFilterNone;
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        [self.locationManager disallowDeferredLocationUpdates];
-        [self.locationManager allowDeferredLocationUpdatesUntilTraveled:CLLocationDistanceMax timeout:180];//180秒
+    if (background) {
+        self.locationManager.allowsBackgroundLocationUpdates = YES;
+        //self.locationManager.pausesLocationUpdatesAutomatically = NO;
+        
+        if (CLLocationManager.significantLocationChangeMonitoringAvailable) {
+            [self.locationManager stopMonitoringSignificantLocationChanges];
+            [self.locationManager startMonitoringSignificantLocationChanges];
+        }
+    } else {
+        // Tell the location manager to start notifying us of location updates. We
+        // first stop, and then start the updating to ensure we get at least one
+        // update, even if our location did not change.
+        
+        [self.locationManager stopUpdatingLocation];
+        [self.locationManager startUpdatingLocation];
     }
 
-    if (CLLocationManager.significantLocationChangeMonitoringAvailable) {
-        [self.locationManager stopMonitoringSignificantLocationChanges];
-        [self.locationManager startMonitoringSignificantLocationChanges];
-    }
+
+//    if([CLLocationManager deferredLocationUpdatesAvailable]) {
+//        self.locationManager.distanceFilter = kCLDistanceFilterNone;
+//        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+//        [self.locationManager disallowDeferredLocationUpdates];
+//        [self.locationManager allowDeferredLocationUpdatesUntilTraveled:CLLocationDistanceMax timeout:60];//60秒
+//    }
+
 
     __locationStarted = YES;
 }
@@ -180,6 +184,7 @@
         }
 
         [self.locationManager stopUpdatingLocation];
+        [self.locationManager stopMonitoringSignificantLocationChanges];
         __locationStarted = NO;
         __highAccuracyEnabled = NO;
     }
@@ -272,7 +277,7 @@
                 [lData.locationCallbacks addObject:callbackId];
             }
             // Tell the location manager to start notifying us of heading updates
-            [self startLocation:enableHighAccuracy];
+            [self startLocation:enableHighAccuracy background:NO];
         } else {
             [self returnLocationInfo:callbackId andKeepCallback:NO];
         }
@@ -306,7 +311,7 @@
     } else {
         if (!__locationStarted || (__highAccuracyEnabled != enableHighAccuracy)) {
             // Tell the location manager to start notifying us of location updates
-            [self startLocation:enableHighAccuracy];
+            [self startLocation:enableHighAccuracy background:YES];
         }
     }
 }
@@ -403,7 +408,7 @@
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
     if(!__locationStarted){
-        [self startLocation:__highAccuracyEnabled];
+        [self startLocation:__highAccuracyEnabled background:NO];
     }
 }
 
