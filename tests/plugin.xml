@@ -28,4 +28,6 @@
 
     <js-module src="tests.js" name="tests">
     </js-module>
+
+    <dependency id="cordova-plugin-device" version=">=1.0.2" />
 </plugin>
