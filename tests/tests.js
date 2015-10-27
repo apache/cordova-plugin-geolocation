@@ -311,7 +311,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         document.getElementById('speed').innerHTML = p.coords.speed;
         document.getElementById('altitude_accuracy').innerHTML = p.coords.altitudeAccuracy;
         document.getElementById('timestamp').innerHTML = date.toDateString() + " " + date.toTimeString();
-    }
+    };
 
     /******************************************************************************/
 
@@ -388,8 +388,8 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         note = 
             '<h3>Allow use of current location, if prompted</h3>';
 
-    contentEl.innerHTML = values_info + location_div + latitude + longitude + altitude + accuracy + heading + speed
-        + altitude_accuracy + time + note + actions;
+    contentEl.innerHTML = values_info + location_div + latitude + longitude + altitude + 
+        accuracy + heading + speed + altitude_accuracy + time + note + actions;
 
     createActionButton('Get Location', function () {
         getLocation(false);

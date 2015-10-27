@@ -21,7 +21,7 @@ var PositionError = require('./PositionError'),
 function ensureLocator() {
     var deferral;
 
-    if (loc == null) {
+    if (!loc) {
         loc = new Windows.Devices.Geolocation.Geolocator();
 
         if (typeof Windows.Devices.Geolocation.Geolocator.requestAccessAsync === 'function') {
@@ -75,7 +75,7 @@ function createResult(pos) {
         velocity: pos.coordinate.speed,
         altitudeAccuracy: pos.coordinate.altitudeAccuracy,
         timestamp: pos.coordinate.timestamp
-    }
+    };
     
     if (pos.coordinate.point) {
         res.latitude = pos.coordinate.point.position.latitude;
@@ -93,7 +93,7 @@ function createResult(pos) {
 module.exports = {
     getLocation: function (success, fail, args, env) {
         ensureLocator().done(function () {
-            if (loc != null) {
+            if (loc) {
                 var highAccuracy = args[0],
                     maxAge = args[1];
 
@@ -150,8 +150,8 @@ module.exports = {
                         });
                         break;
 
-                    case Windows.Devices.Geolocation.PositionStatus.initializing:
-                    case Windows.Devices.Geolocation.PositionStatus.ready:
+                    // case Windows.Devices.Geolocation.PositionStatus.initializing:
+                    // case Windows.Devices.Geolocation.PositionStatus.ready:
                     default:
                         break;
                 }
@@ -187,7 +187,7 @@ module.exports = {
             delete ids[clientId];
         }
 
-        success && success();
+        success();
     }
 };
 
