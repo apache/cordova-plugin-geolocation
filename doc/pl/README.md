@@ -218,7 +218,7 @@ Zawiera współrzędne `Position` i sygnatury czasowej, stworzony przez geolocat
 
   * **coords**: zestaw współrzędnych geograficznych. *(Współrzędne)*
 
-  * **timestamp**: Sygnatura czasowa utworzenia dla `coords` . *(Data)*
+  * **timestamp**: Sygnatura czasowa utworzenia dla `coords` . *(DOMTimeStamp)*
 
 ## Coordinates
 

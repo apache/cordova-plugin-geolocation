@@ -238,7 +238,7 @@ Contains `Position` coordinates and timestamp, created by the geolocation API.
 
 - __coords__: A set of geographic coordinates. _(Coordinates)_
 
-- __timestamp__: Creation timestamp for `coords`. _(Date)_
+- __timestamp__: Creation timestamp for `coords`. _(DOMTimeStamp)_
 
 ## Coordinates
 

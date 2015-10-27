@@ -218,7 +218,7 @@
 
   * **coords**: 地理的座標のセット。*（座標）*
 
-  * **timestamp**: 作成のタイムスタンプを `coords` 。*（日）*
+  * **timestamp**: 作成のタイムスタンプを `coords` 。*（DOMTimeStamp）*
 
 ## Coordinates
 

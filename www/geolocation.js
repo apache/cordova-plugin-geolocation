@@ -102,7 +102,7 @@ var geolocation = {
                     velocity:p.velocity,
                     altitudeAccuracy:p.altitudeAccuracy
                 },
-                (p.timestamp === undefined ? new Date() : ((p.timestamp instanceof Date) ? p.timestamp : new Date(p.timestamp)))
+                p.timestamp)
             );
             geolocation.lastPosition = pos;
             successCallback(pos);
@@ -184,7 +184,7 @@ var geolocation = {
                     velocity:p.velocity,
                     altitudeAccuracy:p.altitudeAccuracy
                 },
-                (p.timestamp === undefined ? new Date() : ((p.timestamp instanceof Date) ? p.timestamp : new Date(p.timestamp)))
+                p.timestamp);
             );
             geolocation.lastPosition = pos;
             successCallback(pos);

@@ -218,7 +218,7 @@
 
   * **coords**: 지리적 좌표 집합. *(좌표)*
 
-  * **timestamp**: 생성 타임 스탬프에 대 한 `coords` . *(날짜)*
+  * **timestamp**: 생성 타임 스탬프에 대 한 `coords` . *(DOMTimeStamp)*
 
 ## Coordinates
 
