@@ -53,8 +53,9 @@ exports.defineAutoTests = function () {
                 done();
             });
         },
-        isWindowsStore = (cordova.platformId == "windows8") || (cordova.platformId == "windows" && !WinJS.Utilities.isPhone),
-        isAndroid = cordova.platformId == "android";
+        isWindowsStore = (cordova.platformId === "windows8") || (cordova.platformId === "windows" && !WinJS.Utilities.isPhone),
+        isAndroid = cordova.platformId === "android",
+        isIOS = cordova.platformId === "ios";
 
     describe('Geolocation (navigator.geolocation)', function () {
 
@@ -85,9 +86,8 @@ exports.defineAutoTests = function () {
 
             it("geolocation.spec.5 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
                 // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                // On Android geolocation Api is not available on emulator
+                if (isWindowsStore || (isAndroid && device.isVirtual)) {
                     pending();
                 }
 
@@ -105,10 +105,9 @@ exports.defineAutoTests = function () {
         describe('success callback', function () {
 
             it("geolocation.spec.6 should be called with a Position object", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                // On Windows and iOS, this test prompts user for permission to use geolocation and interrupts autotests running.
+                // On Android geolocation Api is not available on emulator
+                if (isWindowsStore || isIOS || (isAndroid && device.isVirtual)) {
                     pending();
                 }
 
@@ -144,10 +143,9 @@ exports.defineAutoTests = function () {
             });
 
             it("geolocation.spec.7 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                // On Windows and iOS, this test prompts user for permission to use geolocation and interrupts autotests running.
+                // On Android geolocation Api is not available on emulator
+                if (isWindowsStore || isIOS || (isAndroid && device.isVirtual)) {
                     pending();
                 }
 
@@ -171,10 +169,9 @@ exports.defineAutoTests = function () {
             });
 
             it("geolocation.spec.8 should be called with a Position object", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                // On Windows and iOS, this test prompts user for permission to use geolocation and interrupts autotests running.
+                // On Android geolocation Api is not available on emulator
+                if (isWindowsStore || isIOS || (isAndroid && device.isVirtual)) {
                     pending();
                 }
 
