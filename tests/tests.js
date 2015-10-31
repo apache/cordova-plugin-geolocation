@@ -20,41 +20,45 @@
 */
 exports.defineAutoTests = function () {
     var fail = function (done, context, message) {
-            // prevents done() to be called several times
-            if (context) {
-                if (context.done) return;
-                context.done = true;
-            }
+        // prevents done() to be called several times
+        if (context) {
+            if (context.done) return;
+            context.done = true;
+        }
 
-            if (message) {
-                expect(false).toBe(true, message);
-            } else {
-                expect(false).toBe(true);
-            }
+        if (message) {
+            expect(false).toBe(true, message);
+        } else {
+            expect(false).toBe(true);
+        }
 
-            // watchPosition could call its callback sync (before returning the value)
-            // so we invoke done async to make sure we know watcher id to .clear in afterEach
-            setTimeout(function () {
-                done();
-            });
-        },
-        succeed = function (done, context) {
-            // prevents done() to be called several times
-            if (context) {
-                if (context.done) return;
-                context.done = true;
-            }
+        // watchPosition could call its callback sync (before returning the value)
+        // so we invoke done async to make sure we know watcher id to .clear in afterEach
+        setTimeout(function () {
+            done();
+        });
+    };
+    
+    var succeed = function (done, context) {
+        // prevents done() to be called several times
+        if (context) {
+            if (context.done) return;
+            context.done = true;
+        }
 
-            expect(true).toBe(true);
+        expect(true).toBe(true);
 
-            // watchPosition could call its callback sync (before returning the value)
-            // so we invoke done async to make sure we know watcher id to .clear in afterEach
-            setTimeout(function () {
-                done();
-            });
-        },
-        isWindowsStore = (cordova.platformId == "windows8") || (cordova.platformId == "windows" && !WinJS.Utilities.isPhone),
-        isAndroid = cordova.platformId == "android";
+        // watchPosition could call its callback sync (before returning the value)
+        // so we invoke done async to make sure we know watcher id to .clear in afterEach
+        setTimeout(function () {
+            done();
+        });
+    };
+
+    var isWindowsStore = (cordova.platformId == "windows8") || (cordova.platformId == "windows" && !WinJS.Utilities.isPhone);
+    var isAndroid = cordova.platformId == "android";
+    var isIOSSim = false; // if iOS simulator does not have a location set, it will fail.
+
 
     describe('Geolocation (navigator.geolocation)', function () {
 
@@ -116,8 +120,17 @@ exports.defineAutoTests = function () {
                     expect(p.coords).toBeDefined();
                     expect(p.timestamp).toBeDefined();
                     done();
+                }, function(err){
+                    if(err.message && err.message.indexOf('kCLErrorDomain') > -1){
+                        console.log("Error: Location not set in simulator, tests will fail.");
+                        expect(true).toBe(true);
+                        isIOSSim = true;
+                        done();
+                    }
+                    else {
+                        fail(done);
+                    }
                 },
-                fail.bind(null, done),
                 {
                     maximumAge: (5 * 60 * 1000) // 5 minutes maximum age of cached position
                 });
@@ -174,7 +187,7 @@ exports.defineAutoTests = function () {
                 // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
                 // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
                 // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                if (isWindowsStore || isAndroid || isIOSSim) {
                     pending();
                 }
 
