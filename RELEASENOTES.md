@@ -20,6 +20,17 @@
 -->
 # Release Notes
 
+### 2.0.0 (Nov 18, 2015)
+* CB-10035 Updated `RELEASENOTES` to be newest to oldest
+* CB-9907 Handle **iOS** tests that fail when ios simulator does not have a location
+* CB-8826 Check for `NSLocationWhenInUseUsageDescription` first
+* CB-9105: Fixing `JS` errors in the shim
+* Added support for new permissions model for **Android 6.0** aka **Marshmallow**
+* Expect `lastPosition` to have a `timestamp` that is already in `msecs`
+* CB-4596 Date objects are supposed to be `DOMTimeStamp`
+* Fixing contribute link.
+* CB-9355 Fix Geolocation plugin start watch fail related to unset `MovementThreshold` on **Windows 10**
+
 ### 1.0.1 (Jun 17, 2015)
 * CB-9128 cordova-plugin-geolocation documentation translation: cordova-plugin-geolocation
 * fix npm md issue
