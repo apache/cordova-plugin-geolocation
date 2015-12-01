@@ -68,8 +68,11 @@ public class Geolocation extends CordovaPlugin {
             if(r == PackageManager.PERMISSION_DENIED)
             {
                 LOG.d(TAG, "Permission Denied!");
-                result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
-                context.sendPluginResult(result);
+				if (context != null)
+				{
+					result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+					context.sendPluginResult(result);
+				}
                 return;
             }
         }
