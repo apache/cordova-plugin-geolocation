@@ -222,23 +222,15 @@ exports.defineAutoTests = function () {
 /******************************************************************************/
 
 exports.defineManualTests = function (contentEl, createActionButton) {
-    var newGeolocation = navigator.geolocation;
-    var origGeolocation = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
-    if (!origGeolocation) {
-        origGeolocation = newGeolocation;
-        newGeolocation = null;
-    }
-
     var watchLocationId = null;
 
     /**
      * Start watching location
      */
-    var watchLocation = function (usePlugin) {
-        console.log("watchLocation()");
-        var geo = usePlugin ? newGeolocation : origGeolocation;
+    var watchLocation = function () {
+        var geo = navigator.geolocation;
         if (!geo) {
-            alert('geolocation object is missing. usePlugin = ' + usePlugin);
+            alert('navigator.geolocation object is missing.');
             return;
         }
 
@@ -261,11 +253,10 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     /**
      * Stop watching the location
      */
-    var stopLocation = function (usePlugin) {
-        console.log("stopLocation()");
-        var geo = usePlugin ? newGeolocation : origGeolocation;
+    var stopLocation = function () {
+        var geo = navigator.geolocation;
         if (!geo) {
-            alert('geolocation object is missing. usePlugin = ' + usePlugin);
+            alert('navigator.geolocation object is missing.');
             return;
         }
         setLocationStatus("Stopped");
@@ -278,11 +269,10 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     /**
      * Get current location
      */
-    var getLocation = function (usePlugin, opts) {
-        console.log("getLocation()");
-        var geo = usePlugin ? newGeolocation : origGeolocation;
+    var getLocation = function (opts) {
+        var geo = navigator.geolocation;
         if (!geo) {
-            alert('geolocation object is missing. usePlugin = ' + usePlugin);
+            alert('navigator.geolocation object is missing.');
             return;
         }
 
@@ -378,16 +368,6 @@ exports.defineManualTests = function (contentEl, createActionButton) {
             '</table>' +
             '</div>',
         actions =
-            '<h2>Use Built-in WebView navigator.geolocation</h2>' +
-            '<div id="built-in-getLocation"></div>' +
-            'Expected result: Will update all applicable values in status box for current location. Status will read Retrieving Location (may not see this if location is retrieved immediately) then Done.' +
-            '<p/> <div id="built-in-watchLocation"></div>' +
-            'Expected result: Will update all applicable values in status box for current location and update as location changes. Status will read Running.' +
-            '<p/> <div id="built-in-stopLocation"></div>' +
-            'Expected result: Will stop watching the location so values will not be updated. Status will read Stopped.' +
-            '<p/> <div id="built-in-getOld"></div>' +
-            'Expected result: Will update location values with a cached position that is up to 30 seconds old. Verify with time value. Status will read Done.' +
-            '<h2>Use Cordova Geolocation Plugin</h2>' +
             '<div id="cordova-getLocation"></div>' +
             'Expected result: Will update all applicable values in status box for current location. Status will read Retrieving Location (may not see this if location is retrieved immediately) then Done.' +
             '<p/> <div id="cordova-watchLocation"></div>' +
@@ -401,38 +381,22 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         note = 
             '<h3>Allow use of current location, if prompted</h3>';
 
-    contentEl.innerHTML = values_info + location_div + latitude + longitude + altitude + 
-        accuracy + heading + speed + altitude_accuracy + time + note + actions;
+    contentEl.innerHTML = values_info + location_div + latitude + longitude + altitude + accuracy + heading + speed
+        + altitude_accuracy + time + note + actions;
 
     createActionButton('Get Location', function () {
-        getLocation(false);
-    }, 'built-in-getLocation');
-
-    createActionButton('Start Watching Location', function () {
-        watchLocation(false);
-    }, 'built-in-watchLocation');
-
-    createActionButton('Stop Watching Location', function () {
-        stopLocation(false);
-    }, 'built-in-stopLocation');
-
-    createActionButton('Get Location Up to 30 Sec Old', function () {
-        getLocation(false, { maximumAge: 30000 });
-    }, 'built-in-getOld');
-
-    createActionButton('Get Location', function () {
-        getLocation(true);
+        getLocation();
     }, 'cordova-getLocation');
 
     createActionButton('Start Watching Location', function () {
-        watchLocation(true);
+        watchLocation();
     }, 'cordova-watchLocation');
 
     createActionButton('Stop Watching Location', function () {
-        stopLocation(true);
+        stopLocation();
     }, 'cordova-stopLocation');
 
     createActionButton('Get Location Up to 30 Sec Old', function () {
-        getLocation(true, { maximumAge: 30000 });
+        getLocation({ maximumAge: 30000 });
     }, 'cordova-getOld');
 };
