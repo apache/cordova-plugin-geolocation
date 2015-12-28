@@ -29,10 +29,7 @@ module.exports = {
     getCurrentPosition: function(success, error, args) {
         var win = function() {
           var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
-          geo.getCurrentPosition(success, error, {
-            enableHighAccuracy: args[0],
-            maximumAge: args[1]
-          });
+          geo.getCurrentPosition(success, error, args);
         };
         exec(win, error, "Geolocation", "getPermission", []);
     },
@@ -40,9 +37,7 @@ module.exports = {
     watchPosition: function(success, error, args) {
         var win = function() {
             var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
-            geo.watchPosition(success, error, {
-                enableHighAccuracy: args[1]
-            });
+            geo.watchPosition(success, error, args);
         };
         exec(win, error, "Geolocation", "getPermission", []);
     },
