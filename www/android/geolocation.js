@@ -21,6 +21,7 @@
 
 
 var exec = cordova.require('cordova/exec');
+var utils = require('cordova/utils');
 
 module.exports = {
 
@@ -38,21 +39,29 @@ module.exports = {
     },
 
     watchPosition: function(success, error, args) {
+        var pluginWatchId = utils.createUUID();
+
         var win = function() {
             var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
-            geo.watchPosition(success, error, {
+            pluginToNativeWatchMap[pluginWatchId] = geo.watchPosition(success, error, {
                 enableHighAccuracy: args[1]
             });
         };
         exec(win, error, "Geolocation", "getPermission", []);
+
+        return pluginWatchId;
     },
 
-    clearWatch: function(success, error, args) {
+    clearWatch: function(pluginWatchId) {
         var win = function() {
-          var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
-          geo.clearWatch(args[0]);
+            var nativeWatchId = pluginToNativeWatchMap[pluginWatchId];
+            var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
+            geo.clearWatch(nativeWatchId);
         }
-        exec(win, error, "Geolocation", "getPermission", []);
+        exec(win, null, "Geolocation", "getPermission", []);
     }
 };
 
+// Native watchPosition method is called async after permissions prompt.
+// So we use additional map and own ids to return watch id synchronously.
+var pluginToNativeWatchMap = {};
