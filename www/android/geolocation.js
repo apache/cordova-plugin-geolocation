@@ -22,6 +22,7 @@
 
 var exec = cordova.require('cordova/exec');
 var utils = require('cordova/utils');
+var PositionError = require('./PositionError');
 
 module.exports = {
 
@@ -30,7 +31,12 @@ module.exports = {
           var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
           geo.getCurrentPosition(success, error, args);
         };
-        exec(win, error, "Geolocation", "getPermission", []);
+        var fail = function() {
+            if (error) {
+                error(new PositionError (PositionError.PERMISSION_DENIED, 'Illegal Access'));
+            }
+        };
+        exec(win, fail, "Geolocation", "getPermission", []);
     },
 
     watchPosition: function(success, error, args) {
@@ -40,7 +46,13 @@ module.exports = {
             var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
             pluginToNativeWatchMap[pluginWatchId] = geo.watchPosition(success, error, args);
         };
-        exec(win, error, "Geolocation", "getPermission", []);
+
+        var fail = function() {
+            if (error) {
+                error(new PositionError(PositionError.PERMISSION_DENIED, 'Illegal Access'));
+            }
+        };
+        exec(win, fail, "Geolocation", "getPermission", []);
 
         return pluginWatchId;
     },
@@ -50,7 +62,8 @@ module.exports = {
             var nativeWatchId = pluginToNativeWatchMap[pluginWatchId];
             var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
             geo.clearWatch(nativeWatchId);
-        }
+        };
+
         exec(win, null, "Geolocation", "getPermission", []);
     }
 };
