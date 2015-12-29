@@ -56,6 +56,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <clobbers target="navigator.geolocation" />
         </js-module>
 
+        <!-- We don't expose PositionError via clobber on Android as we use it internally only -->
+        <js-module src="www/PositionError.js" name="PositionError">
+            <runs />
+        </js-module>
 
     </platform>
 
