@@ -55,8 +55,16 @@ exports.defineAutoTests = function () {
         });
     };
 
+    // On Windows, some tests prompt user for permission to use geolocation and interrupt autotests run
     var isWindowsStore = (cordova.platformId == "windows8") || (cordova.platformId == "windows" && !WinJS.Utilities.isPhone);
-    var isAndroid = cordova.platformId == "android";
+    var majorDeviceVersion = null;
+    var versionRegex = /(\d)\..+/.exec(device.version);
+    if (versionRegex !== null) {
+        majorDeviceVersion = Number(versionRegex[1]);
+    }
+    // Starting from Android 6.0 there are confirmation dialog which prevents us from running auto tests in silent mode (user interaction needed)
+    // Also, Android emulator doesn't provide geo fix without manual interactions or mocks
+    var skipAndroid = cordova.platformId == "android" && (device.isVirtual || majorDeviceVersion >= 6);
     var isIOSSim = false; // if iOS simulator does not have a location set, it will fail.
 
 
@@ -88,10 +96,7 @@ exports.defineAutoTests = function () {
         describe('error callback', function () {
 
             it("geolocation.spec.5 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                if (isWindowsStore || skipAndroid) {
                     pending();
                 }
 
@@ -105,8 +110,7 @@ exports.defineAutoTests = function () {
             });
 
             it("geolocation.spec.9 on failure should return PositionError object with error code constants", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                if (isWindowsStore) {
+                if (isWindowsStore || skipAndroid) {
                     pending();
                 }
 
@@ -130,10 +134,7 @@ exports.defineAutoTests = function () {
         describe('success callback', function () {
 
             it("geolocation.spec.6 should be called with a Position object", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                if (isWindowsStore || skipAndroid) {
                     pending();
                 }
 
@@ -178,10 +179,7 @@ exports.defineAutoTests = function () {
             });
 
             it("geolocation.spec.7 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                if (isWindowsStore || skipAndroid) {
                     pending();
                 }
 
@@ -196,8 +194,7 @@ exports.defineAutoTests = function () {
             });
 
             it("geolocation.spec.10 on failure should return PositionError object with error code constants", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                if (isWindowsStore) {
+                if (isWindowsStore || skipAndroid) {
                     pending();
                 }
 
@@ -231,10 +228,7 @@ exports.defineAutoTests = function () {
             });
 
             it("geolocation.spec.8 should be called with a Position object", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid || isIOSSim) {
+                if (isWindowsStore || skipAndroid || isIOSSim) {
                     pending();
                 }
 

@@ -26,6 +26,7 @@
     <name>Cordova Geolocation Plugin Tests</name>
     <license>Apache 2.0</license>
 
+    <dependency id="cordova-plugin-device" url="https://github.com/apache/cordova-plugin-device" />
     <js-module src="tests.js" name="tests">
     </js-module>
 </plugin>
