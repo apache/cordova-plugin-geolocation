@@ -104,6 +104,27 @@ exports.defineAutoTests = function () {
                     });
             });
 
+            it("geolocation.spec.9 on failure should return PositionError object with error code constants", function (done) {
+                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
+                if (isWindowsStore) {
+                    pending();
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    fail.bind(this, done),
+                    function(gpsError) {
+                        // W3C specs: http://dev.w3.org/geo/api/spec-source.html#position_error_interface
+                        expect(gpsError.PERMISSION_DENIED).toBe(1);
+                        expect(gpsError.POSITION_UNAVAILABLE).toBe(2);
+                        expect(gpsError.TIMEOUT).toBe(3);
+                        done();
+                    },
+                    {
+                        maximumAge: 0,
+                        timeout: 0
+                    });
+            });
+
         });
 
         describe('success callback', function () {
@@ -168,6 +189,32 @@ exports.defineAutoTests = function () {
                 errorWatch = navigator.geolocation.watchPosition(
                     fail.bind(null, done, context, 'Unexpected win'),
                     succeed.bind(null, done, context),
+                    {
+                        maximumAge: 0,
+                        timeout: 0
+                    });
+            });
+
+            it("geolocation.spec.10 on failure should return PositionError object with error code constants", function (done) {
+                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
+                if (isWindowsStore) {
+                    pending();
+                }
+
+                var context = this;
+                errorWatch = navigator.geolocation.watchPosition(
+                    fail.bind(this, done, context, 'Unexpected win'),
+                    function(gpsError) {
+                        if (context.done) return;
+                        context.done = true;
+
+                        // W3C specs: http://dev.w3.org/geo/api/spec-source.html#position_error_interface
+                        expect(gpsError.PERMISSION_DENIED).toBe(1);
+                        expect(gpsError.POSITION_UNAVAILABLE).toBe(2);
+                        expect(gpsError.TIMEOUT).toBe(3);
+
+                        done();
+                    },
                     {
                         maximumAge: 0,
                         timeout: 0
