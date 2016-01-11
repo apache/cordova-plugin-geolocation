@@ -51,7 +51,7 @@ public class Geolocation extends CordovaPlugin {
                 return true;
             }
             else {
-                cordova.requestPermissions(this, 0, permissions);
+                PermissionHelper.requestPermissions(this, 0, permissions);
             }
             return true;
         }
@@ -78,13 +78,9 @@ public class Geolocation extends CordovaPlugin {
     }
 
     public boolean hasPermisssion() {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-        {
-            return true;
-        }
         for(String p : permissions)
         {
-            if(PackageManager.PERMISSION_DENIED == cordova.getActivity().checkSelfPermission(p))
+            if(!PermissionHelper.hasPermission(this, p))
             {
                 return false;
             }
@@ -99,7 +95,7 @@ public class Geolocation extends CordovaPlugin {
 
     public void requestPermissions(int requestCode)
     {
-        cordova.requestPermissions(this, requestCode, permissions);
+        PermissionHelper.requestPermissions(this, requestCode, permissions);
     }
 
 
