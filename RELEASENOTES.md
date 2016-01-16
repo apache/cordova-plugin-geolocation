@@ -20,6 +20,18 @@
 -->
 # Release Notes
 
+### 2.1.0 (Jan 15, 2016)
+* CB-10319 **Android** Adding reflective helper methods for permission requests
+* CB-8523 Fixed accuracy when `enableHighAccuracy: false` on **iOS**.
+* CB-10286 Don't skip automatic tests on **Android** devices
+* CB-10277 Error callback should be called w/ `PositionError` when location access is denied
+* CB-10285 Added tests for `PositionError` constants
+* CB-10278 geolocation `watchPosition` doesn't return `watchID` string
+* CB-8443 **Android** nothing happens if `GPS` is turned off
+* CB-10204 Fix `getCurrentPosition` options on **Android**
+* CB-7146 Remove built-in `WebView navigator.geolocation` manual tests
+* CB-2845 `PositionError` constants not attached to prototype as specified in W3C document
+
 ### 2.0.0 (Nov 18, 2015)
 * [CB-10035](https://issues.apache.org/jira/browse/CB-10035) Updated `RELEASENOTES` to be newest to oldest
 * [CB-9907](https://issues.apache.org/jira/browse/CB-9907) Handle **iOS** tests that fail when ios simulator does not have a location
