@@ -21,4 +21,4 @@
 
 针对国内地图定位不准确的特殊情况，增加地图纠偏处理使定位精确度达到误差5米内
 
-[地图定位](http://wufeifei.com/地图定位.html)
+[地图定位](http://wufeifei.com/map-location)
