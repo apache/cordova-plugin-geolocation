@@ -18,6 +18,8 @@ var PositionError = require('./PositionError'),
     ids = {},
     loc;
 
+var EPSILON = 0.01;
+
 function ensureLocator() {
     var deferral;
 
@@ -97,11 +99,31 @@ module.exports = {
                 var highAccuracy = args[0],
                     maxAge = args[1];
 
-                loc.desiredAccuracy = highAccuracy ?
-                    Windows.Devices.Geolocation.PositionAccuracy.high :
-                    Windows.Devices.Geolocation.PositionAccuracy.default;
+                // Setting a property will cause a crash if we are already subscribed to events
+                // http://stackoverflow.com/questions/13720945/is-it-possible-to-change-desiredaccuracy-reportinterval-of-geolocator-in-posit
+                if (Object.getOwnPropertyNames(ids).length > 0) {
+                    Object.getOwnPropertyNames(ids).forEach(function (id) {
+                        var callbacks = ids[id];
+                        loc.removeEventListener("positionchanged", callbacks.pos);
+                        loc.removeEventListener("statuschanged", callbacks.status);
+                    });
 
-                loc.reportInterval = maxAge ? maxAge : 0;
+                    loc.desiredAccuracy = highAccuracy ?
+                        Windows.Devices.Geolocation.PositionAccuracy.high :
+                        Windows.Devices.Geolocation.PositionAccuracy.default;
+                    loc.reportInterval = maxAge ? maxAge : 0;
+
+                    Object.getOwnPropertyNames(ids).forEach(function (id) {
+                        var callbacks = ids[id];
+                        loc.addEventListener("positionchanged", callbacks.pos);
+                        loc.addEventListener("statuschanged", callbacks.status);
+                    });
+                } else {
+                    loc.desiredAccuracy = highAccuracy ?
+                        Windows.Devices.Geolocation.PositionAccuracy.high :
+                        Windows.Devices.Geolocation.PositionAccuracy.default;
+                    loc.reportInterval = maxAge ? maxAge : 0;
+                }
 
                 loc.getGeopositionAsync().then(
                     function (pos) {
@@ -157,16 +179,36 @@ module.exports = {
                 }
             };
 
-            loc.desiredAccuracy = highAccuracy ?
+            // Setting a property will cause a crash if we are already subscribed to events
+            // http://stackoverflow.com/questions/13720945/is-it-possible-to-change-desiredaccuracy-reportinterval-of-geolocator-in-posit
+            if (Object.getOwnPropertyNames(ids).length > 0) {
+                Object.getOwnPropertyNames(ids).forEach(function (id) {
+                    var callbacks = ids[id];
+                    loc.removeEventListener("positionchanged", callbacks.pos);
+                    loc.removeEventListener("statuschanged", callbacks.status);
+                });
+
+                loc.desiredAccuracy = highAccuracy ?
                     Windows.Devices.Geolocation.PositionAccuracy.high :
                     Windows.Devices.Geolocation.PositionAccuracy.default;
 
-            if (cordova.platformId == 'windows') {
+                Object.getOwnPropertyNames(ids).forEach(function (id) {
+                    var callbacks = ids[id];
+                    loc.addEventListener("positionchanged", callbacks.pos);
+                    loc.addEventListener("statuschanged", callbacks.status);
+                });
+            } else {
+                loc.desiredAccuracy = highAccuracy ?
+                    Windows.Devices.Geolocation.PositionAccuracy.high :
+                    Windows.Devices.Geolocation.PositionAccuracy.default;
+            }
+
+            if (cordova.platformId == 'windows' && loc.movementThreshold === 0) {
                 // 'positionchanged' event fails with error below if movementThreshold is not set
                 // JavaScript runtime error: Operation aborted
                 // You must set the MovementThreshold property or the ReportInterval property before adding event handlers.
                 // WinRT information: You must set the MovementThreshold property or the ReportInterval property before adding event handlers
-                loc.movementThreshold = Number.EPSILON;
+                loc.movementThreshold = Number.EPSILON || EPSILON;
             }
 
             loc.addEventListener("positionchanged", onPositionChanged);
