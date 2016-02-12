@@ -116,31 +116,35 @@ var geolocation = {
             }
         };
 
-        // Check our cached position, if its timestamp difference with current time is less than the maximumAge, then just
-        // fire the success callback with the cached position.
-        if (geolocation.lastPosition && options.maximumAge && (((new Date()).getTime() - geolocation.lastPosition.timestamp) <= options.maximumAge)) {
-            successCallback(geolocation.lastPosition);
-        // If the cached position check failed and the timeout was set to 0, error out with a TIMEOUT error object.
-        } else if (options.timeout === 0) {
-            fail({
-                code:PositionError.TIMEOUT,
-                message:"timeout value in PositionOptions set to 0 and no cached Position object available, or cached Position object's age exceeds provided PositionOptions' maximumAge parameter."
-            });
-        // Otherwise we have to call into native to retrieve a position.
-        } else {
-            if (options.timeout !== Infinity) {
-                // If the timeout value was not set to Infinity (default), then
-                // set up a timeout function that will fire the error callback
-                // if no successful position was retrieved before timeout expired.
-                timeoutTimer.timer = createTimeout(fail, options.timeout);
+        // // We need to return the timer first
+        setTimeout(function () {
+            // Check our cached position, if its timestamp difference with current time is less than the maximumAge, then just
+            // fire the success callback with the cached position.
+            if (geolocation.lastPosition && options.maximumAge && (((new Date()).getTime() - geolocation.lastPosition.timestamp) <= options.maximumAge)) {
+                successCallback(geolocation.lastPosition);
+                // If the cached position check failed and the timeout was set to 0, error out with a TIMEOUT error object.
+            } else if (options.timeout === 0) {
+                fail({
+                    code: PositionError.TIMEOUT,
+                    message: "timeout value in PositionOptions set to 0 and no cached Position object available, or cached Position object's age exceeds provided PositionOptions' maximumAge parameter."
+                });
+                // Otherwise we have to call into native to retrieve a position.
             } else {
-                // This is here so the check in the win function doesn't mess stuff up
-                // may seem weird but this guarantees timeoutTimer is
-                // always truthy before we call into native
-                timeoutTimer.timer = true;
+                if (options.timeout !== Infinity) {
+                    // If the timeout value was not set to Infinity (default), then
+                    // set up a timeout function that will fire the error callback
+                    // if no successful position was retrieved before timeout expired.
+                    timeoutTimer.timer = createTimeout(fail, options.timeout);
+                } else {
+                    // This is here so the check in the win function doesn't mess stuff up
+                    // may seem weird but this guarantees timeoutTimer is
+                    // always truthy before we call into native
+                    timeoutTimer.timer = true;
+                }
+                exec(win, fail, "Geolocation", "getLocation", [options.enableHighAccuracy, options.maximumAge]);
             }
-            exec(win, fail, "Geolocation", "getLocation", [options.enableHighAccuracy, options.maximumAge]);
-        }
+        });
+
         return timeoutTimer;
     },
     /**
@@ -158,39 +162,42 @@ var geolocation = {
 
         var id = utils.createUUID();
 
-        // Tell device to get a position ASAP, and also retrieve a reference to the timeout timer generated in getCurrentPosition
-        timers[id] = geolocation.getCurrentPosition(successCallback, errorCallback, options);
+        // We need to return the id first
+        setTimeout(function () {
+            // Tell device to get a position ASAP, and also retrieve a reference to the timeout timer generated in getCurrentPosition
+            timers[id] = geolocation.getCurrentPosition(successCallback, errorCallback, options);
 
-        var fail = function(e) {
-            clearTimeout(timers[id].timer);
-            var err = new PositionError(e.code, e.message);
-            if (errorCallback) {
-                errorCallback(err);
-            }
-        };
+            var fail = function (e) {
+                clearTimeout(timers[id].timer);
+                var err = new PositionError(e.code, e.message);
+                if (errorCallback) {
+                    errorCallback(err);
+                }
+            };
 
-        var win = function(p) {
-            clearTimeout(timers[id].timer);
-            if (options.timeout !== Infinity) {
-                timers[id].timer = createTimeout(fail, options.timeout);
-            }
-            var pos = new Position(
-                {
-                    latitude:p.latitude,
-                    longitude:p.longitude,
-                    altitude:p.altitude,
-                    accuracy:p.accuracy,
-                    heading:p.heading,
-                    velocity:p.velocity,
-                    altitudeAccuracy:p.altitudeAccuracy
-                },
-                p.timestamp
-            );
-            geolocation.lastPosition = pos;
-            successCallback(pos);
-        };
+            var win = function (p) {
+                clearTimeout(timers[id].timer);
+                if (options.timeout !== Infinity) {
+                    timers[id].timer = createTimeout(fail, options.timeout);
+                }
+                var pos = new Position(
+                    {
+                        latitude: p.latitude,
+                        longitude: p.longitude,
+                        altitude: p.altitude,
+                        accuracy: p.accuracy,
+                        heading: p.heading,
+                        velocity: p.velocity,
+                        altitudeAccuracy: p.altitudeAccuracy
+                    },
+                    p.timestamp
+                );
+                geolocation.lastPosition = pos;
+                successCallback(pos);
+            };
 
-        exec(win, fail, "Geolocation", "addWatch", [id, options.enableHighAccuracy]);
+            exec(win, fail, "Geolocation", "addWatch", [id, options.enableHighAccuracy]);
+        });
 
         return id;
     },

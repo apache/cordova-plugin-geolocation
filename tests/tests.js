@@ -175,7 +175,7 @@ exports.defineAutoTests = function () {
 
             var errorWatch = null;
             afterEach(function () {
-                navigator.geolocation.clearWatch(errorWatch);
+                this.errorWatch && navigator.geolocation.clearWatch(this.errorWatch);
             });
 
             it("geolocation.spec.7 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
@@ -184,7 +184,7 @@ exports.defineAutoTests = function () {
                 }
 
                 var context = this;
-                errorWatch = navigator.geolocation.watchPosition(
+                context.errorWatch = navigator.geolocation.watchPosition(
                     fail.bind(null, done, context, 'Unexpected win'),
                     succeed.bind(null, done, context),
                     {
@@ -199,7 +199,7 @@ exports.defineAutoTests = function () {
                 }
 
                 var context = this;
-                errorWatch = navigator.geolocation.watchPosition(
+                context.errorWatch = navigator.geolocation.watchPosition(
                     fail.bind(this, done, context, 'Unexpected win'),
                     function(gpsError) {
                         if (context.done) return;
@@ -224,7 +224,7 @@ exports.defineAutoTests = function () {
 
             var successWatch = null;
             afterEach(function () {
-                navigator.geolocation.clearWatch(successWatch);
+                this.successWatch && navigator.geolocation.clearWatch(this.successWatch);
             });
 
             it("geolocation.spec.8 should be called with a Position object", function (done) {
@@ -233,7 +233,7 @@ exports.defineAutoTests = function () {
                 }
 
                 var context = this;
-                successWatch = navigator.geolocation.watchPosition(
+                context.successWatch = navigator.geolocation.watchPosition(
                     function (p) {
                         // prevents done() to be called several times
                         if (context.done) return;
@@ -283,7 +283,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
         // Fail callback
         var fail = function (e) {
-            console.log("watchLocation fail callback with error code " + e);
+            console.log("watchLocation fail callback with error code " + (e && e.code) + ': ' + (e && e.message));
             stopLocation(geo);
         };
 
