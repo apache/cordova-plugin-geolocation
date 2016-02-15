@@ -205,7 +205,7 @@ Android 2.x 模擬器不除非 `enableHighAccuracy` 選項設置為 `true`，否
 
 *   **coords**： 一組的地理座標。*（座標）*
 
-*   **timestamp**： 創建時間戳記為 `coords` 。*（日期）*
+*   **timestamp**： 創建時間戳記為 `coords` 。*（DOMTimeStamp）*
 
 ## Coordinates
 

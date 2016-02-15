@@ -140,6 +140,11 @@ error, the `geolocationError` callback is passed a
 
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
+### Android Quirks
+
+If Geolocation service is turned off the `onError` callback is invoked after `timeout` interval (if specified).
+If `timeout` parameter is not specified then no callback is called.
+
 ## navigator.geolocation.watchPosition
 
 Returns the device's current position when a change in position is detected.
@@ -206,7 +211,8 @@ Optional parameters to customize the retrieval of the geolocation
 
 ### Android Quirks
 
-Android 2.x emulators do not return a geolocation result unless the `enableHighAccuracy` option is set to `true`.
+If Geolocation service is turned off the `onError` callback is invoked after `timeout` interval (if specified).
+If `timeout` parameter is not specified then no callback is called.
 
 ## navigator.geolocation.clearWatch
 
@@ -238,7 +244,7 @@ Contains `Position` coordinates and timestamp, created by the geolocation API.
 
 - __coords__: A set of geographic coordinates. _(Coordinates)_
 
-- __timestamp__: Creation timestamp for `coords`. _(Date)_
+- __timestamp__: Creation timestamp for `coords`. _(DOMTimeStamp)_
 
 ## Coordinates
 

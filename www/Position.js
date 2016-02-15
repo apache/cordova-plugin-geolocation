@@ -27,7 +27,7 @@ var Position = function(coords, timestamp) {
     } else {
         this.coords = new Coordinates();
     }
-    this.timestamp = (timestamp !== undefined) ? timestamp : new Date();
+    this.timestamp = (timestamp !== undefined) ? timestamp : new Date().getTime();
 };
 
 module.exports = Position;

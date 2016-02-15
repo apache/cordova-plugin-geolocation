@@ -164,7 +164,7 @@ Contiene `Position` coordenadas y timestamp, creado por la API de geolocalizaci�
 
 *   **coordenadas**: un conjunto de coordenadas geográficas. *(Coordenadas)*
 
-*   **timestamp**: fecha y hora de creación `coords` . *(Fecha)*
+*   **timestamp**: fecha y hora de creación `coords` . *(DOMTimeStamp)*
 
 ## Coordinates
 

@@ -177,7 +177,7 @@ Contient `Position` coordonnées et timestamp, créé par l'API de géolocalisat
 
   * **coords** : un ensemble de coordonnées géographiques. *(Coordinates)*
 
-  * **timestamp** : horodatage de la création de `coords`. *(Date)*
+  * **timestamp** : horodatage de la création de `coords`. *(DOMTimeStamp)*
 
 ## Coordonnées
 

@@ -20,41 +20,53 @@
 */
 exports.defineAutoTests = function () {
     var fail = function (done, context, message) {
-            // prevents done() to be called several times
-            if (context) {
-                if (context.done) return;
-                context.done = true;
-            }
+        // prevents done() to be called several times
+        if (context) {
+            if (context.done) return;
+            context.done = true;
+        }
 
-            if (message) {
-                expect(false).toBe(true, message);
-            } else {
-                expect(false).toBe(true);
-            }
+        if (message) {
+            expect(false).toBe(true, message);
+        } else {
+            expect(false).toBe(true);
+        }
 
-            // watchPosition could call its callback sync (before returning the value)
-            // so we invoke done async to make sure we know watcher id to .clear in afterEach
-            setTimeout(function () {
-                done();
-            });
-        },
-        succeed = function (done, context) {
-            // prevents done() to be called several times
-            if (context) {
-                if (context.done) return;
-                context.done = true;
-            }
+        // watchPosition could call its callback sync (before returning the value)
+        // so we invoke done async to make sure we know watcher id to .clear in afterEach
+        setTimeout(function () {
+            done();
+        });
+    };
+    
+    var succeed = function (done, context) {
+        // prevents done() to be called several times
+        if (context) {
+            if (context.done) return;
+            context.done = true;
+        }
 
-            expect(true).toBe(true);
+        expect(true).toBe(true);
 
-            // watchPosition could call its callback sync (before returning the value)
-            // so we invoke done async to make sure we know watcher id to .clear in afterEach
-            setTimeout(function () {
-                done();
-            });
-        },
-        isWindowsStore = (cordova.platformId == "windows8") || (cordova.platformId == "windows" && !WinJS.Utilities.isPhone),
-        isAndroid = cordova.platformId == "android";
+        // watchPosition could call its callback sync (before returning the value)
+        // so we invoke done async to make sure we know watcher id to .clear in afterEach
+        setTimeout(function () {
+            done();
+        });
+    };
+
+    // On Windows, some tests prompt user for permission to use geolocation and interrupt autotests run
+    var isWindowsStore = (cordova.platformId == "windows8") || (cordova.platformId == "windows" && !WinJS.Utilities.isPhone);
+    var majorDeviceVersion = null;
+    var versionRegex = /(\d)\..+/.exec(device.version);
+    if (versionRegex !== null) {
+        majorDeviceVersion = Number(versionRegex[1]);
+    }
+    // Starting from Android 6.0 there are confirmation dialog which prevents us from running auto tests in silent mode (user interaction needed)
+    // Also, Android emulator doesn't provide geo fix without manual interactions or mocks
+    var skipAndroid = cordova.platformId == "android" && (device.isVirtual || majorDeviceVersion >= 6);
+    var isIOSSim = false; // if iOS simulator does not have a location set, it will fail.
+
 
     describe('Geolocation (navigator.geolocation)', function () {
 
@@ -84,10 +96,7 @@ exports.defineAutoTests = function () {
         describe('error callback', function () {
 
             it("geolocation.spec.5 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                if (isWindowsStore || skipAndroid) {
                     pending();
                 }
 
@@ -100,15 +109,32 @@ exports.defineAutoTests = function () {
                     });
             });
 
+            it("geolocation.spec.9 on failure should return PositionError object with error code constants", function (done) {
+                if (isWindowsStore || skipAndroid) {
+                    pending();
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    fail.bind(this, done),
+                    function(gpsError) {
+                        // W3C specs: http://dev.w3.org/geo/api/spec-source.html#position_error_interface
+                        expect(gpsError.PERMISSION_DENIED).toBe(1);
+                        expect(gpsError.POSITION_UNAVAILABLE).toBe(2);
+                        expect(gpsError.TIMEOUT).toBe(3);
+                        done();
+                    },
+                    {
+                        maximumAge: 0,
+                        timeout: 0
+                    });
+            });
+
         });
 
         describe('success callback', function () {
 
             it("geolocation.spec.6 should be called with a Position object", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                if (isWindowsStore || skipAndroid) {
                     pending();
                 }
 
@@ -116,8 +142,17 @@ exports.defineAutoTests = function () {
                     expect(p.coords).toBeDefined();
                     expect(p.timestamp).toBeDefined();
                     done();
+                }, function(err){
+                    if(err.message && err.message.indexOf('kCLErrorDomain') > -1){
+                        console.log("Error: Location not set in simulator, tests will fail.");
+                        expect(true).toBe(true);
+                        isIOSSim = true;
+                        done();
+                    }
+                    else {
+                        fail(done);
+                    }
                 },
-                fail.bind(null, done),
                 {
                     maximumAge: (5 * 60 * 1000) // 5 minutes maximum age of cached position
                 });
@@ -144,10 +179,7 @@ exports.defineAutoTests = function () {
             });
 
             it("geolocation.spec.7 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                if (isWindowsStore || skipAndroid) {
                     pending();
                 }
 
@@ -155,6 +187,31 @@ exports.defineAutoTests = function () {
                 errorWatch = navigator.geolocation.watchPosition(
                     fail.bind(null, done, context, 'Unexpected win'),
                     succeed.bind(null, done, context),
+                    {
+                        maximumAge: 0,
+                        timeout: 0
+                    });
+            });
+
+            it("geolocation.spec.10 on failure should return PositionError object with error code constants", function (done) {
+                if (isWindowsStore || skipAndroid) {
+                    pending();
+                }
+
+                var context = this;
+                errorWatch = navigator.geolocation.watchPosition(
+                    fail.bind(this, done, context, 'Unexpected win'),
+                    function(gpsError) {
+                        if (context.done) return;
+                        context.done = true;
+
+                        // W3C specs: http://dev.w3.org/geo/api/spec-source.html#position_error_interface
+                        expect(gpsError.PERMISSION_DENIED).toBe(1);
+                        expect(gpsError.POSITION_UNAVAILABLE).toBe(2);
+                        expect(gpsError.TIMEOUT).toBe(3);
+
+                        done();
+                    },
                     {
                         maximumAge: 0,
                         timeout: 0
@@ -171,10 +228,7 @@ exports.defineAutoTests = function () {
             });
 
             it("geolocation.spec.8 should be called with a Position object", function (done) {
-                // On Windows, this test prompts user for permission to use geolocation and interrupts autotests running.
-                // On Android geolocation Api is not available on emulator so we pended tests until we found the way to detect
-                // whether we run on emulator or real device from JavaScript. You can still run the tests on Android manually.
-                if (isWindowsStore || isAndroid) {
+                if (isWindowsStore || skipAndroid || isIOSSim) {
                     pending();
                 }
 
@@ -196,6 +250,7 @@ exports.defineAutoTests = function () {
                     {
                         maximumAge: (5 * 60 * 1000) // 5 minutes maximum age of cached position
                     });
+                expect(successWatch).toBeDefined();
             });
 
         });
@@ -209,23 +264,15 @@ exports.defineAutoTests = function () {
 /******************************************************************************/
 
 exports.defineManualTests = function (contentEl, createActionButton) {
-    var newGeolocation = navigator.geolocation;
-    var origGeolocation = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
-    if (!origGeolocation) {
-        origGeolocation = newGeolocation;
-        newGeolocation = null;
-    }
-
     var watchLocationId = null;
 
     /**
      * Start watching location
      */
-    var watchLocation = function (usePlugin) {
-        console.log("watchLocation()");
-        var geo = usePlugin ? newGeolocation : origGeolocation;
+    var watchLocation = function () {
+        var geo = navigator.geolocation;
         if (!geo) {
-            alert('geolocation object is missing. usePlugin = ' + usePlugin);
+            alert('navigator.geolocation object is missing.');
             return;
         }
 
@@ -248,11 +295,10 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     /**
      * Stop watching the location
      */
-    var stopLocation = function (usePlugin) {
-        console.log("stopLocation()");
-        var geo = usePlugin ? newGeolocation : origGeolocation;
+    var stopLocation = function () {
+        var geo = navigator.geolocation;
         if (!geo) {
-            alert('geolocation object is missing. usePlugin = ' + usePlugin);
+            alert('navigator.geolocation object is missing.');
             return;
         }
         setLocationStatus("Stopped");
@@ -265,11 +311,10 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     /**
      * Get current location
      */
-    var getLocation = function (usePlugin, opts) {
-        console.log("getLocation()");
-        var geo = usePlugin ? newGeolocation : origGeolocation;
+    var getLocation = function (opts) {
+        var geo = navigator.geolocation;
         if (!geo) {
-            alert('geolocation object is missing. usePlugin = ' + usePlugin);
+            alert('navigator.geolocation object is missing.');
             return;
         }
 
@@ -311,7 +356,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         document.getElementById('speed').innerHTML = p.coords.speed;
         document.getElementById('altitude_accuracy').innerHTML = p.coords.altitudeAccuracy;
         document.getElementById('timestamp').innerHTML = date.toDateString() + " " + date.toTimeString();
-    }
+    };
 
     /******************************************************************************/
 
@@ -365,16 +410,6 @@ exports.defineManualTests = function (contentEl, createActionButton) {
             '</table>' +
             '</div>',
         actions =
-            '<h2>Use Built-in WebView navigator.geolocation</h2>' +
-            '<div id="built-in-getLocation"></div>' +
-            'Expected result: Will update all applicable values in status box for current location. Status will read Retrieving Location (may not see this if location is retrieved immediately) then Done.' +
-            '<p/> <div id="built-in-watchLocation"></div>' +
-            'Expected result: Will update all applicable values in status box for current location and update as location changes. Status will read Running.' +
-            '<p/> <div id="built-in-stopLocation"></div>' +
-            'Expected result: Will stop watching the location so values will not be updated. Status will read Stopped.' +
-            '<p/> <div id="built-in-getOld"></div>' +
-            'Expected result: Will update location values with a cached position that is up to 30 seconds old. Verify with time value. Status will read Done.' +
-            '<h2>Use Cordova Geolocation Plugin</h2>' +
             '<div id="cordova-getLocation"></div>' +
             'Expected result: Will update all applicable values in status box for current location. Status will read Retrieving Location (may not see this if location is retrieved immediately) then Done.' +
             '<p/> <div id="cordova-watchLocation"></div>' +
@@ -392,34 +427,18 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         + altitude_accuracy + time + note + actions;
 
     createActionButton('Get Location', function () {
-        getLocation(false);
-    }, 'built-in-getLocation');
-
-    createActionButton('Start Watching Location', function () {
-        watchLocation(false);
-    }, 'built-in-watchLocation');
-
-    createActionButton('Stop Watching Location', function () {
-        stopLocation(false);
-    }, 'built-in-stopLocation');
-
-    createActionButton('Get Location Up to 30 Sec Old', function () {
-        getLocation(false, { maximumAge: 30000 });
-    }, 'built-in-getOld');
-
-    createActionButton('Get Location', function () {
-        getLocation(true);
+        getLocation();
     }, 'cordova-getLocation');
 
     createActionButton('Start Watching Location', function () {
-        watchLocation(true);
+        watchLocation();
     }, 'cordova-watchLocation');
 
     createActionButton('Stop Watching Location', function () {
-        stopLocation(true);
+        stopLocation();
     }, 'cordova-stopLocation');
 
     createActionButton('Get Location Up to 30 Sec Old', function () {
-        getLocation(true, { maximumAge: 30000 });
+        getLocation({ maximumAge: 30000 });
     }, 'cordova-getOld');
 };

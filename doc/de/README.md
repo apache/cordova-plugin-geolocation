@@ -218,7 +218,7 @@ Enthält `Position` koordinaten und Timestamp, erstellt von der Geolocation API.
 
   * **coords**: eine Reihe von geographischen Koordinaten. *(Coordinates)*
 
-  * **timestamp**: Zeitstempel der Erstellung für `coords` . *(Date)*
+  * **timestamp**: Zeitstempel der Erstellung für `coords` . *(DOMTimeStamp)*
 
 ## Coordinates
 
