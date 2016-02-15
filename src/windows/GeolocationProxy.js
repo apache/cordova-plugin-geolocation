@@ -18,6 +18,9 @@ var PositionError   = require('./PositionError');
 var callbacks       = {};
 var locs            = {};
 
+// constants
+var FALLBACK_EPSILON = 0.001;
+
 function ensureAndCreateLocator() {
     var deferral;
 
@@ -162,7 +165,11 @@ module.exports = {
                 // JavaScript runtime error: Operation aborted
                 // You must set the MovementThreshold property or the ReportInterval property before adding event handlers.
                 // WinRT information: You must set the MovementThreshold property or the ReportInterval property before adding event handlers
-                loc.movementThreshold = Number.EPSILON;
+                if (Number.EPSILON) {
+                    loc.movementThreshold = Number.EPSILON;
+                } else {
+                    loc.movementThreshold = FALLBACK_EPSILON;
+                }
             }
 
             loc.addEventListener("positionchanged", onPositionChanged);
