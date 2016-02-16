@@ -24,7 +24,7 @@ var FALLBACK_EPSILON = 0.001;
 function ensureAndCreateLocator() {
     var deferral;
 
-    loc = new Windows.Devices.Geolocation.Geolocator();
+    var loc = new Windows.Devices.Geolocation.Geolocator();
 
     if (typeof Windows.Devices.Geolocation.Geolocator.requestAccessAsync === 'function') {
         deferral = Windows.Devices.Geolocation.Geolocator.requestAccessAsync().then(function (result) {
