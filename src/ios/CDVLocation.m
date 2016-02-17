@@ -142,14 +142,14 @@
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     } else {
         __highAccuracyEnabled = NO;
-        self.locationManager.distanceFilter = 10;
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers;
+        self.locationManager.distanceFilter = 100;
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
     }
 
     if (background) {
         self.locationManager.allowsBackgroundLocationUpdates = YES;
-        //self.locationManager.pausesLocationUpdatesAutomatically = NO;
-        
+        self.locationManager.pausesLocationUpdatesAutomatically = NO;
+
         if (CLLocationManager.significantLocationChangeMonitoringAvailable) {
             [self.locationManager stopMonitoringSignificantLocationChanges];
             [self.locationManager startMonitoringSignificantLocationChanges];
@@ -158,7 +158,6 @@
         // Tell the location manager to start notifying us of location updates. We
         // first stop, and then start the updating to ensure we get at least one
         // update, even if our location did not change.
-        
         [self.locationManager stopUpdatingLocation];
         [self.locationManager startUpdatingLocation];
     }
@@ -196,7 +195,7 @@
     {
         isInBackground = YES;
     }
-    
+
     UIBackgroundTaskIdentifier bgTask = UIBackgroundTaskInvalid;
     if (isInBackground)
     {
@@ -407,7 +406,7 @@
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
     if(!__locationStarted){
-        [self startLocation:__highAccuracyEnabled background:NO];
+        [self startLocation:__highAccuracyEnabled background:YES];
     }
 }
 

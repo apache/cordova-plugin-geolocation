@@ -14,47 +14,46 @@
  * limitations under the License.
  */
 
-var PositionError = require('./PositionError'),
-    ids = {},
-    loc;
+var PositionError   = require('./PositionError');
+var callbacks       = {};
+var locs            = {};
 
-function ensureLocator() {
+// constants
+var FALLBACK_EPSILON = 0.001;
+
+function ensureAndCreateLocator() {
     var deferral;
 
-    if (!loc) {
-        loc = new Windows.Devices.Geolocation.Geolocator();
+    var loc = new Windows.Devices.Geolocation.Geolocator();
 
-        if (typeof Windows.Devices.Geolocation.Geolocator.requestAccessAsync === 'function') {
-            deferral = Windows.Devices.Geolocation.Geolocator.requestAccessAsync().then(function (result) {
-                if (result === Windows.Devices.Geolocation.GeolocationAccessStatus.allowed) {
-                    return loc;
-                }
+    if (typeof Windows.Devices.Geolocation.Geolocator.requestAccessAsync === 'function') {
+        deferral = Windows.Devices.Geolocation.Geolocator.requestAccessAsync().then(function (result) {
+            if (result === Windows.Devices.Geolocation.GeolocationAccessStatus.allowed) {
+                return loc;
+            }
 
-                return WinJS.Promise.wrapError({
-                    code: PositionError.PERMISSION_DENIED,
-                    message: 'Geolocation access has not been allowed by user.'
-                });
+            return WinJS.Promise.wrapError({
+                code: PositionError.PERMISSION_DENIED,
+                message: 'Geolocation access has not been allowed by user.'
             });
-        } else {
-            deferral = WinJS.Promise.wrap(loc);
-        }
+        });
     } else {
         deferral = WinJS.Promise.wrap(loc);
-    }    
+    }
 
     return deferral;
 }
 
-function createErrorCode() {
+function createErrorCode(loc) {
     switch (loc.locationStatus) {
         case Windows.Devices.Geolocation.PositionStatus.initializing:
             // This status indicates that a location device is still initializing
         case Windows.Devices.Geolocation.PositionStatus.noData:
-            // No location data is currently available 
+            // No location data is currently available
         case Windows.Devices.Geolocation.PositionStatus.notInitialized:
             // This status indicates that the app has not yet requested
-            // location data by calling GetGeolocationAsync() or 
-            // registering an event handler for the positionChanged event. 
+            // location data by calling GetGeolocationAsync() or
+            // registering an event handler for the positionChanged event.
         case Windows.Devices.Geolocation.PositionStatus.notAvailable:
             // Location is not available on this version of Windows
             return PositionError.POSITION_UNAVAILABLE;
@@ -76,7 +75,7 @@ function createResult(pos) {
         altitudeAccuracy: pos.coordinate.altitudeAccuracy,
         timestamp: pos.coordinate.timestamp
     };
-    
+
     if (pos.coordinate.point) {
         res.latitude = pos.coordinate.point.position.latitude;
         res.longitude = pos.coordinate.point.position.longitude;
@@ -86,13 +85,13 @@ function createResult(pos) {
         res.longitude = pos.coordinate.longitude;
         res.altitude = pos.coordinate.altitude;
     }
-    
+
     return res;
 }
 
 module.exports = {
     getLocation: function (success, fail, args, env) {
-        ensureLocator().done(function () {
+        ensureAndCreateLocator().done(function (loc) {
             if (loc) {
                 var highAccuracy = args[0],
                     maxAge = args[1];
@@ -109,7 +108,7 @@ module.exports = {
                     },
                     function (err) {
                         fail({
-                            code: createErrorCode(),
+                            code: createErrorCode(loc),
                             message: err.message
                         });
                     }
@@ -125,9 +124,9 @@ module.exports = {
     },
 
     addWatch: function (success, fail, args, env) {
-        ensureLocator().done(function () {
-            var clientId = args[0],
-            highAccuracy = args[1],
+        ensureAndCreateLocator().done(function (loc) {
+            var clientId = args[0];
+            var highAccuracy = args[1];
 
             onPositionChanged = function (e) {
                 success(createResult(e.position), { keepCallback: true });
@@ -166,25 +165,32 @@ module.exports = {
                 // JavaScript runtime error: Operation aborted
                 // You must set the MovementThreshold property or the ReportInterval property before adding event handlers.
                 // WinRT information: You must set the MovementThreshold property or the ReportInterval property before adding event handlers
-                loc.movementThreshold = Number.EPSILON;
+                if (Number.EPSILON) {
+                    loc.movementThreshold = Number.EPSILON;
+                } else {
+                    loc.movementThreshold = FALLBACK_EPSILON;
+                }
             }
 
             loc.addEventListener("positionchanged", onPositionChanged);
             loc.addEventListener("statuschanged", onStatusChanged);
 
-            ids[clientId] = { pos: onPositionChanged, status: onStatusChanged };
-        }, fail);        
+            callbacks[clientId] = { pos: onPositionChanged, status: onStatusChanged };
+            locs[clientId] = loc;
+        }, fail);
     },
 
     clearWatch: function (success, fail, args, env) {
-        var clientId = args[0],
-            callbacks = ids[clientId];
+        var clientId = args[0];
+        var callback = callbacks[clientId];
+        var loc      = locs[clientId]
 
-        if (callbacks) {
-            loc.removeEventListener("positionchanged", callbacks.pos);
-            loc.removeEventListener("statuschanged", callbacks.status);
+        if (callback && loc) {
+            loc.removeEventListener("positionchanged", callback.pos);
+            loc.removeEventListener("statuschanged", callback.status);
 
-            delete ids[clientId];
+            delete callbacks[clientId];
+            delete locs[clientId];
         }
 
         success();
