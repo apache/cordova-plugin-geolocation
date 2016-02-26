@@ -18,6 +18,10 @@
  * under the License.
  *
 */
+
+/* jshint jasmine: true */
+/* global WinJS, device */
+
 exports.defineAutoTests = function () {
     var fail = function (done, context, message) {
         // prevents done() to be called several times
@@ -267,6 +271,40 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     var watchLocationId = null;
 
     /**
+     * Set location status
+     */
+    function setLocationStatus(status) {
+        document.getElementById('location_status').innerHTML = status;
+    }
+    function setLocationDetails(p) {
+        var date = (new Date(p.timestamp));
+        document.getElementById('latitude').innerHTML = p.coords.latitude;
+        document.getElementById('longitude').innerHTML = p.coords.longitude;
+        document.getElementById('altitude').innerHTML = p.coords.altitude;
+        document.getElementById('accuracy').innerHTML = p.coords.accuracy;
+        document.getElementById('heading').innerHTML = p.coords.heading;
+        document.getElementById('speed').innerHTML = p.coords.speed;
+        document.getElementById('altitude_accuracy').innerHTML = p.coords.altitudeAccuracy;
+        document.getElementById('timestamp').innerHTML = date.toDateString() + " " + date.toTimeString();
+    }
+
+    /**
+     * Stop watching the location
+     */
+    function stopLocation() {
+        var geo = navigator.geolocation;
+        if (!geo) {
+            alert('navigator.geolocation object is missing.');
+            return;
+        }
+        setLocationStatus("Stopped");
+        if (watchLocationId) {
+            geo.clearWatch(watchLocationId);
+            watchLocationId = null;
+        }
+    }
+
+    /**
      * Start watching location
      */
     var watchLocation = function () {
@@ -290,22 +328,6 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         // Get location
         watchLocationId = geo.watchPosition(success, fail, { enableHighAccuracy: true });
         setLocationStatus("Running");
-    };
-
-    /**
-     * Stop watching the location
-     */
-    var stopLocation = function () {
-        var geo = navigator.geolocation;
-        if (!geo) {
-            alert('navigator.geolocation object is missing.');
-            return;
-        }
-        setLocationStatus("Stopped");
-        if (watchLocationId) {
-            geo.clearWatch(watchLocationId);
-            watchLocationId = null;
-        }
     };
 
     /**
@@ -338,24 +360,6 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         // Get location
         geo.getCurrentPosition(success, fail, opts || { enableHighAccuracy: true }); //, {timeout: 10000});
 
-    };
-
-    /**
-     * Set location status
-     */
-    var setLocationStatus = function (status) {
-        document.getElementById('location_status').innerHTML = status;
-    };
-    var setLocationDetails = function (p) {
-        var date = (new Date(p.timestamp));
-        document.getElementById('latitude').innerHTML = p.coords.latitude;
-        document.getElementById('longitude').innerHTML = p.coords.longitude;
-        document.getElementById('altitude').innerHTML = p.coords.altitude;
-        document.getElementById('accuracy').innerHTML = p.coords.accuracy;
-        document.getElementById('heading').innerHTML = p.coords.heading;
-        document.getElementById('speed').innerHTML = p.coords.speed;
-        document.getElementById('altitude_accuracy').innerHTML = p.coords.altitudeAccuracy;
-        document.getElementById('timestamp').innerHTML = date.toDateString() + " " + date.toTimeString();
     };
 
     /******************************************************************************/
@@ -423,8 +427,8 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         note = 
             '<h3>Allow use of current location, if prompted</h3>';
 
-    contentEl.innerHTML = values_info + location_div + latitude + longitude + altitude + accuracy + heading + speed
-        + altitude_accuracy + time + note + actions;
+    contentEl.innerHTML = values_info + location_div + latitude + longitude + altitude + accuracy + heading + speed +
+        altitude_accuracy + time + note + actions;
 
     createActionButton('Get Location', function () {
         getLocation();
