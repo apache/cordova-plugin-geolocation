@@ -45,7 +45,7 @@ accesses geolocation data (if the device operating system doesn't do
 so already).  That notice should provide the same information noted
 above, as well as obtaining the user's permission (e.g., by presenting
 choices for __OK__ and __No Thanks__).  For more information, please
-see the Privacy Guide.
+see the [Privacy Guide](http://cordova.apache.org/docs/en/latest/guide/appdev/privacy/index.html).
 
 This plugin defines a global `navigator.geolocation` object (for platforms
 where it is otherwise missing).
@@ -81,7 +81,6 @@ It is also possible to install via repo url directly ( unstable )
 - iOS
 - Tizen
 - Windows Phone 7 and 8
-- Windows 8
 - Windows
 
 ## Methods
