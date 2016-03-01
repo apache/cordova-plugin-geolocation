@@ -21,6 +21,7 @@ package org.apache.cordova.geolocation;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.os.Build;
+import android.util.Log;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -41,6 +42,7 @@ public class Geolocation extends CordovaPlugin {
 
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        Log.d(TAG, "We are entering execute");
         context = callbackContext;
         if(action.equals("getPermission"))
         {
@@ -63,18 +65,20 @@ public class Geolocation extends CordovaPlugin {
                                           int[] grantResults) throws JSONException
     {
         PluginResult result;
-        for(int r:grantResults)
-        {
-            if(r == PackageManager.PERMISSION_DENIED)
-            {
-                LOG.d(TAG, "Permission Denied!");
-                result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
-                context.sendPluginResult(result);
-                return;
+        //This is important if we're using Cordova without using Cordova, but we have the geolocation plugin installed
+        if(context != null) {
+            for (int r : grantResults) {
+                if (r == PackageManager.PERMISSION_DENIED) {
+                    LOG.d(TAG, "Permission Denied!");
+                    result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+                    context.sendPluginResult(result);
+                    return;
+                }
+
             }
+            result = new PluginResult(PluginResult.Status.OK);
+            context.sendPluginResult(result);
         }
-        result = new PluginResult(PluginResult.Status.OK);
-        context.sendPluginResult(result);
     }
 
     public boolean hasPermisssion() {
