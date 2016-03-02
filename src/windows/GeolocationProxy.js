@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* global Windows, WinJS */
+
 var PositionError   = require('./PositionError');
 var callbacks       = {};
 var locs            = {};
@@ -128,11 +130,11 @@ module.exports = {
             var clientId = args[0];
             var highAccuracy = args[1];
 
-            onPositionChanged = function (e) {
+            var onPositionChanged = function (e) {
                 success(createResult(e.position), { keepCallback: true });
-            },
+            };
 
-            onStatusChanged = function (e) {
+            var onStatusChanged = function (e) {
                 switch (e.status) {
                     case Windows.Devices.Geolocation.PositionStatus.noData:
                     case Windows.Devices.Geolocation.PositionStatus.notAvailable:
@@ -183,7 +185,7 @@ module.exports = {
     clearWatch: function (success, fail, args, env) {
         var clientId = args[0];
         var callback = callbacks[clientId];
-        var loc      = locs[clientId]
+        var loc      = locs[clientId];
 
         if (callback && loc) {
             loc.removeEventListener("positionchanged", callback.pos);
