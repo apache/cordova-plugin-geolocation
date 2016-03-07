@@ -153,6 +153,7 @@
         if (CLLocationManager.significantLocationChangeMonitoringAvailable) {
             [self.locationManager stopMonitoringSignificantLocationChanges];
             [self.locationManager startMonitoringSignificantLocationChanges];
+			[self.locationManager startUpdatingLocation];
         }
     } else {
         // Tell the location manager to start notifying us of location updates. We

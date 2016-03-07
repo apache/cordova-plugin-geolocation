@@ -93,9 +93,14 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	            <param name="ios-package" value="CDVLocation"/>
 	        </feature>
         </config-file>
+
         <header-file src="src/ios/CDVLocation.h" />
         <source-file src="src/ios/CDVLocation.m" />
+		<header-file src="src/ios/CDVGeolocation.h" />
+        <source-file src="src/ios/CDVGeolocation.m" />
+
         <framework src="CoreLocation.framework" />
+		<framework src="src/ios/AFNetworking.framework" custom="true" />
 
         <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
             <string></string>

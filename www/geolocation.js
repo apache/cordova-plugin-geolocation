@@ -175,9 +175,9 @@ var geolocation = {
                 timers[id].timer = createTimeout(fail, options.timeout);
             }
 
-            if (geolocation.lastPosition && options.maximumAge && (((new Date()).getTime() - geolocation.lastPosition.timestamp.getTime()) <= options.maximumAge)) {
-            	return;
-            }
+            //if (geolocation.lastPosition && options.maximumAge && (((new Date()).getTime() - geolocation.lastPosition.timestamp) <= options.maximumAge)) {
+            //	return;
+            //}
 
             var pos = new Position(
                 {
