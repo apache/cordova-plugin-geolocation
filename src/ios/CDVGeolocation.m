@@ -34,7 +34,7 @@
 {
     //NSLog(@"-------------------------------didUpdateLocations");
     CLLocation* newLocation = [locations lastObject];
-    if (self.timestamp == nil || self.timestamp.timeIntervalSinceNow > 60) {
+    if (self.timestamp == nil || -self.timestamp.timeIntervalSinceNow > 60) {
         self.timestamp = newLocation.timestamp;
         [self uploadLocation:newLocation];
     }
