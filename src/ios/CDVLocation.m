@@ -133,6 +133,10 @@
     }
 #endif
 
+    // Dave
+    self.locationManager.pausesLocationUpdatesAutomatically = NO;
+    self.locationManager.allowsBackgroundLocationUpdates = YES;
+
     // Tell the location manager to start notifying us of location updates. We
     // first stop, and then start the updating to ensure we get at least one
     // update, even if our location did not change.
@@ -143,7 +147,7 @@
         __highAccuracyEnabled = YES;
         // Set distance filter to 5 for a high accuracy. Setting it to "kCLDistanceFilterNone" could provide a
         // higher accuracy, but it's also just spamming the callback with useless reports which drain the battery.
-        self.locationManager.distanceFilter = 5;
+        self.locationManager.distanceFilter = 1; //Dave orig = 5
         // Set desired accuracy to Best.
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     } else {
