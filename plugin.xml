@@ -22,7 +22,7 @@
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="cordova-plugin-geolocation"
-      version="2.1.1-dev">
+      version="2.1.1">
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
@@ -37,7 +37,28 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+            
+			<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+			<uses-permission android:name="android.permission.INTERNET"/>
+			<uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+			<uses-permission android:name="android.permission.WAKE_LOCK"/>
+			<uses-permission android:name="android.permission.DEVICE_POWER"/>
+			<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+			<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+			<uses-permission android:name="android.permission.GET_TASKS" />
+			<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+			<uses-permission android:name="android.permission.WRITE_SETTINGS" />
         </config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<receiver android:name="org.apache.cordova.geolocation.LocationService">
+				<intent-filter>
+					<action android:name="android.intent.action.BOOT_COMPLETED"></action>
+					<action android:name="org.apache.cordova.geolocation.action.ALARM"></action>
+				</intent-filter>
+			</receiver>
+		</config-file>
 
         <config-file target="res/xml/config.xml" parent="/*">
           <feature name="Geolocation">
@@ -47,6 +68,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <source-file src="src/android/Geolocation.java" target-dir="src/org/apache/cordova/geolocation/" />
         <source-file src="src/android/PermissionHelper.java" target-dir="src/org/apache/cordova/geolocation/" />
+        <source-file src="src/android/LocationService.java" target-dir="src/org/apache/cordova/geolocation/" />
 
         <js-module src="www/android/geolocation.js" name="geolocation">
             <clobbers target="navigator.geolocation" />
