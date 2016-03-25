@@ -53,10 +53,14 @@ where it is otherwise missing).
 Although the object is in the global scope, features provided by this plugin
 are not available until after the `deviceready` event.
 
+```javascript
+
     document.addEventListener("deviceready", onDeviceReady, false);
     function onDeviceReady() {
         console.log("navigator.geolocation works well");
     }
+
+```
 
 ## Installation
 
@@ -117,6 +121,8 @@ error, the `geolocationError` callback is passed a
 
 ### Example
 
+```javascript
+
     // onSuccess Callback
     // This method accepts a Position object, which contains the
     // current GPS coordinates
@@ -140,6 +146,8 @@ error, the `geolocationError` callback is passed a
     }
 
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+```
 
 ### Android Quirks
 
@@ -172,6 +180,8 @@ there is an error, the `geolocationError` callback executes with a
 
 ### Example
 
+```javascript
+
     // onSuccess Callback
     //   This method accepts a `Position` object, which contains
     //   the current GPS coordinates
@@ -194,6 +204,7 @@ there is an error, the `geolocationError` callback executes with a
     //
     var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
 
+```
 
 ## geolocationOptions
 
@@ -228,6 +239,8 @@ Stop watching for changes to the device's location referenced by the
 
 ### Example
 
+```javascript
+
     // Options: watch for changes in position, and use the most
     // accurate position acquisition method available.
     //
@@ -236,6 +249,8 @@ Stop watching for changes to the device's location referenced by the
     // ...later on...
 
     navigator.geolocation.clearWatch(watchID);
+
+```
 
 ## Position
 
@@ -296,3 +311,438 @@ callback function when an error occurs with navigator.geolocation.
   - Returned when the device is unable to retrieve a position. In general, this means the device is not connected to a network or can't get a satellite fix.
 - `PositionError.TIMEOUT`
   - Returned when the device is unable to retrieve a position within the time specified by the `timeout` included in `geolocationOptions`. When used with `navigator.geolocation.watchPosition`, this error could be repeatedly passed to the `geolocationError` callback every `timeout` milliseconds.
+
+
+## Sample: Get the weather, find stores, and see photos of things nearby with Geolocation ##
+
+Use this plugin to help users find things near them such as Groupon deals, houses for sale, movies playing, sports and entertainment events and more.
+
+Here's a "cookbook" of ideas to get you started. In the snippets below, we'll show you some basic ways to add these features to your app.
+
+* Get your coordinates.
+* Get the weather forecast.
+* Receive updated weather forecasts as you drive around.
+* See where you are on a map.
+* Find stores near you.
+* See pictures of things around you.
+
+You can find the complete sample [here](https://github.com/Microsoft/cordova-samples/tree/master/cordova-plugin-geolocation)
+
+## Get your geolocation coordinates
+
+```javascript
+
+function getWeatherLocation() {
+
+    navigator.geolocation.getCurrentPosition
+    (onWeatherSuccess, onWeatherError, { enableHighAccuracy: true });
+}
+
+```
+## Get the weather forecast
+
+```javascript
+
+// Success callback for get geo coordinates
+
+var onWeatherSuccess = function (position) {
+
+    // We declared Latitude and Longitude as global variables
+    Latitude = position.coords.latitude;
+    Longitude = position.coords.longitude;
+
+    getWeather(Latitude, Longitude);
+}
+
+// Get weather by using coordinates
+
+function getWeather(latitude, longitude) {
+
+    var queryString =
+        "http://gws2.maps.yahoo.com/findlocation?pf=1&locale=en_US&offset=15&flags=&q="
+        + latitude + "%2c" + longitude + "&gflags=R&start=0&format=json";
+
+    $.getJSON(queryString, function (results) {
+
+        if (results.Found > 0) {
+            var zipCode = results.Result.uzip;
+            var queryString = "https://query.yahooapis.com/v1/public/yql?q="
+              + "select+*+from+weather.forecast+where+location="
+              + zipCode + "&format=json";
+
+            $.getJSON(queryString, function (results) {
+
+                if (results.query.count > 0) {
+                    var weather = results.query.results.channel;
+
+                    $('#description').text(weather.description);
+                    $('#temp').text(weather.wind.chill);
+                    $('#wind').text(weather.wind.speed);
+                    $('#humidity').text(weather.atmosphere.humidity);
+                    $('#visibility').text(weather.atmosphere.visibility);
+                    $('#sunrise').text(weather.astronomy.sunrise);
+                    $('#sunset').text(weather.astronomy.sunset);
+                }
+            });
+        }
+    }).fail(function () {
+        console.log("error getting location");
+    });
+}
+
+// Error callback
+
+function onWeatherError(error) {
+    console.log('code: ' + error.code + '\n' +
+        'message: ' + error.message + '\n');
+}
+
+```
+
+## Receive updated weather forecasts as you drive around
+
+```javascript
+
+// Watch your changing position
+
+function watchWeatherPosition() {
+
+    return navigator.geolocation.watchPosition
+    (onWeatherWatchSuccess, onWeatherError, { enableHighAccuracy: true });
+}
+
+// Success callback for watching your changing position
+
+var onWeatherWatchSuccess = function (position) {
+
+    var updatedLatitude = position.coords.latitude;
+    var updatedLongitude = position.coords.longitude;
+
+    if (updatedLatitude != Latitude && updatedLongitude != Longitude) {
+
+        Latitude = updatedLatitude;
+        Longitude = updatedLongitude;
+
+        // Calls function we defined earlier.
+        getWeather(updatedLatitude, updatedLongitude);
+    }
+}
+
+```
+
+## See where you are on a map
+
+Both Bing and Google have map services. We'll use Google's. You'll need a key but it's free if you're just trying things out.
+
+Add a reference to the **maps** service.
+
+```HTML
+
+ <script src="https://maps.googleapis.com/maps/api/js?key=Your_API_Key"></script>
+
+```
+Then, add code to use it.
+
+```javascript
+
+var Latitude = undefined;
+var Longitude = undefined;
+
+// Get geo coordinates
+
+function getMapLocation() {
+
+    navigator.geolocation.getCurrentPosition
+    (onMapSuccess, onMapError, { enableHighAccuracy: true });
+}
+
+// Success callback for get geo coordinates
+
+var onMapSuccess = function (position) {
+
+    Latitude = position.coords.latitude;
+    Longitude = position.coords.longitude;
+
+    getMap(Latitude, Longitude);
+
+}
+
+// Get map by using coordinates
+
+function getMap(latitude, longitude) {
+
+    var mapOptions = {
+        center: new google.maps.LatLng(0, 0),
+        zoom: 1,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    map = new google.maps.Map
+    (document.getElementById("map"), mapOptions);
+
+
+    var latLong = new google.maps.LatLng(latitude, longitude);
+
+    var marker = new google.maps.Marker({
+        position: latLong
+    });
+
+    marker.setMap(map);
+    map.setZoom(15);
+    map.setCenter(marker.getPosition());
+}
+
+// Success callback for watching your changing position
+
+var onMapWatchSuccess = function (position) {
+
+    var updatedLatitude = position.coords.latitude;
+    var updatedLongitude = position.coords.longitude;
+
+    if (updatedLatitude != Latitude && updatedLongitude != Longitude) {
+
+        Latitude = updatedLatitude;
+        Longitude = updatedLongitude;
+
+        getMap(updatedLatitude, updatedLongitude);
+    }
+}
+
+// Error callback
+
+function onMapError(error) {
+    console.log('code: ' + error.code + '\n' +
+        'message: ' + error.message + '\n');
+}
+
+// Watch your changing position
+
+function watchMapPosition() {
+
+    return navigator.geolocation.watchPosition
+    (onMapWatchSuccess, onMapError, { enableHighAccuracy: true });  
+}
+
+```
+
+## Find stores near you
+
+You can use the same Google key for this.
+
+Add a reference to the **places** service.
+
+```HTML
+
+<script src=
+"https://maps.googleapis.com/maps/api/js?key=Your_API_Key&libraries=places">
+</script>
+
+```
+
+Then, add code to use it.
+
+```javascript
+
+var Map;
+var Infowindow;
+var Latitude = undefined;
+var Longitude = undefined;
+
+// Get geo coordinates
+
+function getPlacesLocation() {
+    navigator.geolocation.getCurrentPosition
+    (onPlacesSuccess, onPlacesError, { enableHighAccuracy: true });
+}
+
+// Success callback for get geo coordinates
+
+var onPlacesSuccess = function (position) {
+
+    Latitude = position.coords.latitude;
+    Longitude = position.coords.longitude;
+
+    getPlaces(Latitude, Longitude);
+
+}
+
+// Get places by using coordinates
+
+function getPlaces(latitude, longitude) {
+
+    var latLong = new google.maps.LatLng(latitude, longitude);
+
+    var mapOptions = {
+
+        center: new google.maps.LatLng(latitude, longitude),
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+
+    };
+
+    Map = new google.maps.Map(document.getElementById("places"), mapOptions);
+
+    Infowindow = new google.maps.InfoWindow();
+
+    var service = new google.maps.places.PlacesService(Map);
+    service.nearbySearch({
+
+        location: latLong,
+        radius: 500,
+        type: ['store']
+    }, foundStoresCallback);
+
+}
+
+// Success callback for watching your changing position
+
+var onPlacesWatchSuccess = function (position) {
+
+    var updatedLatitude = position.coords.latitude;
+    var updatedLongitude = position.coords.longitude;
+
+    if (updatedLatitude != Latitude && updatedLongitude != Longitude) {
+
+        Latitude = updatedLatitude;
+        Longitude = updatedLongitude;
+
+        getPlaces(updatedLatitude, updatedLongitude);
+    }
+}
+
+// Success callback for locating stores in the area
+
+function foundStoresCallback(results, status) {
+
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+
+        for (var i = 0; i < results.length; i++) {
+
+            createMarker(results[i]);
+
+        }
+    }
+}
+
+// Place a pin for each store on the map
+
+function createMarker(place) {
+
+    var placeLoc = place.geometry.location;
+
+    var marker = new google.maps.Marker({
+        map: Map,
+        position: place.geometry.location
+    });
+
+    google.maps.event.addListener(marker, 'click', function () {
+
+        Infowindow.setContent(place.name);
+        Infowindow.open(Map, this);
+
+    });
+}
+
+// Error callback
+
+function onPlacesError(error) {
+    console.log('code: ' + error.code + '\n' +
+        'message: ' + error.message + '\n');
+}
+
+// Watch your changing position
+
+function watchPlacesPosition() {
+
+    return navigator.geolocation.watchPosition
+    (onPlacesWatchSuccess, onPlacesError, { enableHighAccuracy: true });
+}
+
+```
+
+## See pictures of things around you
+
+Digital photos can contain geo coordinates that identify where the picture was taken.
+
+Use Flickr API's to find pictures that folks have taken near you. Like Google services, you'll need a key, but it's free if you just want to try things out.
+
+```javascript
+
+var Latitude = undefined;
+var Longitude = undefined;
+
+// Get geo coordinates
+
+function getPicturesLocation() {
+
+    navigator.geolocation.getCurrentPosition
+    (onPicturesSuccess, onPicturesError, { enableHighAccuracy: true });
+
+}
+
+// Success callback for get geo coordinates
+
+var onPicturesSuccess = function (position) {
+
+    Latitude = position.coords.latitude;
+    Longitude = position.coords.longitude;
+
+    getPictures(Latitude, Longitude);
+}
+
+// Get pictures by using coordinates
+
+function getPictures(latitude, longitude) {
+
+    $('#pictures').empty();
+
+    var queryString =
+    "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=Your_API_Key&lat="
+    + latitude + "&lon=" + longitude + "&format=json&jsoncallback=?";
+
+    $.getJSON(queryString, function (results) {
+        $.each(results.photos.photo, function (index, item) {
+
+            var photoURL = "http://farm" + item.farm + ".static.flickr.com/" +
+                item.server + "/" + item.id + "_" + item.secret + "_m.jpg";
+
+            $('#pictures').append($("<img />").attr("src", photoURL));                            
+
+           });
+        }
+    );
+}
+
+// Success callback for watching your changing position
+
+var onPicturesWatchSuccess = function (position) {
+
+    var updatedLatitude = position.coords.latitude;
+    var updatedLongitude = position.coords.longitude;
+
+    if (updatedLatitude != Latitude && updatedLongitude != Longitude) {
+
+        Latitude = updatedLatitude;
+        Longitude = updatedLongitude;
+
+        getPictures(updatedLatitude, updatedLongitude);
+    }
+}
+
+// Error callback
+
+function onPicturesError(error) {
+
+    console.log('code: ' + error.code + '\n' +
+        'message: ' + error.message + '\n');
+}
+
+// Watch your changing position
+
+function watchPicturePosition() {
+
+    return navigator.geolocation.watchPosition
+    (onPicturesWatchSuccess, onPicturesError, { enableHighAccuracy: true });
+}
+
+```
