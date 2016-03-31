@@ -326,8 +326,6 @@ Here's a "cookbook" of ideas to get you started. In the snippets below, we'll sh
 * Find stores near you.
 * See pictures of things around you.
 
-You can find the complete sample [here](https://github.com/Microsoft/cordova-samples/tree/master/cordova-plugin-geolocation)
-
 ## Get your geolocation coordinates
 
 ```javascript
