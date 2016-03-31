@@ -43,20 +43,14 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			<uses-permission android:name="android.permission.INTERNET"/>
 			<uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
 			<uses-permission android:name="android.permission.WAKE_LOCK"/>
-			<uses-permission android:name="android.permission.DEVICE_POWER"/>
 			<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 			<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-			<uses-permission android:name="android.permission.GET_TASKS" />
 			<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 			<uses-permission android:name="android.permission.WRITE_SETTINGS" />
         </config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<receiver android:name="org.apache.cordova.geolocation.LocationService">
-				<intent-filter>
-					<action android:name="android.intent.action.BOOT_COMPLETED"></action>
-					<action android:name="org.apache.cordova.geolocation.action.ALARM"></action>
-				</intent-filter>
 			</receiver>
 		</config-file>
 

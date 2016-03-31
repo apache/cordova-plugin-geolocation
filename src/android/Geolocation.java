@@ -36,6 +36,7 @@ import javax.security.auth.callback.Callback;
 
 public class Geolocation extends CordovaPlugin {
 
+	private LocationService locationService;
     String TAG = "GeolocationPlugin";
     CallbackContext context;
 
@@ -43,9 +44,11 @@ public class Geolocation extends CordovaPlugin {
 
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-    	Activity activity = this.cordova.getActivity();
-		LocationService locationService = new LocationService();
-		locationService.start(activity);
+    	if(this.locationService == null) {
+        	Activity activity = this.cordova.getActivity();
+        	this.locationService = new LocationService();
+        	this.locationService.start(activity);
+    	}
 
         Log.d(TAG, "We are entering execute");
         context = callbackContext;
