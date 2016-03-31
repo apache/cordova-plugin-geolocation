@@ -50,8 +50,11 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<receiver android:name="org.apache.cordova.geolocation.LocationService">
-			</receiver>
+        	<receiver android:name="org.apache.cordova.geolocation.LocationService" android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            	<intent-filter>
+                	<action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            	</intent-filter>
+        	</receiver>
 		</config-file>
 
         <config-file target="res/xml/config.xml" parent="/*">
