@@ -3,7 +3,7 @@ package org.apache.cordova.geolocation;
 import org.json.JSONObject;
 
 import android.Manifest;
-import android.annotation.TargetApi;
+
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,9 +13,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.app.PendingIntent;
 import android.app.AlarmManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.webkit.CookieManager;
 
 import java.net.HttpURLConnection;
@@ -24,7 +28,7 @@ import java.io.OutputStream;
 
 public class LocationService extends BroadcastReceiver implements LocationListener {
 
-	private String uploadUrl = "http://test.dingdongcheguanjia.com/api/geolocation";
+	private static String uploadUrl = "http://test.dingdongcheguanjia.com/api/geolocation";
 
 	public String getUploadUrl() {
 		return uploadUrl;
@@ -60,35 +64,55 @@ public class LocationService extends BroadcastReceiver implements LocationListen
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60 * 1000, 5, this);
 		Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		if (location != null) {
-			uploadLocation(location);
+			ConnectivityManager connMgr = (ConnectivityManager)
+					context.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+			if (networkInfo != null && networkInfo.isConnected()) {
+				new UploadLocationTask().execute(location);
+			} else {
+				Log.d("LocationService", networkInfo.toString());
+			}
 		}
 	}
 
-	public void uploadLocation(Location location) {
-		try {
-			JSONObject parameters = new JSONObject();
-			parameters.put("longitude", location.getLongitude());
-			parameters.put("latitude", location.getLatitude());
+	private class UploadLocationTask extends AsyncTask<Location, Void, String> {
+		@Override
+		protected String doInBackground(Location... locations) {
+			uploadLocation(locations[0]);
+			return "";
+		}
+		// onPostExecute displays the results of the AsyncTask.
+		@Override
+		protected void onPostExecute(String result) {
 
-			String encoding = "UTF-8";
-			byte[] data = parameters.toString().getBytes(encoding);
-			URL url = new URL(this.uploadUrl);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setDoOutput(true);
-			conn.setRequestProperty("Content-Type", "application/json;charset=" + encoding);
-			conn.setRequestProperty("Content-Length", String.valueOf(data.length));
-			conn.setConnectTimeout(5 * 1000);
-			String cookie = CookieManager.getInstance().getCookie(this.uploadUrl);
-			conn.setRequestProperty("Cookie", cookie);
+		}
 
-			OutputStream outStream = conn.getOutputStream();
-			outStream.write(data);
-			outStream.flush();
-			outStream.close();
-			// System.out.println(conn.getResponseCode()); //响应代码 200表示成功
-		} catch (Exception e) {
-			e.printStackTrace();
+		public void uploadLocation(Location location) {
+			try {
+				JSONObject parameters = new JSONObject();
+				parameters.put("longitude", location.getLongitude());
+				parameters.put("latitude", location.getLatitude());
+
+				String encoding = "UTF-8";
+				byte[] data = parameters.toString().getBytes(encoding);
+				URL url = new URL(LocationService.uploadUrl);
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("POST");
+				conn.setDoOutput(true);
+				conn.setRequestProperty("Content-Type", "application/json;charset=" + encoding);
+				conn.setRequestProperty("Content-Length", String.valueOf(data.length));
+				conn.setConnectTimeout(10 * 1000);
+				String cookie = CookieManager.getInstance().getCookie(LocationService.uploadUrl);
+				conn.setRequestProperty("Cookie", cookie);
+
+				OutputStream outStream = conn.getOutputStream();
+				outStream.write(data);
+				outStream.flush();
+				outStream.close();
+				Log.d("LocationService", conn.getResponseCode() + "");
+			} catch (Exception e) {
+				Log.d("LocationService", "uploadLocation error", e);
+			}
 		}
 	}
 
@@ -115,9 +139,11 @@ public class LocationService extends BroadcastReceiver implements LocationListen
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent != null && intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+			Log.d("LocationService", "android.intent.action.BOOT_COMPLETED");
 			LocationService locationService = new LocationService();
 			locationService.start(context);
 		} else {
+			Log.d("LocationService", "alarm");
 			startLocation(context);
 		}
 	}
