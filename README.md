@@ -345,7 +345,6 @@ function getWeatherLocation() {
 
 var onWeatherSuccess = function (position) {
 
-    // We declared Latitude and Longitude as global variables
     Latitude = position.coords.latitude;
     Longitude = position.coords.longitude;
 
@@ -356,31 +355,34 @@ var onWeatherSuccess = function (position) {
 
 function getWeather(latitude, longitude) {
 
+    // Get a free key at http://openweathermap.org/. Replace the "Your_Key_Here" string with that key.
+    var OpenWeatherAppKey = "Your_Key_Here";
+
     var queryString =
-        "http://gws2.maps.yahoo.com/findlocation?pf=1&locale=en_US&offset=15&flags=&q="
-        + latitude + "%2c" + longitude + "&gflags=R&start=0&format=json";
+      'http://api.openweathermap.org/data/2.5/weather?lat='
+      + latitude + '&lon=' + longitude + '&appid=' + OpenWeatherAppKey + '&units=imperial';
 
     $.getJSON(queryString, function (results) {
 
-        if (results.Found > 0) {
-            var zipCode = results.Result.uzip;
-            var queryString = "https://query.yahooapis.com/v1/public/yql?q="
-              + "select+*+from+weather.forecast+where+location="
-              + zipCode + "&format=json";
+        if (results.weather.length) {
 
             $.getJSON(queryString, function (results) {
 
-                if (results.query.count > 0) {
-                    var weather = results.query.results.channel;
+                if (results.weather.length) {
 
-                    $('#description').text(weather.description);
-                    $('#temp').text(weather.wind.chill);
-                    $('#wind').text(weather.wind.speed);
-                    $('#humidity').text(weather.atmosphere.humidity);
-                    $('#visibility').text(weather.atmosphere.visibility);
-                    $('#sunrise').text(weather.astronomy.sunrise);
-                    $('#sunset').text(weather.astronomy.sunset);
+                    $('#description').text(results.name);
+                    $('#temp').text(results.main.temp);
+                    $('#wind').text(results.wind.speed);
+                    $('#humidity').text(results.main.humidity);
+                    $('#visibility').text(results.weather[0].main);
+
+                    var sunriseDate = new Date(results.sys.sunrise);
+                    $('#sunrise').text(sunriseDate.toLocaleTimeString());
+
+                    var sunsetDate = new Date(results.sys.sunrise);
+                    $('#sunset').text(sunsetDate.toLocaleTimeString());
                 }
+
             });
         }
     }).fail(function () {
