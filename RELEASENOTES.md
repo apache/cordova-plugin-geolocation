@@ -20,6 +20,13 @@
 -->
 # Release Notes
 
+### 2.2.0 (Apr 15, 2016)
+* Replace `PermissionHelper.java` with `cordova-plugin-compat`
+* CB-10691 Check the context to avoid null errors
+* CB-10636 Add `JSHint` for plugins
+* Using a fallback epsilon in case `Number.EPSILON` is not defined.
+* CB-10574 MobileSpec can't get results for **WP8.1** Builds
+
 ### 2.1.0 (Jan 15, 2016)
 * CB-10319 **Android** Adding reflective helper methods for permission requests
 * CB-8523 Fixed accuracy when `enableHighAccuracy: false` on **iOS**.
