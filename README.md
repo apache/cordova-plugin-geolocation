@@ -313,20 +313,20 @@ callback function when an error occurs with navigator.geolocation.
   - Returned when the device is unable to retrieve a position within the time specified by the `timeout` included in `geolocationOptions`. When used with `navigator.geolocation.watchPosition`, this error could be repeatedly passed to the `geolocationError` callback every `timeout` milliseconds.
 
 
-## Sample: Get the weather, find stores, and see photos of things nearby with Geolocation ##
+## <a id="sample"></a>Sample: Get the weather, find stores, and see photos of things nearby with Geolocation ##
 
 Use this plugin to help users find things near them such as Groupon deals, houses for sale, movies playing, sports and entertainment events and more.
 
 Here's a "cookbook" of ideas to get you started. In the snippets below, we'll show you some basic ways to add these features to your app.
 
-* Get your coordinates.
-* Get the weather forecast.
-* Receive updated weather forecasts as you drive around.
-* See where you are on a map.
-* Find stores near you.
-* See pictures of things around you.
+* [Get your coordinates](#coords).
+* [Get the weather forecast](#weather).
+* [Receive updated weather forecasts as you drive around](#receive).
+* [See where you are on a map](#see).
+* [Find stores near you](#find).
+* [See pictures of things around you](#see).
 
-## Get your geolocation coordinates
+## <a id="coord"></a>Get your geolocation coordinates
 
 ```javascript
 
@@ -337,7 +337,7 @@ function getWeatherLocation() {
 }
 
 ```
-## Get the weather forecast
+## <a id="weather"></a>Get the weather forecast
 
 ```javascript
 
@@ -399,7 +399,7 @@ function onWeatherError(error) {
 
 ```
 
-## Receive updated weather forecasts as you drive around
+## <a id="receive"></a>Receive updated weather forecasts as you drive around
 
 ```javascript
 
@@ -430,7 +430,7 @@ var onWeatherWatchSuccess = function (position) {
 
 ```
 
-## See where you are on a map
+## <a id="see"></a>See where you are on a map
 
 Both Bing and Google have map services. We'll use Google's. You'll need a key but it's free if you're just trying things out.
 
@@ -525,7 +525,7 @@ function watchMapPosition() {
 
 ```
 
-## Find stores near you
+## <a id="find"></a>Find stores near you
 
 You can use the same Google key for this.
 
@@ -660,7 +660,7 @@ function watchPlacesPosition() {
 
 ```
 
-## See pictures of things around you
+## <a id="pictures"></a>See pictures of things around you
 
 Digital photos can contain geo coordinates that identify where the picture was taken.
 
