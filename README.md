@@ -26,11 +26,15 @@ description: Access GPS data.
 # cordova-plugin-geolocation
 
 This plugin provides information about the device's location, such as
-latitude and longitude. Common sources of location information include
+latitude and longitude.
+
+Common sources of location information include
 Global Positioning System (GPS) and location inferred from network
 signals such as IP address, RFID, WiFi and Bluetooth MAC addresses,
 and GSM/CDMA cell IDs. There is no guarantee that the API returns the
 device's actual location.
+
+> To get a few ideas, check out the [sample](#sample) at the bottom of this page or go straight to the [reference](#reference) content.
 
 This API is based on the
 [W3C Geolocation API Specification](http://dev.w3.org/geo/api/spec-source.html),
@@ -65,7 +69,7 @@ are not available until after the `deviceready` event.
     }
 
 ```
-
+## <a id="reference"></a>Reference
 ## Installation
 
 This requires cordova 5.0+ ( current stable 1.0.0 )
