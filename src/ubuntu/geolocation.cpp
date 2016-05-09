@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2016 Canonical Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,19 @@
 
 #include "geolocation.h"
 
-Geolocation::Geolocation(Cordova *cordova): CPlugin(cordova),
-                                            _geoPositionInfoSource(QGeoPositionInfoSource::createDefaultSource(this)) {
+Geolocation::Geolocation(Cordova *cordova)
+  : CPlugin(cordova),
+    _geoPositionInfoSource(QGeoPositionInfoSource::createDefaultSource(this)) {
     if (_geoPositionInfoSource.data() != 0) {
-        QObject::connect(_geoPositionInfoSource.data(), SIGNAL(positionUpdated(QGeoPositionInfo)), this, SLOT(positionUpdated(QGeoPositionInfo)));
-        QObject::connect(_geoPositionInfoSource.data(), SIGNAL(updateTimeout()), this, SLOT(updateTimeout()));
+        QObject::connect(_geoPositionInfoSource.data(),
+                         SIGNAL(positionUpdated(QGeoPositionInfo)),
+                         this,
+                         SLOT(positionUpdated(QGeoPositionInfo)));
+        
+        QObject::connect(_geoPositionInfoSource.data(),
+                         SIGNAL(updateTimeout()),
+                         this,
+                         SLOT(updateTimeout()));
     }
 }
 
@@ -81,16 +89,22 @@ void Geolocation::positionUpdated(const QGeoPositionInfo &update) {
 
     p.insert("latitude", coordinate.latitude());
     p.insert("longitude", coordinate.longitude());
-    p.insert("altitude", coordinate.altitude());
 
-    if (update.hasAttribute(QGeoPositionInfo::VerticalAccuracy))
-        p.insert("accuracy", update.attribute(QGeoPositionInfo::VerticalAccuracy));
+    if (coordinate.type() == QGeoCoordinate::Coordinate3D)
+      p.insert("altitude", coordinate.altitude());
+
+    if (update.hasAttribute(QGeoPositionInfo::HorizontalAccuracy))
+        p.insert("accuracy", update.attribute(QGeoPositionInfo::HorizontalAccuracy));
+
     if (update.hasAttribute(QGeoPositionInfo::Direction))
         p.insert("heading", update.attribute(QGeoPositionInfo::Direction));
+
     if (update.hasAttribute(QGeoPositionInfo::GroundSpeed))
         p.insert("velocity", update.attribute(QGeoPositionInfo::GroundSpeed));
-    if (update.hasAttribute(QGeoPositionInfo::HorizontalAccuracy))
-        p.insert("altitudeAccuracy", update.attribute(QGeoPositionInfo::HorizontalAccuracy));
+
+    if (update.hasAttribute(QGeoPositionInfo::VerticalAccuracy))
+        p.insert("altitudeAccuracy", update.attribute(QGeoPositionInfo::VerticalAccuracy));
+
     p.insert("timestamp", update.timestamp().toMSecsSinceEpoch());
 
     for (const QString &id: _id2sc.keys()) {
