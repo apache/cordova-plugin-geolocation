@@ -50,7 +50,7 @@ const Coordinates = function (lat, lng, alt, acc, head, vel, altacc) {
     /**
      * The direction the device is moving at the position.
      */
-    this.heading = head !== undefined ? head : null;
+    this.heading = (typeof head === 'number' && head >= 0 && head <= 360 ? head : null);
     /**
      * The velocity with which the device is moving at the position.
      */
