@@ -54,7 +54,7 @@ const Coordinates = function (lat, lng, alt, acc, head, vel, altacc) {
     /**
      * The velocity with which the device is moving at the position.
      */
-    this.speed = vel !== undefined ? vel : null;
+    this.speed = (typeof vel === 'number' && vel >= 0 ? vel : null);
 
     if (this.speed === 0 || this.speed === null) {
         this.heading = NaN;
