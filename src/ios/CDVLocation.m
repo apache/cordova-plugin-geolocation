@@ -18,7 +18,6 @@
  */
 
 #import "CDVLocation.h"
-#import <Cordova/NSArray+Comparisons.h>
 
 #pragma mark Constants
 
@@ -57,17 +56,13 @@ const double ee = 0.00669342162296594323;
 
 @synthesize locationManager, locationData;
 
-- (CDVPlugin*)initWithWebView:(UIWebView*)theWebView
+- (void)pluginInitialize
 {
-    self = (CDVLocation*)[super initWithWebView:(UIWebView*)theWebView];
-    if (self) {
-        self.locationManager = [[CLLocationManager alloc] init];
-        self.locationManager.delegate = self; // Tells the location manager to send updates to this object
-        __locationStarted = NO;
-        __highAccuracyEnabled = NO;
-        self.locationData = nil;
-    }
-    return self;
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self; // Tells the location manager to send updates to this object
+    __locationStarted = NO;
+    __highAccuracyEnabled = NO;
+    self.locationData = nil;
 }
 
 - (BOOL)isAuthorized
