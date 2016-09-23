@@ -21,7 +21,6 @@ package org.apache.cordova.geolocation;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.os.Build;
-import android.util.Log;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -43,7 +42,7 @@ public class Geolocation extends CordovaPlugin {
 
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Log.d(TAG, "We are entering execute");
+        LOG.d(TAG, "We are entering execute");
         context = callbackContext;
         if(action.equals("getPermission"))
         {

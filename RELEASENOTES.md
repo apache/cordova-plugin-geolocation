@@ -20,24 +20,33 @@
 -->
 # Release Notes
 
+### 2.3.0 (Sep 08, 2016)
+* [CB-11795](https://issues.apache.org/jira/browse/CB-11795) Add 'protective' entry to cordovaDependencies
+* Plugin uses `Android Log class` and not `Cordova LOG class`
+* Add badges for paramedic builds on Jenkins
+* Add pull request template.
+* Adding links to reference content and sample content to the top of the readme file
+* Update **iOS** geolocation plugin to avoid `THREAD WARNING: ['Geolocation']`, operation occurs in new Thread
+* [CB-10996](https://issues.apache.org/jira/browse/CB-10996) Adding front matter to README.md
+
 ### 2.2.0 (Apr 15, 2016)
 * Replace `PermissionHelper.java` with `cordova-plugin-compat`
-* CB-10691 Check the context to avoid null errors
-* CB-10636 Add `JSHint` for plugins
+* [CB-10691](https://issues.apache.org/jira/browse/CB-10691) Check the context to avoid null errors
+* [CB-10636](https://issues.apache.org/jira/browse/CB-10636) Add `JSHint` for plugins
 * Using a fallback epsilon in case `Number.EPSILON` is not defined.
-* CB-10574 MobileSpec can't get results for **WP8.1** Builds
+* [CB-10574](https://issues.apache.org/jira/browse/CB-10574) MobileSpec can't get results for **WP8.1** Builds
 
 ### 2.1.0 (Jan 15, 2016)
-* CB-10319 **Android** Adding reflective helper methods for permission requests
-* CB-8523 Fixed accuracy when `enableHighAccuracy: false` on **iOS**.
-* CB-10286 Don't skip automatic tests on **Android** devices
-* CB-10277 Error callback should be called w/ `PositionError` when location access is denied
-* CB-10285 Added tests for `PositionError` constants
-* CB-10278 geolocation `watchPosition` doesn't return `watchID` string
-* CB-8443 **Android** nothing happens if `GPS` is turned off
-* CB-10204 Fix `getCurrentPosition` options on **Android**
-* CB-7146 Remove built-in `WebView navigator.geolocation` manual tests
-* CB-2845 `PositionError` constants not attached to prototype as specified in W3C document
+* [CB-10319](https://issues.apache.org/jira/browse/CB-10319) **Android** Adding reflective helper methods for permission requests
+* [CB-8523](https://issues.apache.org/jira/browse/CB-8523) Fixed accuracy when `enableHighAccuracy: false` on **iOS**.
+* [CB-10286](https://issues.apache.org/jira/browse/CB-10286) Don't skip automatic tests on **Android** devices
+* [CB-10277](https://issues.apache.org/jira/browse/CB-10277) Error callback should be called w/ `PositionError` when location access is denied
+* [CB-10285](https://issues.apache.org/jira/browse/CB-10285) Added tests for `PositionError` constants
+* [CB-10278](https://issues.apache.org/jira/browse/CB-10278) geolocation `watchPosition` doesn't return `watchID` string
+* [CB-8443](https://issues.apache.org/jira/browse/CB-8443) **Android** nothing happens if `GPS` is turned off
+* [CB-10204](https://issues.apache.org/jira/browse/CB-10204) Fix `getCurrentPosition` options on **Android**
+* [CB-7146](https://issues.apache.org/jira/browse/CB-7146) Remove built-in `WebView navigator.geolocation` manual tests
+* [CB-2845](https://issues.apache.org/jira/browse/CB-2845) `PositionError` constants not attached to prototype as specified in W3C document
 
 ### 2.0.0 (Nov 18, 2015)
 * [CB-10035](https://issues.apache.org/jira/browse/CB-10035) Updated `RELEASENOTES` to be newest to oldest
