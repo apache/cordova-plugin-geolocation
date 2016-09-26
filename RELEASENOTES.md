@@ -20,6 +20,10 @@
 -->
 # Release Notes
 
+### 2.4.0 (Sep 26, 2016)
+* **Ubuntu** Fix altitude & accuracies retrieval
+* [CB-11875](https://issues.apache.org/jira/browse/CB-11875) added `android.hardware.location.gps` `uses-feature`.
+
 ### 2.3.0 (Sep 08, 2016)
 * [CB-11795](https://issues.apache.org/jira/browse/CB-11795) Add 'protective' entry to cordovaDependencies
 * Plugin uses `Android Log class` and not `Cordova LOG class`
