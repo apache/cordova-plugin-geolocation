@@ -159,6 +159,17 @@ error, the `geolocationError` callback is passed a
 
 ```
 
+### iOS Quirks
+ 
+ Since iOS 10 it's mandatory to add a `NSLocationWhenInUseUsageDescription` entry in the info.plist.
+ 
+ `NSLocationWhenInUseUsageDescription` describes the reason that the app accesses the user's location. When the system prompts the user to allow access, this string is displayed as part of the dialog box. To add this entry you can pass the variable `GEOLOCATION_USAGE_DESCRIPTION` on plugin install.
+ 
+ Example:
+ `cordova plugin add cordova-plugin-geolocation --variable GEOLOCATION_USAGE_DESCRIPTION="your usage message"`
+ 
+ If you don't pass the variable, the plugin will add an empty string as value.
+ 
 ### Android Quirks
 
 If Geolocation service is turned off the `onError` callback is invoked after `timeout` interval (if specified).
