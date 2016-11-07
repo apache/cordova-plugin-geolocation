@@ -18,6 +18,7 @@
 
 package org.apache.cordova.geolocation;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.os.Build;
@@ -30,6 +31,7 @@ import org.apache.cordova.PluginResult;
 import org.apache.cordova.LOG;
 import org.json.JSONArray;
 import org.json.JSONException;
+import android.location.LocationManager;
 
 import javax.security.auth.callback.Callback;
 
@@ -37,6 +39,7 @@ public class Geolocation extends CordovaPlugin {
 
     String TAG = "GeolocationPlugin";
     CallbackContext context;
+	private LocationManager mLocationManager;
 
     String [] permissions = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION };
 
@@ -44,6 +47,14 @@ public class Geolocation extends CordovaPlugin {
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         LOG.d(TAG, "We are entering execute");
         context = callbackContext;
+
+        mLocationManager = (LocationManager) cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (isGPSdisabled()) {
+            PluginResult result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, "Location services are disabled.");
+            context.sendPluginResult(result);
+            return false;
+        }
+
         if(action.equals("getPermission"))
         {
             if(hasPermisssion())
@@ -70,7 +81,7 @@ public class Geolocation extends CordovaPlugin {
             for (int r : grantResults) {
                 if (r == PackageManager.PERMISSION_DENIED) {
                     LOG.d(TAG, "Permission Denied!");
-                    result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+                    result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, "");
                     context.sendPluginResult(result);
                     return;
                 }
@@ -102,6 +113,16 @@ public class Geolocation extends CordovaPlugin {
         PermissionHelper.requestPermissions(this, requestCode, permissions);
     }
 
+	private boolean isGPSdisabled() {
+		boolean gps_enabled;
+		try {
+			gps_enabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			gps_enabled = false;
+		}
 
+		return !gps_enabled;
+	}
 
 }

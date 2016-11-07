@@ -33,9 +33,9 @@ module.exports = {
           var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
           geo.getCurrentPosition(success, error, args);
         };
-        var fail = function() {
+        var fail = function(e) {
             if (error) {
-                error(new PositionError (PositionError.PERMISSION_DENIED, 'Illegal Access'));
+                error(new PositionError (PositionError.PERMISSION_DENIED, e.message));
             }
         };
         exec(win, fail, "Geolocation", "getPermission", []);
@@ -49,9 +49,9 @@ module.exports = {
             pluginToNativeWatchMap[pluginWatchId] = geo.watchPosition(success, error, args);
         };
 
-        var fail = function() {
+        var fail = function(e) {
             if (error) {
-                error(new PositionError(PositionError.PERMISSION_DENIED, 'Illegal Access'));
+                error(new PositionError(PositionError.PERMISSION_DENIED, e.message));
             }
         };
         exec(win, fail, "Geolocation", "getPermission", []);
