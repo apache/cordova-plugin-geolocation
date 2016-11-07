@@ -35,7 +35,7 @@ module.exports = {
         };
         var fail = function(e) {
             if (error) {
-                error(new PositionError (PositionError.PERMISSION_DENIED, e.message));
+                error(new PositionError (PositionError.PERMISSION_DENIED, e));
             }
         };
         exec(win, fail, "Geolocation", "getPermission", []);
@@ -51,7 +51,7 @@ module.exports = {
 
         var fail = function(e) {
             if (error) {
-                error(new PositionError(PositionError.PERMISSION_DENIED, e.message));
+                error(new PositionError(PositionError.PERMISSION_DENIED, e));
             }
         };
         exec(win, fail, "Geolocation", "getPermission", []);
