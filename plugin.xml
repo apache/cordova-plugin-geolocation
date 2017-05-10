@@ -74,6 +74,11 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <!-- ios -->
     <platform name="ios">
 
+        <config-file target="*-Info.plist" parent="/*">
+            <key>NSLocationWhenInUseUsageDescription</key>
+            <string></string>
+        </config-file>
+
         <js-module src="www/Coordinates.js" name="Coordinates">
             <clobbers target="Coordinates" />
         </js-module>
