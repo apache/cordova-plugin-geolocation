@@ -19,7 +19,7 @@
  *
 */
 
-/* jshint jasmine: true */
+/* eslint-env jasmine */
 /* global WinJS, device */
 
 exports.defineAutoTests = function () {
@@ -42,7 +42,7 @@ exports.defineAutoTests = function () {
             done();
         });
     };
-    
+
     var succeed = function (done, context) {
         // prevents done() to be called several times
         if (context) {
@@ -60,7 +60,7 @@ exports.defineAutoTests = function () {
     };
 
     // On Windows, some tests prompt user for permission to use geolocation and interrupt autotests run
-    var isWindowsStore = (cordova.platformId == "windows8") || (cordova.platformId == "windows" && !WinJS.Utilities.isPhone);
+    var isWindowsStore = (cordova.platformId === 'windows8') || (cordova.platformId === 'windows' && !WinJS.Utilities.isPhone); // eslint-disable-line no-undef
     var majorDeviceVersion = null;
     var versionRegex = /(\d)\..+/.exec(device.version);
     if (versionRegex !== null) {
@@ -68,29 +68,28 @@ exports.defineAutoTests = function () {
     }
     // Starting from Android 6.0 there are confirmation dialog which prevents us from running auto tests in silent mode (user interaction needed)
     // Also, Android emulator doesn't provide geo fix without manual interactions or mocks
-    var skipAndroid = cordova.platformId == "android" && (device.isVirtual || majorDeviceVersion >= 6);
+    var skipAndroid = cordova.platformId === 'android' && (device.isVirtual || majorDeviceVersion >= 6); // eslint-disable-line no-undef
     var isIOSSim = false; // if iOS simulator does not have a location set, it will fail.
-
 
     describe('Geolocation (navigator.geolocation)', function () {
 
-        it("geolocation.spec.1 should exist", function () {
+        it('geolocation.spec.1 should exist', function () {
             expect(navigator.geolocation).toBeDefined();
         });
 
-        it("geolocation.spec.2 should contain a getCurrentPosition function", function () {
+        it('geolocation.spec.2 should contain a getCurrentPosition function', function () {
             expect(typeof navigator.geolocation.getCurrentPosition).toBeDefined();
-            expect(typeof navigator.geolocation.getCurrentPosition == 'function').toBe(true);
+            expect(typeof navigator.geolocation.getCurrentPosition === 'function').toBe(true);
         });
 
-        it("geolocation.spec.3 should contain a watchPosition function", function () {
+        it('geolocation.spec.3 should contain a watchPosition function', function () {
             expect(typeof navigator.geolocation.watchPosition).toBeDefined();
-            expect(typeof navigator.geolocation.watchPosition == 'function').toBe(true);
+            expect(typeof navigator.geolocation.watchPosition === 'function').toBe(true);
         });
 
-        it("geolocation.spec.4 should contain a clearWatch function", function () {
+        it('geolocation.spec.4 should contain a clearWatch function', function () {
             expect(typeof navigator.geolocation.clearWatch).toBeDefined();
-            expect(typeof navigator.geolocation.clearWatch == 'function').toBe(true);
+            expect(typeof navigator.geolocation.clearWatch === 'function').toBe(true);
         });
 
     });
@@ -99,7 +98,7 @@ exports.defineAutoTests = function () {
 
         describe('error callback', function () {
 
-            it("geolocation.spec.5 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
+            it('geolocation.spec.5 should be called if we set timeout to 0 and maximumAge to a very small number', function (done) {
                 if (isWindowsStore || skipAndroid) {
                     pending();
                 }
@@ -113,14 +112,14 @@ exports.defineAutoTests = function () {
                     });
             });
 
-            it("geolocation.spec.9 on failure should return PositionError object with error code constants", function (done) {
+            it('geolocation.spec.9 on failure should return PositionError object with error code constants', function (done) {
                 if (isWindowsStore || skipAndroid) {
                     pending();
                 }
 
                 navigator.geolocation.getCurrentPosition(
                     fail.bind(this, done),
-                    function(gpsError) {
+                    function (gpsError) {
                         // W3C specs: http://dev.w3.org/geo/api/spec-source.html#position_error_interface
                         expect(gpsError.PERMISSION_DENIED).toBe(1);
                         expect(gpsError.POSITION_UNAVAILABLE).toBe(2);
@@ -137,7 +136,7 @@ exports.defineAutoTests = function () {
 
         describe('success callback', function () {
 
-            it("geolocation.spec.6 should be called with a Position object", function (done) {
+            it('geolocation.spec.6 should be called with a Position object', function (done) {
                 if (isWindowsStore || skipAndroid) {
                     pending();
                 }
@@ -146,14 +145,13 @@ exports.defineAutoTests = function () {
                     expect(p.coords).toBeDefined();
                     expect(p.timestamp).toBeDefined();
                     done();
-                }, function(err){
-                    if(err.message && err.message.indexOf('kCLErrorDomain') > -1){
-                        console.log("Error: Location not set in simulator, tests will fail.");
+                }, function (err) {
+                    if (err.message && err.message.indexOf('kCLErrorDomain') > -1) {
+                        console.log('Error: Location not set in simulator, tests will fail.');
                         expect(true).toBe(true);
                         isIOSSim = true;
                         done();
-                    }
-                    else {
+                    } else {
                         fail(done);
                     }
                 },
@@ -167,10 +165,10 @@ exports.defineAutoTests = function () {
 
     describe('watchPosition method', function () {
 
-        beforeEach(function(done) {
+        beforeEach(function (done) {
             // This timeout is set to lessen the load on platform's geolocation services
             // which were causing occasional test failures
-            setTimeout(function() {
+            setTimeout(function () {
                 done();
             }, 100);
         });
@@ -182,7 +180,7 @@ exports.defineAutoTests = function () {
                 navigator.geolocation.clearWatch(errorWatch);
             });
 
-            it("geolocation.spec.7 should be called if we set timeout to 0 and maximumAge to a very small number", function (done) {
+            it('geolocation.spec.7 should be called if we set timeout to 0 and maximumAge to a very small number', function (done) {
                 if (isWindowsStore || skipAndroid) {
                     pending();
                 }
@@ -197,7 +195,7 @@ exports.defineAutoTests = function () {
                     });
             });
 
-            it("geolocation.spec.10 on failure should return PositionError object with error code constants", function (done) {
+            it('geolocation.spec.10 on failure should return PositionError object with error code constants', function (done) {
                 if (isWindowsStore || skipAndroid) {
                     pending();
                 }
@@ -205,7 +203,7 @@ exports.defineAutoTests = function () {
                 var context = this;
                 errorWatch = navigator.geolocation.watchPosition(
                     fail.bind(this, done, context, 'Unexpected win'),
-                    function(gpsError) {
+                    function (gpsError) {
                         if (context.done) return;
                         context.done = true;
 
@@ -231,7 +229,7 @@ exports.defineAutoTests = function () {
                 navigator.geolocation.clearWatch(successWatch);
             });
 
-            it("geolocation.spec.8 should be called with a Position object", function (done) {
+            it('geolocation.spec.8 should be called with a Position object', function (done) {
                 if (isWindowsStore || skipAndroid || isIOSSim) {
                     pending();
                 }
@@ -245,7 +243,7 @@ exports.defineAutoTests = function () {
 
                         expect(p.coords).toBeDefined();
                         expect(p.timestamp).toBeDefined();
-                        // callback could be called sync so we invoke done async to make sure we know watcher id to .clear in afterEach 
+                        // callback could be called sync so we invoke done async to make sure we know watcher id to .clear in afterEach
                         setTimeout(function () {
                             done();
                         });
@@ -273,10 +271,10 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     /**
      * Set location status
      */
-    function setLocationStatus(status) {
+    function setLocationStatus (status) {
         document.getElementById('location_status').innerHTML = status;
     }
-    function setLocationDetails(p) {
+    function setLocationDetails (p) {
         var date = (new Date(p.timestamp));
         document.getElementById('latitude').innerHTML = p.coords.latitude;
         document.getElementById('longitude').innerHTML = p.coords.longitude;
@@ -285,19 +283,19 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         document.getElementById('heading').innerHTML = p.coords.heading;
         document.getElementById('speed').innerHTML = p.coords.speed;
         document.getElementById('altitude_accuracy').innerHTML = p.coords.altitudeAccuracy;
-        document.getElementById('timestamp').innerHTML = date.toDateString() + " " + date.toTimeString();
+        document.getElementById('timestamp').innerHTML = date.toDateString() + ' ' + date.toTimeString();
     }
 
     /**
      * Stop watching the location
      */
-    function stopLocation() {
+    function stopLocation () {
         var geo = navigator.geolocation;
         if (!geo) {
-            alert('navigator.geolocation object is missing.');
+            alert('navigator.geolocation object is missing.'); // eslint-disable-line no-undef
             return;
         }
-        setLocationStatus("Stopped");
+        setLocationStatus('Stopped');
         if (watchLocationId) {
             geo.clearWatch(watchLocationId);
             watchLocationId = null;
@@ -310,7 +308,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     var watchLocation = function () {
         var geo = navigator.geolocation;
         if (!geo) {
-            alert('navigator.geolocation object is missing.');
+            alert('navigator.geolocation object is missing.'); // eslint-disable-line no-undef
             return;
         }
 
@@ -321,13 +319,13 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
         // Fail callback
         var fail = function (e) {
-            console.log("watchLocation fail callback with error code " + e);
+            console.log('watchLocation fail callback with error code ' + e);
             stopLocation(geo);
         };
 
         // Get location
         watchLocationId = geo.watchPosition(success, fail, { enableHighAccuracy: true });
-        setLocationStatus("Running");
+        setLocationStatus('Running');
     };
 
     /**
@@ -336,7 +334,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     var getLocation = function (opts) {
         var geo = navigator.geolocation;
         if (!geo) {
-            alert('navigator.geolocation object is missing.');
+            alert('navigator.geolocation object is missing.'); // eslint-disable-line no-undef
             return;
         }
 
@@ -346,16 +344,16 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         // Success callback
         var success = function (p) {
             setLocationDetails(p);
-            setLocationStatus("Done");
+            setLocationStatus('Done');
         };
 
         // Fail callback
         var fail = function (e) {
-            console.log("getLocation fail callback with error code " + e.code);
-            setLocationStatus("Error: " + e.code);
+            console.log('getLocation fail callback with error code ' + e.code);
+            setLocationStatus('Error: ' + e.code);
         };
 
-        setLocationStatus("Retrieving location...");
+        setLocationStatus('Retrieving location...');
 
         // Get location
         geo.getCurrentPosition(success, fail, opts || { enableHighAccuracy: true }); //, {timeout: 10000});
@@ -366,54 +364,54 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     var location_div = '<div id="info">' +
             '<b>Status:</b> <span id="location_status">Stopped</span>' +
-            '<table width="100%">',
-        latitude = '<tr>' +
+            '<table width="100%">';
+    var latitude = '<tr>' +
             '<td><b>Latitude:</b></td>' +
             '<td id="latitude">&nbsp;</td>' +
             '<td>(decimal degrees) geographic coordinate [<a href="http://dev.w3.org/geo/api/spec-source.html#lat">#ref]</a></td>' +
-            '</tr>',
-        longitude = '<tr>' +
+            '</tr>';
+    var longitude = '<tr>' +
             '<td><b>Longitude:</b></td>' +
             '<td id="longitude">&nbsp;</td>' +
             '<td>(decimal degrees) geographic coordinate [<a href="http://dev.w3.org/geo/api/spec-source.html#lat">#ref]</a></td>' +
-            '</tr>',
-        altitude = '<tr>' +
+            '</tr>';
+    var altitude = '<tr>' +
             '<td><b>Altitude:</b></td>' +
             '<td id="altitude">&nbsp;</td>' +
             '<td>null if not supported;<br>' +
             '(meters) height above the [<a href="http://dev.w3.org/geo/api/spec-source.html#ref-wgs">WGS84</a>] ellipsoid. [<a href="http://dev.w3.org/geo/api/spec-source.html#altitude">#ref]</a></td>' +
-            '</tr>',
-        accuracy = '<tr>' +
+            '</tr>';
+    var accuracy = '<tr>' +
             '<td><b>Accuracy:</b></td>' +
             '<td id="accuracy">&nbsp;</td>' +
             '<td>(meters; non-negative; 95% confidence level) the accuracy level of the latitude and longitude coordinates. [<a href="http://dev.w3.org/geo/api/spec-source.html#accuracy">#ref]</a></td>' +
-            '</tr>',
-        heading = '<tr>' +
+            '</tr>';
+    var heading = '<tr>' +
             '<td><b>Heading:</b></td>' +
             '<td id="heading">&nbsp;</td>' +
             '<td>null if not supported;<br>' +
             'NaN if speed == 0;<br>' +
             '(degrees; 0° ≤ heading < 360°) direction of travel of the hosting device- counting clockwise relative to the true north. [<a href="http://dev.w3.org/geo/api/spec-source.html#heading">#ref]</a></td>' +
-            '</tr>',
-        speed = '<tr>' +
+            '</tr>';
+    var speed = '<tr>' +
             '<td><b>Speed:</b></td>' +
             '<td id="speed">&nbsp;</td>' +
             '<td>null if not supported;<br>' +
             '(meters per second; non-negative) magnitude of the horizontal component of the hosting device current velocity. [<a href="http://dev.w3.org/geo/api/spec-source.html#speed">#ref]</a></td>' +
-            '</tr>',
-        altitude_accuracy = '<tr>' +
+            '</tr>';
+    var altitude_accuracy = '<tr>' +
             '<td><b>Altitude Accuracy:</b></td>' +
             '<td id="altitude_accuracy">&nbsp;</td>' +
             '<td>null if not supported;<br>(meters; non-negative; 95% confidence level) the accuracy level of the altitude. [<a href="http://dev.w3.org/geo/api/spec-source.html#altitude-accuracy">#ref]</a></td>' +
-            '</tr>',
-        time = '<tr>' +
+            '</tr>';
+    var time = '<tr>' +
             '<td><b>Time:</b></td>' +
             '<td id="timestamp">&nbsp;</td>' +
             '<td>(DOMTimeStamp) when the position was acquired [<a href="http://dev.w3.org/geo/api/spec-source.html#timestamp">#ref]</a></td>' +
             '</tr>' +
             '</table>' +
-            '</div>',
-        actions =
+            '</div>';
+    var actions =
             '<div id="cordova-getLocation"></div>' +
             'Expected result: Will update all applicable values in status box for current location. Status will read Retrieving Location (may not see this if location is retrieved immediately) then Done.' +
             '<p/> <div id="cordova-watchLocation"></div>' +
@@ -421,10 +419,10 @@ exports.defineManualTests = function (contentEl, createActionButton) {
             '<p/> <div id="cordova-stopLocation"></div>' +
             'Expected result: Will stop watching the location so values will not be updated. Status will read Stopped.' +
             '<p/> <div id="cordova-getOld"></div>' +
-            'Expected result: Will update location values with a cached position that is up to 30 seconds old. Verify with time value. Status will read Done.',
-        values_info =
-            '<h3>Details about each value are listed below in the status box</h3>',
-        note = 
+            'Expected result: Will update location values with a cached position that is up to 30 seconds old. Verify with time value. Status will read Done.';
+    var values_info =
+            '<h3>Details about each value are listed below in the status box</h3>';
+    var note =
             '<h3>Allow use of current location, if prompted</h3>';
 
     contentEl.innerHTML = values_info + location_div + latitude + longitude + altitude + accuracy + heading + speed +
