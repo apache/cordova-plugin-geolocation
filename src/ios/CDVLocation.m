@@ -309,7 +309,7 @@
     [posError setObject:message ? message:@"" forKey:@"message"];
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:posError];
 
-    for (NSString* callbackId in self.locationData.locationCallbacks) {
+    for (NSString* callbackId in [self.locationData.locationCallbacks reverseObjectEnumerator]) {
         [self.commandDelegate sendPluginResult:result callbackId:callbackId];
     }
 
