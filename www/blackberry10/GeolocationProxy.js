@@ -19,12 +19,12 @@
  *
 */
 
-var idsMap = {},
-    geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
+var idsMap = {};
+var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
 
 module.exports = {
 
-    getLocation: function(success, error, args) {
+    getLocation: function (success, error, args) {
         var successCallback = function (result) {
             var pos = result.coords;
             pos.timestamp = result.timestamp;
@@ -38,32 +38,32 @@ module.exports = {
         });
     },
 
-    addWatch: function(success, error, args) {
-        var id = args[0],
-            successCallback = function (result) {
-                var pos = result.coords;
-                pos.timestamp = result.timestamp;
-                if (success) {
-                    success(pos);
-                }
-            },
-            nativeId = geo.watchPosition(successCallback, error, {
-                enableHighAccuracy: args[1]
-            });
+    addWatch: function (success, error, args) {
+        var id = args[0];
+        var successCallback = function (result) {
+            var pos = result.coords;
+            pos.timestamp = result.timestamp;
+            if (success) {
+                success(pos);
+            }
+        };
+        var nativeId = geo.watchPosition(successCallback, error, {
+            enableHighAccuracy: args[1]
+        });
         idsMap[id] = nativeId;
     },
 
-    clearWatch: function(success, error, args) {
+    clearWatch: function (success, error, args) {
         var id = args[0];
-        if(id in idsMap) {
+        if (id in idsMap) {
             geo.clearWatch(idsMap[id]);
             delete idsMap[id];
         }
-        if(success) {
+        if (success) {
             success();
         }
     }
 
 };
 
-require("cordova/exec/proxy").add("Geolocation", module.exports);
+require('cordova/exec/proxy').add('Geolocation', module.exports);

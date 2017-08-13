@@ -16,14 +16,14 @@
 
 /* global Windows, WinJS */
 
-var PositionError   = require('./PositionError');
-var callbacks       = {};
-var locs            = {};
+var PositionError = require('./PositionError');
+var callbacks = {};
+var locs = {};
 
 // constants
 var FALLBACK_EPSILON = 0.001;
 
-function ensureAndCreateLocator() {
+function ensureAndCreateLocator () {
     var deferral;
 
     var loc = new Windows.Devices.Geolocation.Geolocator();
@@ -46,30 +46,32 @@ function ensureAndCreateLocator() {
     return deferral;
 }
 
-function createErrorCode(loc) {
+function createErrorCode (loc) {
+    /* eslint-disable no-fallthrough */
     switch (loc.locationStatus) {
-        case Windows.Devices.Geolocation.PositionStatus.initializing:
-            // This status indicates that a location device is still initializing
-        case Windows.Devices.Geolocation.PositionStatus.noData:
-            // No location data is currently available
-        case Windows.Devices.Geolocation.PositionStatus.notInitialized:
-            // This status indicates that the app has not yet requested
-            // location data by calling GetGeolocationAsync() or
-            // registering an event handler for the positionChanged event.
-        case Windows.Devices.Geolocation.PositionStatus.notAvailable:
-            // Location is not available on this version of Windows
-            return PositionError.POSITION_UNAVAILABLE;
+    case Windows.Devices.Geolocation.PositionStatus.initializing:
+    // This status indicates that a location device is still initializing
+    case Windows.Devices.Geolocation.PositionStatus.noData:
+    // No location data is currently available
+    case Windows.Devices.Geolocation.PositionStatus.notInitialized:
+    // This status indicates that the app has not yet requested
+    // location data by calling GetGeolocationAsync() or
+    // registering an event handler for the positionChanged event.
+    case Windows.Devices.Geolocation.PositionStatus.notAvailable:
+        // Location is not available on this version of Windows
+        return PositionError.POSITION_UNAVAILABLE;
 
-        case Windows.Devices.Geolocation.PositionStatus.disabled:
-            // The app doesn't have permission to access location,
-            // either because location has been turned off.
-            return PositionError.PERMISSION_DENIED;
+    case Windows.Devices.Geolocation.PositionStatus.disabled:
+        // The app doesn't have permission to access location,
+        // either because location has been turned off.
+        return PositionError.PERMISSION_DENIED;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
-function createResult(pos) {
+/* eslint-enable no-fallthrough */
+function createResult (pos) {
     var res = {
         accuracy: pos.coordinate.accuracy,
         heading: pos.coordinate.heading,
@@ -95,14 +97,14 @@ module.exports = {
     getLocation: function (success, fail, args, env) {
         ensureAndCreateLocator().done(function (loc) {
             if (loc) {
-                var highAccuracy = args[0],
-                    maxAge = args[1];
+                var highAccuracy = args[0];
+                var maxAge = args[1];
 
                 loc.desiredAccuracy = highAccuracy ?
                     Windows.Devices.Geolocation.PositionAccuracy.high :
                     Windows.Devices.Geolocation.PositionAccuracy.default;
 
-                loc.reportInterval = maxAge ? maxAge : 0;
+                loc.reportInterval = maxAge || 0;
 
                 loc.getGeopositionAsync().then(
                     function (pos) {
@@ -115,11 +117,10 @@ module.exports = {
                         });
                     }
                 );
-            }
-            else {
+            } else {
                 fail({
                     code: PositionError.POSITION_UNAVAILABLE,
-                    message: "You do not have the required location services present on your system."
+                    message: 'You do not have the required location services present on your system.'
                 });
             }
         }, fail);
@@ -136,33 +137,33 @@ module.exports = {
 
             var onStatusChanged = function (e) {
                 switch (e.status) {
-                    case Windows.Devices.Geolocation.PositionStatus.noData:
-                    case Windows.Devices.Geolocation.PositionStatus.notAvailable:
-                        fail({
-                            code: PositionError.POSITION_UNAVAILABLE,
-                            message: "Data from location services is currently unavailable or you do not have the required location services present on your system."
-                        });
-                        break;
+                case Windows.Devices.Geolocation.PositionStatus.noData:
+                case Windows.Devices.Geolocation.PositionStatus.notAvailable:
+                    fail({
+                        code: PositionError.POSITION_UNAVAILABLE,
+                        message: 'Data from location services is currently unavailable or you do not have the required location services present on your system.'
+                    });
+                    break;
 
-                    case Windows.Devices.Geolocation.PositionStatus.disabled:
-                        fail({
-                            code: PositionError.PERMISSION_DENIED,
-                            message: "Your location is currently turned off."
-                        });
-                        break;
+                case Windows.Devices.Geolocation.PositionStatus.disabled:
+                    fail({
+                        code: PositionError.PERMISSION_DENIED,
+                        message: 'Your location is currently turned off.'
+                    });
+                    break;
 
                     // case Windows.Devices.Geolocation.PositionStatus.initializing:
                     // case Windows.Devices.Geolocation.PositionStatus.ready:
-                    default:
-                        break;
+                default:
+                    break;
                 }
             };
 
             loc.desiredAccuracy = highAccuracy ?
-                    Windows.Devices.Geolocation.PositionAccuracy.high :
-                    Windows.Devices.Geolocation.PositionAccuracy.default;
+                Windows.Devices.Geolocation.PositionAccuracy.high :
+                Windows.Devices.Geolocation.PositionAccuracy.default;
 
-            if (cordova.platformId == 'windows') {
+            if (cordova.platformId === 'windows') { // eslint-disable-line no-undef
                 // 'positionchanged' event fails with error below if movementThreshold is not set
                 // JavaScript runtime error: Operation aborted
                 // You must set the MovementThreshold property or the ReportInterval property before adding event handlers.
@@ -174,8 +175,8 @@ module.exports = {
                 }
             }
 
-            loc.addEventListener("positionchanged", onPositionChanged);
-            loc.addEventListener("statuschanged", onStatusChanged);
+            loc.addEventListener('positionchanged', onPositionChanged);
+            loc.addEventListener('statuschanged', onStatusChanged);
 
             callbacks[clientId] = { pos: onPositionChanged, status: onStatusChanged };
             locs[clientId] = loc;
@@ -185,11 +186,11 @@ module.exports = {
     clearWatch: function (success, fail, args, env) {
         var clientId = args[0];
         var callback = callbacks[clientId];
-        var loc      = locs[clientId];
+        var loc = locs[clientId];
 
         if (callback && loc) {
-            loc.removeEventListener("positionchanged", callback.pos);
-            loc.removeEventListener("statuschanged", callback.status);
+            loc.removeEventListener('positionchanged', callback.pos);
+            loc.removeEventListener('statuschanged', callback.status);
 
             delete callbacks[clientId];
             delete locs[clientId];
@@ -199,4 +200,4 @@ module.exports = {
     }
 };
 
-require("cordova/exec/proxy").add("Geolocation", module.exports);
+require('cordova/exec/proxy').add('Geolocation', module.exports);

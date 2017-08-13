@@ -20,6 +20,14 @@
 -->
 # Release Notes
 
+### 2.4.3 (Apr 27, 2017)
+* [CB-12622](https://issues.apache.org/jira/browse/CB-12622) Added **Android 6.0** build badge to `README`
+* [CB-12685](https://issues.apache.org/jira/browse/CB-12685) added `package.json` to tests folder
+
+### 2.4.2 (Feb 28, 2017)
+* [CB-12363](https://issues.apache.org/jira/browse/CB-12363) Added build badges for **iOS 9.3** and **iOS 10.0**
+* [CB-12230](https://issues.apache.org/jira/browse/CB-12230) Removed **Windows 8.1** build badges
+
 ### 2.4.1 (Dec 07, 2016)
 * [CB-12224](https://issues.apache.org/jira/browse/CB-12224) Updated version and RELEASENOTES.md for release 2.4.1
 * corrected KCLAuthorizationStatus error, changed to always removed user of [manager locationServicesEnabled].  Must return [CLLocationManager locationServicesEnabled] or 'none'
@@ -109,8 +117,8 @@
 * [CB-7158](https://issues.apache.org/jira/browse/CB-7158) Fix geolocation for ios 8
 * Revert [CB-6911](https://issues.apache.org/jira/browse/CB-6911) partially (keeping Info.plist key installation for iOS 8)
 * [CB-6911](https://issues.apache.org/jira/browse/CB-6911) Geolocation fails in iOS 8
-* [CB-5114](https://issues.apache.org/jira/browse/CB-5114) Windows 8.1 - Use a new proxy as old geolocation methods is deprecated
-* [CB-5114](https://issues.apache.org/jira/browse/CB-5114) Append Windows 8.1 into plugin.xml + Optimize Windows 8 Geolocation proxy
+* [CB-5114](https://issues.apache.org/jira/browse/CB-5114) **Windows 8.1** - Use a new proxy as old geolocation methods is deprecated
+* [CB-5114](https://issues.apache.org/jira/browse/CB-5114) Append **Windows 8.1** into plugin.xml + Optimize Windows 8 Geolocation proxy
 * Renamed test dir, added nested plugin.xml
 * added documentation for manual tests
 * [CB-7146](https://issues.apache.org/jira/browse/CB-7146) Added manual tests
