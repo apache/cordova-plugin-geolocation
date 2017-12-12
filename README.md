@@ -88,13 +88,8 @@ It is also possible to install via repo url directly ( unstable )
 
 ## Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
-- Firefox OS
 - iOS
-- Tizen
-- Windows Phone 7 and 8
 - Windows
 
 ## Methods
@@ -309,10 +304,6 @@ It contains a set of properties that describe the geographic coordinates of a po
 * __heading__: Direction of travel, specified in degrees counting clockwise relative to the true north. _(Number)_
 
 * __speed__: Current ground speed of the device, specified in meters per second. _(Number)_
-
-###  Amazon Fire OS Quirks
-
-__altitudeAccuracy__: Not supported by Android devices, returning `null`.
 
 ### Android Quirks
 
