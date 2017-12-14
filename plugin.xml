@@ -22,7 +22,7 @@
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="cordova-plugin-geolocation"
-      version="3.0.1-dev">
+      version="4.0.0-dev">
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
@@ -63,16 +63,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
     </platform>
 
-     <!-- amazon-fireos -->
-    <platform name="amazon-fireos">
-
-        <config-file target="AndroidManifest.xml" parent="/*">
-            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-        </config-file>
-
-    </platform>
-
     <!-- ios -->
     <platform name="ios">
 
@@ -103,113 +93,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
     </platform>
 
-    <!-- blackberry10 -->
-    <platform name="blackberry10">
-
-        <js-module src="www/blackberry10/GeolocationProxy.js" name="GeolocationProxy">
-            <runs />
-        </js-module>
-
-        <js-module src="www/Coordinates.js" name="Coordinates">
-            <clobbers target="Coordinates" />
-        </js-module>
-
-        <js-module src="www/PositionError.js" name="PositionError">
-            <clobbers target="PositionError" />
-        </js-module>
-
-        <js-module src="www/Position.js" name="Position">
-            <clobbers target="Position" />
-        </js-module>
-
-        <js-module src="www/geolocation.js" name="geolocation">
-            <clobbers target="navigator.geolocation" />
-        </js-module>
-
-        <config-file target="www/config.xml" parent="/widget">
-            <feature name="Geolocation" value="Geolocation"/>
-        </config-file>
-
-        <config-file target="www/config.xml" parent="/widget/rim:permissions">
-          <rim:permit>read_geolocation</rim:permit>
-        </config-file>
-
-    </platform>
-
-    <!-- ubuntu -->
-    <platform name="ubuntu">
-        <js-module src="www/Coordinates.js" name="Coordinates">
-            <clobbers target="Coordinates" />
-        </js-module>
-
-        <js-module src="www/PositionError.js" name="PositionError">
-            <clobbers target="PositionError" />
-        </js-module>
-
-        <js-module src="www/Position.js" name="Position">
-            <clobbers target="Position" />
-        </js-module>
-
-        <js-module src="www/geolocation.js" name="geolocation">
-            <clobbers target="navigator.geolocation" />
-        </js-module>
-
-        <source-file src="src/ubuntu/geolocation.cpp" />
-        <header-file src="src/ubuntu/geolocation.h" />
-        <config-file target="config.xml" parent="/*">
-            <feature name="Geolocation">
-                <param policy_group="location" policy_version="1" />
-            </feature>
-        </config-file>
-    </platform>
-
-    <!-- wp7 -->
-    <platform name="wp7">
-
-        <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
-            <Capability Name="ID_CAP_LOCATION" />
-        </config-file>
-
-        <source-file src="src/wp/Geolocation.cs" />
-    </platform>
-
-    <!-- wp8 -->
-    <platform name="wp8">
-
-        <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
-            <Capability Name="ID_CAP_LOCATION" />
-        </config-file>
-
-        <source-file src="src/wp/Geolocation.cs" />
-    </platform>
-
-    <!-- windows8 -->
-    <platform name="windows8">
-        <config-file target="package.appxmanifest" parent="/Package/Capabilities">
-            <DeviceCapability Name="location" />
-        </config-file>
-
-        <js-module src="src/windows/GeolocationProxy.js" name="GeolocationProxy">
-            <runs />
-        </js-module>
-
-        <js-module src="www/Coordinates.js" name="Coordinates">
-            <clobbers target="Coordinates" />
-        </js-module>
-
-        <js-module src="www/PositionError.js" name="PositionError">
-            <clobbers target="PositionError" />
-        </js-module>
-
-        <js-module src="www/Position.js" name="Position">
-            <clobbers target="Position" />
-        </js-module>
-
-        <js-module src="www/geolocation.js" name="geolocation">
-            <clobbers target="navigator.geolocation" />
-        </js-module>
-    </platform>
-
     <!-- windows universal apps (Windows 8.1, Windows Phone 8.1, Windows 8.0) -->
     <platform name="windows">
         <config-file target="package.appxmanifest" parent="/Package/Capabilities">
@@ -217,33 +100,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </config-file>
 
         <js-module src="src/windows/GeolocationProxy.js" name="GeolocationProxy">
-            <runs />
-        </js-module>
-
-        <js-module src="www/Coordinates.js" name="Coordinates">
-            <clobbers target="Coordinates" />
-        </js-module>
-
-        <js-module src="www/PositionError.js" name="PositionError">
-            <clobbers target="PositionError" />
-        </js-module>
-
-        <js-module src="www/Position.js" name="Position">
-            <clobbers target="Position" />
-        </js-module>
-
-        <js-module src="www/geolocation.js" name="geolocation">
-            <clobbers target="navigator.geolocation" />
-        </js-module>
-    </platform>
-
-    <!-- firefoxos -->
-    <platform name="firefoxos">
-      <config-file target="config.xml" parent="/*">
-          <permission name="geolocation" description="Required for accessing user location." />
-      </config-file>
-
-        <js-module src="src/firefoxos/GeolocationProxy.js" name="GeolocationProxy">
             <runs />
         </js-module>
 
