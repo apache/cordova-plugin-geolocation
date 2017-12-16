@@ -20,6 +20,9 @@
 -->
 # Release Notes
 
+### 4.0.0 (Dec 15, 2017)
+* [CB-13664](https://issues.apache.org/jira/browse/CB-13664) remove deprecated platforms
+
 ### 3.0.0 (Nov 06, 2017)
 * [CB-13267](https://issues.apache.org/jira/browse/CB-13267) (iOS): Remove **iOS** usage descriptions
 * [CB-13516](https://issues.apache.org/jira/browse/CB-13516) (all): Add 'protective' entry to `cordovaDependencies`
