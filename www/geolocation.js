@@ -194,6 +194,9 @@ var geolocation = {
 
         return id;
     },
+    askAlways: function () {
+        exec(null, null, 'Geolocation', 'getAlways', null);
+    },
     /**
      * Clears the specified heading watch.
      *
