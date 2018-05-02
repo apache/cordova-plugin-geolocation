@@ -174,6 +174,12 @@ error, the `geolocationError` callback is passed a
 ```
 navigator.geolocation.askAlways();
 ```
+ Add this entry into the `info.plist`, you can use the `edit-config` tag in the `config.xml` like this:
+```
+<edit-config file="*-Info.plist" mode="merge" target="NSLocationAlwaysAndWhenInUseUsageDescription">
+    <string>This will help us find your nearest location.</string>
+</edit-config>
+```
  
 ### Android Quirks
 
