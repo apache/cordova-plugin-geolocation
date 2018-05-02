@@ -169,6 +169,11 @@ error, the `geolocationError` callback is passed a
     <string>need location access to find things nearby</string>
 </edit-config>
 ```
+
+ iOS Requesting Always Authorization:
+```
+navigator.geolocation.askAlways();
+```
  
 ### Android Quirks
 
