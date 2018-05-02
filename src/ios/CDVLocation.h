@@ -54,6 +54,7 @@ typedef NSUInteger CDVLocationStatus;
 
 - (void)getLocation:(CDVInvokedUrlCommand*)command;
 - (void)addWatch:(CDVInvokedUrlCommand*)command;
+- (void)getAlways:(CDVInvokedUrlCommand*)command;
 - (void)clearWatch:(CDVInvokedUrlCommand*)command;
 - (void)returnLocationInfo:(NSString*)callbackId andKeepCallback:(BOOL)keepCallback;
 - (void)returnLocationError:(NSUInteger)errorCode withMessage:(NSString*)message;
