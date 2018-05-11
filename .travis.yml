@@ -67,4 +67,4 @@ install:
 script:
 - npm test
 - node /tmp/paramedic/main.js --config pr/$PLATFORM --plugin $(pwd) --shouldUseSauce
-  --buildName travis-plugin-geolocation-$TRAVIS_JOB_NUMBER --force
+  --buildName travis-plugin-geolocation-$TRAVIS_JOB_NUMBER
