@@ -156,14 +156,14 @@ error, the `geolocationError` callback is passed a
 
 ### iOS Quirks
  
-As precised on the (Apple documentation)[https://developer.apple.com/documentation/corelocation/choosing_the_authorization_level_for_location_services/requesting_always_authorization], this plugins requires the following usages descriptions to use native location services on iOS:
+As precised in the (Apple documentation)[https://developer.apple.com/documentation/corelocation/choosing_the_authorization_level_for_location_services/requesting_always_authorization], this plugin requires the following usage descriptions to use the native location service:
 
 * `NSLocationAlwaysAndWhenInUseUsageDescription`
 * `NSLocationWhenInUseUsageDescription`
 
 By default, the usage description value for both entries is set as: "The application needs to access location data to make the user experience more efficient and reliable."
                                                                     
-If you want you can precise this value at installation by this way:
+You can precise this value at installation:
 
 ```
 cordova plugin add cordova-plugin-geolocation --variable USAGE_DESCRIPTION="My usage description"
