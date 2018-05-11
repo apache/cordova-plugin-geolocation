@@ -29,7 +29,7 @@
     <dependency id="cordova-plugin-device" url="https://github.com/apache/cordova-plugin-device" />
     <js-module src="tests.js" name="tests">
     </js-module>
-    <edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
-      <string>need location access to pass tests</string>
-    </edit-config>
+    <config-file parent="NSLocationWhenInUseUsageDescription" target="*-Info.plist">
+        <string>need location access to pass tests</string>
+    </config-file>
 </plugin>
