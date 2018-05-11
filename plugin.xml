@@ -67,8 +67,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <platform name="ios">
 
         <!-- Location Usage Description -->
-        <preference name="USAGE_DESCRIPTION" default="The application needs to access location data to make the user experience more efficient and reliable." mode="overwrite" />
-        <config-file parent="NSLocationAlwaysAndWhenInUseUsageDescription" target="*-Info.plist">
+        <preference name="USAGE_DESCRIPTION" default="The application needs to access location data to make the user experience more efficient and reliable." />
+        <config-file parent="NSLocationAlwaysAndWhenInUseUsageDescription" target="*-Info.plist" mode="overwrite">
             <string>$USAGE_DESCRIPTION</string>
         </config-file>
         <config-file parent="NSLocationWhenInUseUsageDescription" target="*-Info.plist" mode="overwrite">
