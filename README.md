@@ -156,19 +156,19 @@ error, the `geolocationError` callback is passed a
 
 ### iOS Quirks
  
- Since iOS 10 it's mandatory to provide an usage description in the `info.plist` if trying to access privacy-sensitive data. When the system prompts the user to allow access, this usage description string will displayed as part of the permission dialog box, but if you didn't provide the usage description, the app will crash before showing the dialog. Also, Apple will reject apps that access private data but don't provide an usage description.
+As precised on the (Apple documentation)[https://developer.apple.com/documentation/corelocation/choosing_the_authorization_level_for_location_services/requesting_always_authorization], this plugins requires the following usages descriptions to use native location services on iOS:
 
- This plugins requires the following usage description:
+* `NSLocationAlwaysAndWhenInUseUsageDescription`
+* `NSLocationWhenInUseUsageDescription`
 
- * `NSLocationWhenInUseUsageDescription` describes the reason that the app accesses the user's location. 
-
- To add this entry into the `info.plist`, you can use the `edit-config` tag in the `config.xml` like this:
+By default, the usage description value for both entries is set as: "The application needs to access location data to make the user experience more efficient and reliable."
+                                                                    
+If you want you can precise this value at installation by this way:
 
 ```
-<edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
-    <string>need location access to find things nearby</string>
-</edit-config>
+cordova plugin add cordova-plugin-geolocation --variable USAGE_DESCRIPTION="My usage description"
 ```
+
  
 ### Android Quirks
 
