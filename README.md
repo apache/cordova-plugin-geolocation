@@ -156,12 +156,11 @@ error, the `geolocationError` callback is passed a
 
 ### iOS Quirks
  
-As precised in the (Apple documentation)[https://developer.apple.com/documentation/corelocation/choosing_the_authorization_level_for_location_services/requesting_always_authorization], this plugin requires the following usage descriptions to use the native location service:
+As precised in the (apple documentation)[https://developer.apple.com/documentation/corelocation/choosing_the_authorization_level_for_location_services/requesting_when_in_use_authorization], this plugin requires the following usage description to use the native location service:
 
-* `NSLocationAlwaysAndWhenInUseUsageDescription`
 * `NSLocationWhenInUseUsageDescription`
 
-By default, the usage description value for both entries is set as: "The application needs to access location data to make the user experience more efficient and reliable."
+By default, the usage description is set as: « The application needs to access location data to make the user experience more efficient and reliable. » 
                                                                     
 You can precise this value at installation:
 
