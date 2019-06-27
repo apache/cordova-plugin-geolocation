@@ -15,7 +15,7 @@
     "url": "https://github.com/apache/cordova-plugin-geolocation"
   },
   "bugs": {
-    "url": "https://issues.apache.org/jira/browse/CB"
+    "url": "https://github.com/apache/cordova-plugin-geolocation/issues"
   },
   "keywords": [
     "cordova",
