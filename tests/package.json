@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-geolocation-tests",
-  "version": "2.4.3-dev",
+  "version": "4.0.2",
   "description": "",
   "cordova": {
     "id": "cordova-plugin-geolocation-tests",
