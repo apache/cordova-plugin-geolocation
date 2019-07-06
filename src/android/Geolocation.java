@@ -31,58 +31,173 @@ import org.apache.cordova.LOG;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+// ----------------------
+import org.apache.cordova.geolocation.FusedLocationHelper;
+
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaWebView;
+
+import android.content.DialogInterface;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import java.util.ArrayList;
+import android.support.v4.app.ActivityCompat;
+
+
+//-----------------
+
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import javax.security.auth.callback.Callback;
+
+// 
+
+/* private static final String actiongetLocation = "getLocation";
+    private static final String actiongetCurrentAddress = "getCurrentAddress";
+    protected FusedLocationHelper locHelper;
+    
+    @Override
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        super.initialize(cordova, webView);
+        Activity cordovaActivity = cordova.getActivity();
+
+        locHelper = new FusedLocationHelper(cordovaActivity);
+    }
+    
+    @Override
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        if (action.equals(actiongetLocation)) {
+            locHelper.GetLocation(callbackContext);
+            return true;
+        }
+        else if (action.equals(actiongetCurrentAddress)) {
+            locHelper.GetAddress(callbackContext);
+            return true;
+        }
+
+        return false;
+    }
+ */
+//
 
 public class Geolocation extends CordovaPlugin {
 
     String TAG = "GeolocationPlugin";
     CallbackContext context;
+    
+    String [] permissionsToRequest = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION };
+    private ArrayList<String> permissionsRejected = new ArrayList<>();
+    private GoogleApiClient googleApiClient;
+    // integer for permissions results request
+    private static final int ALL_PERMISSIONS_RESULT = 1011;
 
-    String [] permissions = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION };
+    protected FusedLocationHelper locHelper;
 
+     @Override
+    public void pluginInitialize() {
+        super.pluginInitialize();
 
+        locHelper = new FusedLocationHelper(this.cordova.getActivity());
+    }
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         LOG.d(TAG, "We are entering execute");
         context = callbackContext;
-        if(action.equals("getPermission"))
-        {
-            if(hasPermisssion())
-            {
-                PluginResult r = new PluginResult(PluginResult.Status.OK);
-                context.sendPluginResult(r);
+        
+        // if(hasPermisssion())
+        // {
+            if (action.equals("startLocationTracking")) {
+                locHelper.startLocationTracking(callbackContext);
                 return true;
             }
-            else {
-                PermissionHelper.requestPermissions(this, 0, permissions);
+            else if (action.equals("stopLocationTracking")) {
+                locHelper.stopLocationTracking(callbackContext);
+                return true;
             }
-            return true;
-        }
-        return false;
+        /* }
+        else {
+            PermissionHelper.requestPermissions(this, ALL_PERMISSIONS_RESULT, permissionsToRequest);
+        } */
+        return true; 
     }
 
 
     public void onRequestPermissionResult(int requestCode, String[] permissions,
                                           int[] grantResults) throws JSONException
     {
-        PluginResult result;
-        //This is important if we're using Cordova without using Cordova, but we have the geolocation plugin installed
-        if(context != null) {
-            for (int r : grantResults) {
-                if (r == PackageManager.PERMISSION_DENIED) {
-                    LOG.d(TAG, "Permission Denied!");
-                    result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+        
+      switch(requestCode) {
+        case ALL_PERMISSIONS_RESULT:
+            for(String perm : permissionsToRequest)
+            {
+                if(!PermissionHelper.hasPermission(this, perm))
+                {
+                    permissionsRejected.add(perm);
+                }
+            }
+
+            if (permissionsRejected.size() > 0) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this.cordova.getActivity(),permissionsRejected.get(0))) {
+                        new AlertDialog.Builder(this.cordova.getActivity()).
+                            setMessage("These permissions are mandatory to get your location. You need to allow them.").
+                            setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    PermissionHelper.requestPermissions(Geolocation.this, ALL_PERMISSIONS_RESULT, permissionsRejected.
+                                        toArray(new String[permissionsRejected.size()]));
+                                }
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    LOG.d(TAG, "Permission Denied!");
+                                    PluginResult result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+                                    context.sendPluginResult(result);
+                                    return;
+                                }
+                            }).create().show();
+
+                        return;
+                    }
+                }
+            } else {
+                if (googleApiClient != null) {
+                    googleApiClient.connect();
+                    PluginResult result = new PluginResult(PluginResult.Status.OK);
+                    context.sendPluginResult(result);
+                }else {
+                    LOG.d(TAG, "Google api client not instantiated!");
+                    PluginResult result = new PluginResult(PluginResult.Status.INSTANTIATION_EXCEPTION);
                     context.sendPluginResult(result);
                     return;
                 }
-
             }
-            result = new PluginResult(PluginResult.Status.OK);
-            context.sendPluginResult(result);
+
+            break;
         }
+        
     }
 
+    /* private boolean hasPermissionGranted(String permission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        return ActivityCompat.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+        }
+
+        return true;
+    }
+ */
+    
     public boolean hasPermisssion() {
-        for(String p : permissions)
+        for(String p : permissionsToRequest)
         {
             if(!PermissionHelper.hasPermission(this, p))
             {
@@ -91,6 +206,7 @@ public class Geolocation extends CordovaPlugin {
         }
         return true;
     }
+    
 
     /*
      * We override this so that we can access the permissions variable, which no longer exists in
@@ -99,7 +215,7 @@ public class Geolocation extends CordovaPlugin {
 
     public void requestPermissions(int requestCode)
     {
-        PermissionHelper.requestPermissions(this, requestCode, permissions);
+        PermissionHelper.requestPermissions(this, requestCode, permissionsToRequest);
     }
 
 

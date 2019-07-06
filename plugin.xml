@@ -51,6 +51,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </config-file>
 
         <source-file src="src/android/Geolocation.java" target-dir="src/org/apache/cordova/geolocation/" />
+        <source-file src="src/android/FusedLocationHelper.java" target-dir="src/org/apache/cordova/geolocation/" />
 
         <js-module src="www/android/geolocation.js" name="geolocation">
             <clobbers target="navigator.geolocation" />
@@ -60,6 +61,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <js-module src="www/PositionError.js" name="PositionError">
             <runs />
         </js-module>
+
+        <framework src="src/android/plugin.gradle" custom="true" type="gradleReference"/>
 
     </platform>
 
