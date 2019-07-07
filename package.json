@@ -1,9 +1,9 @@
 {
-  "name": "cordova-plugin-fusedlocation",
+  "name": "cordova-plugin-geolocation",
   "version": "4.0.3-dev",
   "description": "Cordova Geolocation Plugin",
   "cordova": {
-    "id": "cordova-plugin-fusedlocation",
+    "id": "cordova-plugin-geolocation",
     "platforms": [
       "android",
       "ios",
@@ -30,9 +30,6 @@
     "eslint": "node node_modules/eslint/bin/eslint www && node node_modules/eslint/bin/eslint src && node node_modules/eslint/bin/eslint tests"
   },
   "author": "Apache Software Foundation",
-  "contributors": [
-    "Surajit Sarkar <007.surajit@gmail.com>"
-  ],
   "license": "Apache-2.0",
   "engines": {
     "cordovaDependencies": {

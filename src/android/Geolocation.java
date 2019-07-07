@@ -111,8 +111,8 @@ public class Geolocation extends CordovaPlugin {
         LOG.d(TAG, "We are entering execute");
         context = callbackContext;
         
-        // if(hasPermisssion())
-        // {
+         if(hasPermisssion())
+        {
             if (action.equals("startLocationTracking")) {
                 locHelper.startLocationTracking(callbackContext);
                 return true;
@@ -121,10 +121,10 @@ public class Geolocation extends CordovaPlugin {
                 locHelper.stopLocationTracking(callbackContext);
                 return true;
             }
-        /* }
-        else {
-            PermissionHelper.requestPermissions(this, ALL_PERMISSIONS_RESULT, permissionsToRequest);
-        } */
+         }
+         else {
+             PermissionHelper.requestPermissions(this, ALL_PERMISSIONS_RESULT, permissionsToRequest);
+         }
         return true; 
     }
 
