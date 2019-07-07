@@ -87,7 +87,7 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // we add permissions we need to request location of the users
-        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        /* permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
 
         permissionsToRequest = permissionsToRequest(permissions);
@@ -97,7 +97,7 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
         requestPermissions(permissionsToRequest.toArray(
                 new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
-        }
+        } */
 
         // we build google api client
         /* googleApiClient = new GoogleApiClient.Builder(this).
@@ -128,9 +128,9 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, 
+        if (ActivityCompat.checkSelfPermission(mActivity,
                         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            &&  ActivityCompat.checkSelfPermission(this, 
+            &&  ActivityCompat.checkSelfPermission(mActivity,
                         Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         return;
         }
@@ -148,9 +148,9 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
 
     private void startLocationUpdates() {
        
-        if (ActivityCompat.checkSelfPermission(this, 
+        if (ActivityCompat.checkSelfPermission(mActivity,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            &&  ActivityCompat.checkSelfPermission(this, 
+            &&  ActivityCompat.checkSelfPermission(mActivity,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
         }
@@ -221,11 +221,11 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
        // Log.i(TAG, "Connection suspended");
         mGoogleApiClient.connect();
     }
-    
+
     protected void ErrorHappened(String msg) {
         Log.i(TAG, msg);
         mCallBackWhenGotLocation.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, msg));
-    }  
+    }
 
     protected void SetupLocationFetching(CallbackContext cb) {
 
@@ -238,7 +238,7 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
     protected void StopLocationFetching(CallbackContext cb) {
         // stop location updates
         if (mGoogleApiClient != null  &&  mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this); 
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
         }
     }
