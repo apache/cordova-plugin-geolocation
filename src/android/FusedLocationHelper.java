@@ -45,6 +45,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 // import android.support.v7.app.AlertDialog;
 // import android.support.v7.app.AppCompatActivity;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.Response.ErrorListener;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.PendingResult;
@@ -62,8 +68,10 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.LocationListener;
 
+
 public class FusedLocationHelper extends Activity implements GoogleApiClient.ConnectionCallbacks,
-               GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback<LocationSettingsResult>   {
+               GoogleApiClient.OnConnectionFailedListener,
+        LocationListener, ResultCallback<LocationSettingsResult>   {
                    
     protected Activity mActivity = null;
     protected static final String TAG = "fusedlocation-plugin";
@@ -73,7 +81,7 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
 	protected LocationRequest mLocationRequest;
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final long UPDATE_INTERVAL = 5000, FASTEST_INTERVAL = 5000; // = 5 seconds
+    private static final long UPDATE_INTERVAL = 10 * 60 * 1000, FASTEST_INTERVAL = 10 * 60 * 1000; // = 10 minutes
 
     private ArrayList<String> permissionsToRequest;
 	private ArrayList<String> permissionsRejected = new ArrayList<>();
@@ -86,8 +94,9 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // we add permissions we need to request location of the users
-        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        /* permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
 
         permissionsToRequest = permissionsToRequest(permissions);
@@ -97,13 +106,7 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
         requestPermissions(permissionsToRequest.toArray(
                 new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
-        }
-
-        // we build google api client
-        /* googleApiClient = new GoogleApiClient.Builder(this).
-        addApi(LocationServices.API).
-        addConnectionCallbacks(this).
-        addOnConnectionFailedListener(this).build(); */
+        } */
     }
 
     private ArrayList<String> permissionsToRequest(ArrayList<String> wantedPermissions) {
@@ -128,9 +131,9 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, 
+        if (ActivityCompat.checkSelfPermission(mActivity,
                         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            &&  ActivityCompat.checkSelfPermission(this, 
+            &&  ActivityCompat.checkSelfPermission(mActivity,
                         Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         return;
         }
@@ -148,9 +151,9 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
 
     private void startLocationUpdates() {
        
-        if (ActivityCompat.checkSelfPermission(this, 
+        if (ActivityCompat.checkSelfPermission(mActivity,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            &&  ActivityCompat.checkSelfPermission(this, 
+            &&  ActivityCompat.checkSelfPermission(mActivity,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
         }
@@ -166,8 +169,38 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-        // locationTv.setText("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
-        Log.d(TAG, "Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
+            // locationTv.setText("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
+            Log.d(TAG, "Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
+            String locationApiUrl = mActivity.getString(mActivity.getResources().getIdentifier( "save_url", "string", mActivity.getPackageName()));
+
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("user_id", 1);
+                obj.put("latitude", location.getLatitude());
+                obj.put("longitude", location.getLongitude());
+                obj.put("timestamp", location.getTime());
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, locationApiUrl, obj,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            System.out.println(response);
+//                        hideProgressDialog();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+//                            hideProgressDialog();
+                        }
+                    });
+            jsonObjectRequest.setShouldCache(false);
+            // Access the RequestQueue through your singleton class.
+            MySingleton.getInstance(mActivity).addToRequestQueue(jsonObjectRequest);
         }
     }
 
@@ -221,11 +254,11 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
        // Log.i(TAG, "Connection suspended");
         mGoogleApiClient.connect();
     }
-    
+
     protected void ErrorHappened(String msg) {
         Log.i(TAG, msg);
         mCallBackWhenGotLocation.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, msg));
-    }  
+    }
 
     protected void SetupLocationFetching(CallbackContext cb) {
 
@@ -238,12 +271,13 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
     protected void StopLocationFetching(CallbackContext cb) {
         // stop location updates
         if (mGoogleApiClient != null  &&  mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this); 
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
         }
     }
 
     protected synchronized void buildGoogleApiClient() {
+        // we build google api client
         mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -253,7 +287,7 @@ public class FusedLocationHelper extends Activity implements GoogleApiClient.Con
 
 	 protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
     }
