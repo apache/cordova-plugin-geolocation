@@ -156,18 +156,26 @@ error, the `geolocationError` callback is passed a
 
 ### iOS Quirks
  
- Since iOS 10 it's mandatory to provide an usage description in the `info.plist` if trying to access privacy-sensitive data. When the system prompts the user to allow access, this usage description string will displayed as part of the permission dialog box, but if you didn't provide the usage description, the app will crash before showing the dialog. Also, Apple will reject apps that access private data but don't provide an usage description.
+ Since iOS 10 it's mandatory to provide an usage description (NSLocationWhenInUseUsageDescription) in the `info.plist` if trying to access privacy-sensitive data. When the system prompts the user to allow access, this usage description string will displayed as part of the permission dialog box, but if you didn't provide the usage description, the app will crash before showing the dialog. Also, Apple will reject apps that access private data but don't provide an usage description.
 
- This plugins requires the following usage description:
+Starting Spring 2019, all apps submitted to the App Store that access user data also are required to include a purpose string (NSLocationAlwaysUsageDescription). If you're using external libraries or SDKs, they may reference APIs that require a purpose string. While your app might not use these APIs, a purpose string is still required. You can contact the developer of the library or SDK and request they release a version of their code that doesn't contain the APIs. [Learn more] (https://developer.apple.com/documentation/uikit/core_app/protecting_the_user_s_privacy)
+
+ This plugins requires the following usage descriptions:
 
  * `NSLocationWhenInUseUsageDescription` describes the reason that the app accesses the user's location. 
+ * `NSLocationAlwaysUsageDescription` user-facing purpose string explaining clearly and completely why your app needs the data.
 
- To add this entry into the `info.plist`, you can use the `edit-config` tag in the `config.xml` like this:
+ To add these entries into the `info.plist`, you can use the `edit-config` tag in the `config.xml` like this:
 
 ```
-<edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
-    <string>need location access to find things nearby</string>
-</edit-config>
+<platform name="ios">
+    <edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
+        <string>need location access to find things nearby</string>
+    </edit-config>
+    <edit-config target="NSLocationAlwaysUsageDescription" file="*-Info.plist" mode="merge">
+        <string>need location access to find things nearby</string>
+    </edit-config>
+</platform>
 ```
  
 ### Android Quirks
