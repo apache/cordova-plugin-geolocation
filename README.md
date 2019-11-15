@@ -162,7 +162,7 @@ error, the `geolocationError` callback is passed a
 
  * `NSLocationWhenInUseUsageDescription` describes the reason that the app accesses the user's location, this used while the app is running in the foreground.
  * `NSLocationAlwaysAndWhenInUseUsageDescription` describes the reason that the app is requesting access to the user’s location information at all times, use this key if your iOS app accesses location information while running in the background and foreground. 
- * `NSLocationAlwaysUsageDescription` describes the reason that the app is requesting access to the user's location at all times, use this key if your iOS app accesses location information in the background, and you deploy to a target earlier than iOS 11. In that case, add both this key and `NSLocationAlwaysAndWhenInUseUsageDescription` to your app’s `Info.plist` file with the same message.
+ * `NSLocationAlwaysUsageDescription` describes the reason that the app is requesting access to the user's location at all times. Use this key if your app accesses location information in the background and you deploy to a target earlier than iOS 11. For iOS 11 and later, add both `NSLocationAlwaysUsageDescription` and `NSLocationAlwaysAndWhenInUseUsageDescription` to your app’s `Info.plist` file with the same message.
 
  To add these entries into the `info.plist`, you can use the `edit-config` tag in the `config.xml` like this:
 
