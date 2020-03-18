@@ -173,7 +173,7 @@ error, the `geolocationError` callback is passed a
 ### Android Quirks
 
 For historic reasons, this plugin requires GPS Hardware on Android devices, so your app will not be able to run on devices without.
-If you want to use this plugin in your app, but you do not require actual GPS Hardware on the device, install the plugin using the variable *GPS_REQUIRED*
+If you want to use this plugin in your app, but you do not require actual GPS Hardware on the device, install the plugin using the variable *GPS_REQUIRED* set to false:
 
     cordova plugin add cordova-plugin-geolocation --variable GPS_REQUIRED="false"
 
