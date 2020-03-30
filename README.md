@@ -39,8 +39,7 @@ device's actual location.
 > To get a few ideas, check out the [sample](#sample) at the bottom of this page or go straight to the [reference](#reference) content.
 
 This API is based on the
-[W3C Geolocation API Specification](http://dev.w3.org/geo/api/spec-source.html),
-and only executes on devices that don't already provide an implementation.
+[W3C Geolocation API Specification](http://dev.w3.org/geo/api/spec-source.html).
 
 __WARNING__: Collection and use of geolocation data
 raises important privacy issues.  Your app's privacy policy should
