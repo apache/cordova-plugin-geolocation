@@ -10,13 +10,8 @@
       "windows"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/apache/cordova-plugin-geolocation"
-  },
-  "bugs": {
-    "url": "https://github.com/apache/cordova-plugin-geolocation/issues"
-  },
+  "repository": "github:apache/cordova-plugin-geolocation",
+  "bugs": "https://github.com/apache/cordova-plugin-geolocation/issues",
   "keywords": [
     "cordova",
     "geolocation",
