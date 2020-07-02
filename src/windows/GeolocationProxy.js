@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* global Windows, WinJS */
+/* global cordova, Windows, WinJS */
 
 var PositionError = require('./PositionError');
 var callbacks = {};
@@ -50,13 +50,13 @@ function createErrorCode (loc) {
     /* eslint-disable no-fallthrough */
     switch (loc.locationStatus) {
     case Windows.Devices.Geolocation.PositionStatus.initializing:
-    // This status indicates that a location device is still initializing
+        // This status indicates that a location device is still initializing
     case Windows.Devices.Geolocation.PositionStatus.noData:
-    // No location data is currently available
+        // No location data is currently available
     case Windows.Devices.Geolocation.PositionStatus.notInitialized:
-    // This status indicates that the app has not yet requested
-    // location data by calling GetGeolocationAsync() or
-    // registering an event handler for the positionChanged event.
+        // This status indicates that the app has not yet requested
+        // location data by calling GetGeolocationAsync() or
+        // registering an event handler for the positionChanged event.
     case Windows.Devices.Geolocation.PositionStatus.notAvailable:
         // Location is not available on this version of Windows
         return PositionError.POSITION_UNAVAILABLE;
@@ -84,7 +84,8 @@ function createResult (pos) {
         res.latitude = pos.coordinate.point.position.latitude;
         res.longitude = pos.coordinate.point.position.longitude;
         res.altitude = pos.coordinate.point.position.altitude;
-    } else { // compatibility with old windows8.0 api
+    } else {
+        // compatibility with old windows8.0 api
         res.latitude = pos.coordinate.latitude;
         res.longitude = pos.coordinate.longitude;
         res.altitude = pos.coordinate.altitude;
@@ -100,9 +101,9 @@ module.exports = {
                 var highAccuracy = args[0];
                 var maxAge = args[1];
 
-                loc.desiredAccuracy = highAccuracy ?
-                    Windows.Devices.Geolocation.PositionAccuracy.high :
-                    Windows.Devices.Geolocation.PositionAccuracy.default;
+                loc.desiredAccuracy = highAccuracy
+                    ? Windows.Devices.Geolocation.PositionAccuracy.high
+                    : Windows.Devices.Geolocation.PositionAccuracy.default;
 
                 loc.reportInterval = maxAge || 0;
 
@@ -141,7 +142,8 @@ module.exports = {
                 case Windows.Devices.Geolocation.PositionStatus.notAvailable:
                     fail({
                         code: PositionError.POSITION_UNAVAILABLE,
-                        message: 'Data from location services is currently unavailable or you do not have the required location services present on your system.'
+                        message:
+                                'Data from location services is currently unavailable or you do not have the required location services present on your system.'
                     });
                     break;
 
@@ -159,11 +161,12 @@ module.exports = {
                 }
             };
 
-            loc.desiredAccuracy = highAccuracy ?
-                Windows.Devices.Geolocation.PositionAccuracy.high :
-                Windows.Devices.Geolocation.PositionAccuracy.default;
+            loc.desiredAccuracy = highAccuracy
+                ? Windows.Devices.Geolocation.PositionAccuracy.high
+                : Windows.Devices.Geolocation.PositionAccuracy.default;
 
-            if (cordova.platformId === 'windows') { // eslint-disable-line no-undef
+            if (cordova.platformId === 'windows') {
+                // eslint-disable-line no-undef
                 // 'positionchanged' event fails with error below if movementThreshold is not set
                 // JavaScript runtime error: Operation aborted
                 // You must set the MovementThreshold property or the ReportInterval property before adding event handlers.
