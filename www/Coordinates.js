@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 /**
  * This class contains position information.
@@ -46,15 +46,15 @@ var Coordinates = function (lat, lng, alt, acc, head, vel, altacc) {
     /**
      * The altitude of the position.
      */
-    this.altitude = (alt !== undefined ? alt : null);
+    this.altitude = alt !== undefined ? alt : null;
     /**
      * The direction the device is moving at the position.
      */
-    this.heading = (head !== undefined ? head : null);
+    this.heading = head !== undefined ? head : null;
     /**
      * The velocity with which the device is moving at the position.
      */
-    this.speed = (vel !== undefined ? vel : null);
+    this.speed = vel !== undefined ? vel : null;
 
     if (this.speed === 0 || this.speed === null) {
         this.heading = NaN;
@@ -63,7 +63,7 @@ var Coordinates = function (lat, lng, alt, acc, head, vel, altacc) {
     /**
      * The altitude accuracy of the position.
      */
-    this.altitudeAccuracy = (altacc !== undefined) ? altacc : null;
+    this.altitudeAccuracy = altacc !== undefined ? altacc : null;
 };
 
 module.exports = Coordinates;

@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 var argscheck = require('cordova/argscheck');
 var utils = require('cordova/utils');
@@ -70,23 +70,23 @@ function createTimeout (errorCallback, timeout) {
 var geolocation = {
     lastPosition: null, // reference to last known (cached) position returned
     /**
-   * Asynchronously acquires the current position.
-   *
-   * @param {Function} successCallback    The function to call when the position data is available
-   * @param {Function} errorCallback      The function to call when there is an error getting the heading position. (OPTIONAL)
-   * @param {PositionOptions} options     The options for getting the position data. (OPTIONAL)
-   */
+     * Asynchronously acquires the current position.
+     *
+     * @param {Function} successCallback    The function to call when the position data is available
+     * @param {Function} errorCallback      The function to call when there is an error getting the heading position. (OPTIONAL)
+     * @param {PositionOptions} options     The options for getting the position data. (OPTIONAL)
+     */
     getCurrentPosition: function (successCallback, errorCallback, options) {
         argscheck.checkArgs('fFO', 'geolocation.getCurrentPosition', arguments);
         options = parseParameters(options);
 
         // Timer var that will fire an error callback if no position is retrieved from native
         // before the "timeout" param provided expires
-        var timeoutTimer = {timer: null};
+        var timeoutTimer = { timer: null };
 
         var win = function (p) {
             clearTimeout(timeoutTimer.timer);
-            if (!(timeoutTimer.timer)) {
+            if (!timeoutTimer.timer) {
                 // Timeout already happened, or native fired error callback for
                 // this geo request.
                 // Don't continue with success callback.
@@ -118,15 +118,20 @@ var geolocation = {
 
         // Check our cached position, if its timestamp difference with current time is less than the maximumAge, then just
         // fire the success callback with the cached position.
-        if (geolocation.lastPosition && options.maximumAge && (((new Date()).getTime() - geolocation.lastPosition.timestamp) <= options.maximumAge)) {
+        if (
+            geolocation.lastPosition &&
+            options.maximumAge &&
+            new Date().getTime() - geolocation.lastPosition.timestamp <= options.maximumAge
+        ) {
             successCallback(geolocation.lastPosition);
-        // If the cached position check failed and the timeout was set to 0, error out with a TIMEOUT error object.
+            // If the cached position check failed and the timeout was set to 0, error out with a TIMEOUT error object.
         } else if (options.timeout === 0) {
             fail({
                 code: PositionError.TIMEOUT,
-                message: "timeout value in PositionOptions set to 0 and no cached Position object available, or cached Position object's age exceeds provided PositionOptions' maximumAge parameter."
+                message:
+                    "timeout value in PositionOptions set to 0 and no cached Position object available, or cached Position object's age exceeds provided PositionOptions' maximumAge parameter."
             });
-        // Otherwise we have to call into native to retrieve a position.
+            // Otherwise we have to call into native to retrieve a position.
         } else {
             if (options.timeout !== Infinity) {
                 // If the timeout value was not set to Infinity (default), then
