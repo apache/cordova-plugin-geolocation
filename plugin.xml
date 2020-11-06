@@ -22,7 +22,7 @@
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="cordova-plugin-geolocation"
-      version="4.0.3-dev">
+      version="4.1.0">
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
