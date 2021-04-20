@@ -344,11 +344,16 @@
         }
         [self returnLocationError:positionError withMessage:[error localizedDescription]];
     }
+        
+    if (error.code == kCLErrorLocationUnknown || error.code == kCLErrorHeadingFailure) // recoverable
+        return;
     
-    if (error.code != kCLErrorLocationUnknown) {
-        [self.locationManager stopUpdatingLocation];
-        __locationStarted = NO;
-    }
+    if(error.code == kCLErrorDenied && [self isAuthorized] && [self isLocationServicesEnabled]) // suspended app, recoverable
+        return;
+    
+    // cancel the location service due to permanent failure or user permission
+    [self.locationManager stopUpdatingLocation];
+    __locationStarted = NO;
 }
 
 //iOS8+
