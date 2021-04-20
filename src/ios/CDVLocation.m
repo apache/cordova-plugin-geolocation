@@ -80,9 +80,8 @@
     return YES;
 }
 
-- (BOOL)isLocationServicesEnabled
+- (BOOL)isLocationServicesEnabled // returns true if GLOBAL system-wide location services are enabled (Settings > Privacy)
 {
-    BOOL locationServicesEnabledInstancePropertyAvailable = [self.locationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 3.x
     BOOL locationServicesEnabledClassPropertyAvailable = [CLLocationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 4.x
     
     if (locationServicesEnabledClassPropertyAvailable) { // iOS 4.x
@@ -213,7 +212,7 @@
                 }
             }
             
-            if (!__locationStarted || (__highAccuracyEnabled != enableHighAccuracy)) {
+            if (!self->__locationStarted || (self->__highAccuracyEnabled != enableHighAccuracy)) {
                 // add the callbackId into the array so we can call back when get data
                 @synchronized (self.locationData.locationCallbacks) {
                     if (callbackId != nil) {
@@ -331,7 +330,7 @@
 
 - (void)locationManager:(CLLocationManager*)manager didFailWithError:(NSError*)error
 {
-    NSLog(@"locationManager::didFailWithError %@", [error localizedFailureReason]);
+    NSLog(@"CDVLocation locationManager:didFailWithError: %ld %@ isLocationServicesEnabled:%i isAuthorized:%i", (long)error.code, [error localizedDescription], [self isLocationServicesEnabled], [self isAuthorized]);
     
     CDVLocationData* lData = self.locationData;
     if (lData && __locationStarted) {
