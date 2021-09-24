@@ -23,6 +23,8 @@ description: Access GPS data.
 
 # cordova-plugin-geolocation
 
+[![Android Testsuite](https://github.com/apache/cordova-plugin-geolocation/actions/workflows/android.yml/badge.svg)](https://github.com/apache/cordova-plugin-geolocation/actions/workflows/android.yml) [![Chrome Testsuite](https://github.com/apache/cordova-plugin-geolocation/actions/workflows/chrome.yml/badge.svg)](https://github.com/apache/cordova-plugin-geolocation/actions/workflows/chrome.yml) [![iOS Testsuite](https://github.com/apache/cordova-plugin-geolocation/actions/workflows/ios.yml/badge.svg)](https://github.com/apache/cordova-plugin-geolocation/actions/workflows/ios.yml) [![Lint Test](https://github.com/apache/cordova-plugin-geolocation/actions/workflows/lint.yml/badge.svg)](https://github.com/apache/cordova-plugin-geolocation/actions/workflows/lint.yml)
+
 This plugin provides information about the device's location, such as
 latitude and longitude.
 
