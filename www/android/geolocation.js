@@ -29,7 +29,12 @@ var pluginToNativeWatchMap = {};
 
 module.exports = {
     getCurrentPosition: function (success, error, args) {
-        var win = function () {
+        var win = function (deviceApiLevel) {
+            // Workaround for bug specific to API 31 where requesting `enableHighAccuracy: false` results in TIMEOUT error.
+            if (deviceApiLevel === 31) {
+                if (typeof args === 'undefined') args = {};
+                args.enableHighAccuracy = true;
+            }
             var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
             geo.getCurrentPosition(success, error, args);
         };
@@ -38,13 +43,19 @@ module.exports = {
                 error(new PositionError(PositionError.PERMISSION_DENIED, 'Illegal Access'));
             }
         };
-        exec(win, fail, 'Geolocation', 'getPermission', []);
+        var enableHighAccuracy = typeof args === 'object' && !!args.enableHighAccuracy;
+        exec(win, fail, 'Geolocation', 'getPermission', [enableHighAccuracy]);
     },
 
     watchPosition: function (success, error, args) {
         var pluginWatchId = utils.createUUID();
 
-        var win = function () {
+        var win = function (deviceApiLevel) {
+            // Workaround for bug specific to API 31 where requesting `enableHighAccuracy: false` results in TIMEOUT error.
+            if (deviceApiLevel === 31) {
+                if (typeof args === 'undefined') args = {};
+                args.enableHighAccuracy = true;
+            }
             var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
             pluginToNativeWatchMap[pluginWatchId] = geo.watchPosition(success, error, args);
         };
@@ -54,18 +65,15 @@ module.exports = {
                 error(new PositionError(PositionError.PERMISSION_DENIED, 'Illegal Access'));
             }
         };
-        exec(win, fail, 'Geolocation', 'getPermission', []);
+        var enableHighAccuracy = typeof args === 'object' && !!args.enableHighAccuracy;
+        exec(win, fail, 'Geolocation', 'getPermission', [enableHighAccuracy]);
 
         return pluginWatchId;
     },
 
     clearWatch: function (pluginWatchId) {
-        var win = function () {
-            var nativeWatchId = pluginToNativeWatchMap[pluginWatchId];
-            var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
-            geo.clearWatch(nativeWatchId);
-        };
-
-        exec(win, null, 'Geolocation', 'getPermission', []);
+        var nativeWatchId = pluginToNativeWatchMap[pluginWatchId];
+        var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
+        geo.clearWatch(nativeWatchId);
     }
 };
