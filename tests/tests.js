@@ -22,7 +22,7 @@
 /* global WinJS, device */
 
 exports.defineAutoTests = function () {
-    var fail = function (done, context, message) {
+    const fail = function (done, context, message) {
         // prevents done() to be called several times
         if (context) {
             if (context.done) return;
@@ -42,7 +42,7 @@ exports.defineAutoTests = function () {
         });
     };
 
-    var succeed = function (done, context) {
+    const succeed = function (done, context) {
         // prevents done() to be called several times
         if (context) {
             if (context.done) return;
@@ -59,16 +59,16 @@ exports.defineAutoTests = function () {
     };
 
     // On Windows, some tests prompt user for permission to use geolocation and interrupt autotests run
-    var isWindowsStore = cordova.platformId === 'windows8' || (cordova.platformId === 'windows' && !WinJS.Utilities.isPhone); // eslint-disable-line no-undef
-    var majorDeviceVersion = null;
-    var versionRegex = /(\d)\..+/.exec(device.version);
+    const isWindowsStore = cordova.platformId === 'windows8' || (cordova.platformId === 'windows' && !WinJS.Utilities.isPhone); // eslint-disable-line no-undef
+    let majorDeviceVersion = null;
+    const versionRegex = /(\d)\..+/.exec(device.version);
     if (versionRegex !== null) {
         majorDeviceVersion = Number(versionRegex[1]);
     }
     // Starting from Android 6.0 there are confirmation dialog which prevents us from running auto tests in silent mode (user interaction needed)
     // Also, Android emulator doesn't provide geo fix without manual interactions or mocks
-    var skipAndroid = cordova.platformId === 'android' && (device.isVirtual || majorDeviceVersion >= 6); // eslint-disable-line no-undef
-    var isIOSSim = false; // if iOS simulator does not have a location set, it will fail.
+    const skipAndroid = cordova.platformId === 'android' && (device.isVirtual || majorDeviceVersion >= 6); // eslint-disable-line no-undef
+    let isIOSSim = false; // if iOS simulator does not have a location set, it will fail.
 
     describe('Geolocation (navigator.geolocation)', function () {
         it('geolocation.spec.1 should exist', function () {
@@ -166,7 +166,7 @@ exports.defineAutoTests = function () {
         });
 
         describe('error callback', function () {
-            var errorWatch = null;
+            let errorWatch = null;
             afterEach(function () {
                 navigator.geolocation.clearWatch(errorWatch);
             });
@@ -176,7 +176,7 @@ exports.defineAutoTests = function () {
                     pending();
                 }
 
-                var context = this;
+                const context = this;
                 errorWatch = navigator.geolocation.watchPosition(
                     fail.bind(null, done, context, 'Unexpected win'),
                     succeed.bind(null, done, context),
@@ -192,7 +192,7 @@ exports.defineAutoTests = function () {
                     pending();
                 }
 
-                var context = this;
+                const context = this;
                 errorWatch = navigator.geolocation.watchPosition(
                     fail.bind(this, done, context, 'Unexpected win'),
                     function (gpsError) {
@@ -215,7 +215,7 @@ exports.defineAutoTests = function () {
         });
 
         describe('success callback', function () {
-            var successWatch = null;
+            let successWatch = null;
             afterEach(function () {
                 navigator.geolocation.clearWatch(successWatch);
             });
@@ -225,7 +225,7 @@ exports.defineAutoTests = function () {
                     pending();
                 }
 
-                var context = this;
+                const context = this;
                 successWatch = navigator.geolocation.watchPosition(
                     function (p) {
                         // prevents done() to be called several times
@@ -255,7 +255,7 @@ exports.defineAutoTests = function () {
 /******************************************************************************/
 
 exports.defineManualTests = function (contentEl, createActionButton) {
-    var watchLocationId = null;
+    let watchLocationId = null;
 
     /**
      * Set location status
@@ -264,7 +264,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         document.getElementById('location_status').innerHTML = status;
     }
     function setLocationDetails (p) {
-        var date = new Date(p.timestamp);
+        const date = new Date(p.timestamp);
         document.getElementById('latitude').innerHTML = p.coords.latitude;
         document.getElementById('longitude').innerHTML = p.coords.longitude;
         document.getElementById('altitude').innerHTML = p.coords.altitude;
@@ -279,7 +279,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
      * Stop watching the location
      */
     function stopLocation () {
-        var geo = navigator.geolocation;
+        const geo = navigator.geolocation;
         if (!geo) {
             alert('navigator.geolocation object is missing.'); // eslint-disable-line no-undef
             return;
@@ -294,20 +294,20 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     /**
      * Start watching location
      */
-    var watchLocation = function () {
-        var geo = navigator.geolocation;
+    const watchLocation = function () {
+        const geo = navigator.geolocation;
         if (!geo) {
             alert('navigator.geolocation object is missing.'); // eslint-disable-line no-undef
             return;
         }
 
         // Success callback
-        var success = function (p) {
+        const success = function (p) {
             setLocationDetails(p);
         };
 
         // Fail callback
-        var fail = function (e) {
+        const fail = function (e) {
             console.log('watchLocation fail callback with error code ' + e);
             stopLocation(geo);
         };
@@ -320,8 +320,8 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     /**
      * Get current location
      */
-    var getLocation = function (opts) {
-        var geo = navigator.geolocation;
+    const getLocation = function (opts) {
+        const geo = navigator.geolocation;
         if (!geo) {
             alert('navigator.geolocation object is missing.'); // eslint-disable-line no-undef
             return;
@@ -331,13 +331,13 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         stopLocation(geo);
 
         // Success callback
-        var success = function (p) {
+        const success = function (p) {
             setLocationDetails(p);
             setLocationStatus('Done');
         };
 
         // Fail callback
-        var fail = function (e) {
+        const fail = function (e) {
             console.log('getLocation fail callback with error code ' + e.code);
             setLocationStatus('Error: ' + e.code);
         };
@@ -350,33 +350,33 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     /******************************************************************************/
 
-    var location_div = '<div id="info">' + '<b>Status:</b> <span id="location_status">Stopped</span>' + '<table width="100%">';
-    var latitude =
+    const location_div = '<div id="info">' + '<b>Status:</b> <span id="location_status">Stopped</span>' + '<table width="100%">';
+    const latitude =
         '<tr>' +
         '<td><b>Latitude:</b></td>' +
         '<td id="latitude">&nbsp;</td>' +
         '<td>(decimal degrees) geographic coordinate [<a href="http://dev.w3.org/geo/api/spec-source.html#lat">#ref]</a></td>' +
         '</tr>';
-    var longitude =
+    const longitude =
         '<tr>' +
         '<td><b>Longitude:</b></td>' +
         '<td id="longitude">&nbsp;</td>' +
         '<td>(decimal degrees) geographic coordinate [<a href="http://dev.w3.org/geo/api/spec-source.html#lat">#ref]</a></td>' +
         '</tr>';
-    var altitude =
+    const altitude =
         '<tr>' +
         '<td><b>Altitude:</b></td>' +
         '<td id="altitude">&nbsp;</td>' +
         '<td>null if not supported;<br>' +
         '(meters) height above the [<a href="http://dev.w3.org/geo/api/spec-source.html#ref-wgs">WGS84</a>] ellipsoid. [<a href="http://dev.w3.org/geo/api/spec-source.html#altitude">#ref]</a></td>' +
         '</tr>';
-    var accuracy =
+    const accuracy =
         '<tr>' +
         '<td><b>Accuracy:</b></td>' +
         '<td id="accuracy">&nbsp;</td>' +
         '<td>(meters; non-negative; 95% confidence level) the accuracy level of the latitude and longitude coordinates. [<a href="http://dev.w3.org/geo/api/spec-source.html#accuracy">#ref]</a></td>' +
         '</tr>';
-    var heading =
+    const heading =
         '<tr>' +
         '<td><b>Heading:</b></td>' +
         '<td id="heading">&nbsp;</td>' +
@@ -384,20 +384,20 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         'NaN if speed == 0;<br>' +
         '(degrees; 0° ≤ heading < 360°) direction of travel of the hosting device- counting clockwise relative to the true north. [<a href="http://dev.w3.org/geo/api/spec-source.html#heading">#ref]</a></td>' +
         '</tr>';
-    var speed =
+    const speed =
         '<tr>' +
         '<td><b>Speed:</b></td>' +
         '<td id="speed">&nbsp;</td>' +
         '<td>null if not supported;<br>' +
         '(meters per second; non-negative) magnitude of the horizontal component of the hosting device current velocity. [<a href="http://dev.w3.org/geo/api/spec-source.html#speed">#ref]</a></td>' +
         '</tr>';
-    var altitude_accuracy =
+    const altitude_accuracy =
         '<tr>' +
         '<td><b>Altitude Accuracy:</b></td>' +
         '<td id="altitude_accuracy">&nbsp;</td>' +
         '<td>null if not supported;<br>(meters; non-negative; 95% confidence level) the accuracy level of the altitude. [<a href="http://dev.w3.org/geo/api/spec-source.html#altitude-accuracy">#ref]</a></td>' +
         '</tr>';
-    var time =
+    const time =
         '<tr>' +
         '<td><b>Time:</b></td>' +
         '<td id="timestamp">&nbsp;</td>' +
@@ -405,7 +405,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         '</tr>' +
         '</table>' +
         '</div>';
-    var actions =
+    const actions =
         '<div id="cordova-getLocation"></div>' +
         'Expected result: Will update all applicable values in status box for current location. Status will read Retrieving Location (may not see this if location is retrieved immediately) then Done.' +
         '<p/> <div id="cordova-watchLocation"></div>' +
@@ -414,8 +414,8 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         'Expected result: Will stop watching the location so values will not be updated. Status will read Stopped.' +
         '<p/> <div id="cordova-getOld"></div>' +
         'Expected result: Will update location values with a cached position that is up to 30 seconds old. Verify with time value. Status will read Done.';
-    var values_info = '<h3>Details about each value are listed below in the status box</h3>';
-    var note = '<h3>Allow use of current location, if prompted</h3>';
+    const values_info = '<h3>Details about each value are listed below in the status box</h3>';
+    const note = '<h3>Allow use of current location, if prompted</h3>';
 
     contentEl.innerHTML =
         values_info +
