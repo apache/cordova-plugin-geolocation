@@ -16,17 +16,17 @@
 
 /* global cordova, Windows, WinJS */
 
-var PositionError = require('./PositionError');
-var callbacks = {};
-var locs = {};
+const PositionError = require('./PositionError');
+const callbacks = {};
+const locs = {};
 
 // constants
-var FALLBACK_EPSILON = 0.001;
+const FALLBACK_EPSILON = 0.001;
 
 function ensureAndCreateLocator () {
-    var deferral;
+    let deferral;
 
-    var loc = new Windows.Devices.Geolocation.Geolocator();
+    const loc = new Windows.Devices.Geolocation.Geolocator();
 
     if (typeof Windows.Devices.Geolocation.Geolocator.requestAccessAsync === 'function') {
         deferral = Windows.Devices.Geolocation.Geolocator.requestAccessAsync().then(function (result) {
@@ -72,7 +72,7 @@ function createErrorCode (loc) {
 }
 /* eslint-enable no-fallthrough */
 function createResult (pos) {
-    var res = {
+    const res = {
         accuracy: pos.coordinate.accuracy,
         heading: pos.coordinate.heading,
         velocity: pos.coordinate.speed,
@@ -98,8 +98,8 @@ module.exports = {
     getLocation: function (success, fail, args, env) {
         ensureAndCreateLocator().done(function (loc) {
             if (loc) {
-                var highAccuracy = args[0];
-                var maxAge = args[1];
+                const highAccuracy = args[0];
+                const maxAge = args[1];
 
                 loc.desiredAccuracy = highAccuracy
                     ? Windows.Devices.Geolocation.PositionAccuracy.high
@@ -129,14 +129,14 @@ module.exports = {
 
     addWatch: function (success, fail, args, env) {
         ensureAndCreateLocator().done(function (loc) {
-            var clientId = args[0];
-            var highAccuracy = args[1];
+            const clientId = args[0];
+            const highAccuracy = args[1];
 
-            var onPositionChanged = function (e) {
+            const onPositionChanged = function (e) {
                 success(createResult(e.position), { keepCallback: true });
             };
 
-            var onStatusChanged = function (e) {
+            const onStatusChanged = function (e) {
                 switch (e.status) {
                 case Windows.Devices.Geolocation.PositionStatus.noData:
                 case Windows.Devices.Geolocation.PositionStatus.notAvailable:
@@ -187,9 +187,9 @@ module.exports = {
     },
 
     clearWatch: function (success, fail, args, env) {
-        var clientId = args[0];
-        var callback = callbacks[clientId];
-        var loc = locs[clientId];
+        const clientId = args[0];
+        const callback = callbacks[clientId];
+        const loc = locs[clientId];
 
         if (callback && loc) {
             loc.removeEventListener('positionchanged', callback.pos);

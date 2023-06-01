@@ -19,9 +19,9 @@
  *
  */
 
-var Coordinates = require('./Coordinates');
+const Coordinates = require('./Coordinates');
 
-var Position = function (coords, timestamp) {
+const Position = function (coords, timestamp) {
     if (coords) {
         this.coords = new Coordinates(
             coords.latitude,
