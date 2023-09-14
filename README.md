@@ -87,7 +87,6 @@ It is also possible to install via repo url directly ( unstable )
 
 - Android
 - iOS
-- Windows
 
 ## Methods
 
