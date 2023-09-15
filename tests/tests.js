@@ -19,7 +19,7 @@
  *
  */
 
-/* global WinJS, device */
+/* global device */
 
 exports.defineAutoTests = function () {
     const fail = function (done, context, message) {
@@ -59,7 +59,6 @@ exports.defineAutoTests = function () {
     };
 
     // On Windows, some tests prompt user for permission to use geolocation and interrupt autotests run
-    const isWindowsStore = cordova.platformId === 'windows8' || (cordova.platformId === 'windows' && !WinJS.Utilities.isPhone); // eslint-disable-line no-undef
     let majorDeviceVersion = null;
     const versionRegex = /(\d)\..+/.exec(device.version);
     if (versionRegex !== null) {
@@ -94,7 +93,7 @@ exports.defineAutoTests = function () {
     describe('getCurrentPosition method', function () {
         describe('error callback', function () {
             it('geolocation.spec.5 should be called if we set timeout to 0 and maximumAge to a very small number', function (done) {
-                if (isWindowsStore || skipAndroid) {
+                if (skipAndroid) {
                     pending();
                 }
 
@@ -105,7 +104,7 @@ exports.defineAutoTests = function () {
             });
 
             it('geolocation.spec.9 on failure should return PositionError object with error code constants', function (done) {
-                if (isWindowsStore || skipAndroid) {
+                if (skipAndroid) {
                     pending();
                 }
 
@@ -128,7 +127,7 @@ exports.defineAutoTests = function () {
 
         describe('success callback', function () {
             it('geolocation.spec.6 should be called with a Position object', function (done) {
-                if (isWindowsStore || skipAndroid) {
+                if (skipAndroid) {
                     pending();
                 }
 
@@ -172,7 +171,7 @@ exports.defineAutoTests = function () {
             });
 
             it('geolocation.spec.7 should be called if we set timeout to 0 and maximumAge to a very small number', function (done) {
-                if (isWindowsStore || skipAndroid) {
+                if (skipAndroid) {
                     pending();
                 }
 
@@ -188,7 +187,7 @@ exports.defineAutoTests = function () {
             });
 
             it('geolocation.spec.10 on failure should return PositionError object with error code constants', function (done) {
-                if (isWindowsStore || skipAndroid) {
+                if (skipAndroid) {
                     pending();
                 }
 
@@ -221,7 +220,7 @@ exports.defineAutoTests = function () {
             });
 
             it('geolocation.spec.8 should be called with a Position object', function (done) {
-                if (isWindowsStore || skipAndroid || isIOSSim) {
+                if (skipAndroid || isIOSSim) {
                     pending();
                 }
 
