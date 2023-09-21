@@ -85,8 +85,8 @@ It is also possible to install via repo url directly ( unstable )
 
 ## Supported Platforms
 
-- Android
-- iOS
+- Android (10.0.0 or later)
+- iOS (6.0.0 or later)
 
 ## Methods
 
