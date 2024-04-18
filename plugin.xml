@@ -93,5 +93,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <source-file src="src/ios/CDVLocation.m" />
         <framework src="CoreLocation.framework" />
 
+        <resource-file src="src/ios/CDVGeolocation.bundle" target="CDVGeolocation.bundle" />
     </platform>
 </plugin>
