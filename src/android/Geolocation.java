@@ -79,15 +79,15 @@ public class Geolocation extends CordovaPlugin {
             for (int i=0; i<grantResults.length; i++) {
                 int r = grantResults[i];
                 String p = permissions[i];
-                if (r == PackageManager.PERMISSION_DENIED && arrayContains(permissionsToCheck, p)) {
-                    LOG.d(TAG, "Permission Denied!");
-                    result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+                if (r == PackageManager.PERMISSION_GRANTED) {
+                    result = new PluginResult(PluginResult.Status.OK);
                     context.sendPluginResult(result);
                     return;
                 }
 
             }
-            result = new PluginResult(PluginResult.Status.OK);
+            LOG.d(TAG, "Permission Denied!");
+            result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
             context.sendPluginResult(result);
         }
     }
@@ -95,12 +95,12 @@ public class Geolocation extends CordovaPlugin {
     public boolean hasPermisssion(String[] permissions) {
         for(String p : permissions)
         {
-            if(!PermissionHelper.hasPermission(this, p))
+            if(PermissionHelper.hasPermission(this, p))
             {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /*
@@ -111,22 +111,6 @@ public class Geolocation extends CordovaPlugin {
     public void requestPermissions(int requestCode)
     {
         PermissionHelper.requestPermissions(this, requestCode, permissionsToRequest);
-    }
-
-    //https://stackoverflow.com/a/12635769/777265
-    private <T> boolean arrayContains(final T[] array, final T v) {
-        if (v == null) {
-            for (final T e : array)
-                if (e == null)
-                    return true;
-        }
-        else {
-            for (final T e : array)
-                if (e == v || v.equals(e))
-                    return true;
-        }
-
-        return false;
     }
 
 }
