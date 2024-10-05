@@ -18,8 +18,10 @@
 
 package org.apache.cordova.geolocation;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.Manifest;
+import android.location.LocationManager;
 import android.os.Build;
 
 import org.apache.cordova.CallbackContext;
@@ -42,12 +44,21 @@ public class Geolocation extends CordovaPlugin {
     String [] permissionsToRequest;
     String[] permissionsToCheck;
 
+    LocationManager manager;
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         LOG.d(TAG, "We are entering execute");
         context = callbackContext;
         if(action.equals("getPermission"))
         {
+            if(!isLocationProviderAvailable())
+            {
+                LOG.d(TAG, "Location Provider Unavailable!");
+                PluginResult result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+                context.sendPluginResult(result);
+                return true;
+            }
+
             boolean highAccuracy = args.getBoolean(0);
             permissionsToCheck = highAccuracy ? highAccuracyPermissions : lowAccuracyPermissions;
 
@@ -113,4 +124,9 @@ public class Geolocation extends CordovaPlugin {
         PermissionHelper.requestPermissions(this, requestCode, permissionsToRequest);
     }
 
+    private boolean isLocationProviderAvailable()
+    {
+        manager = (LocationManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        return manager.isProviderEnabled(LocationManager.FUSED_PROVIDER);
+    }
 }
