@@ -55,7 +55,7 @@ public class Geolocation extends CordovaPlugin {
             // See https://bugs.chromium.org/p/chromium/issues/detail?id=1269362
             permissionsToRequest = Build.VERSION.SDK_INT <= 31 ? highAccuracyPermissions : permissionsToCheck;
 
-            if(hasPermisssion(permissionsToCheck))
+            if(hasPermission(permissionsToCheck))
             {
                 PluginResult r = new PluginResult(PluginResult.Status.OK, Build.VERSION.SDK_INT);
                 context.sendPluginResult(r);
@@ -92,7 +92,7 @@ public class Geolocation extends CordovaPlugin {
         }
     }
 
-    public boolean hasPermisssion(String[] permissions) {
+    public boolean hasPermission(String[] permissions) {
         for(String p : permissions)
         {
             if(PermissionHelper.hasPermission(this, p))
