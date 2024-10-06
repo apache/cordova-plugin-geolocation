@@ -18,11 +18,24 @@
 
 package org.apache.cordova.geolocation;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.Manifest;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+
+import com.google.android.gms.location.CurrentLocationRequest;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Granularity;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.CancellationTokenSource;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+
+import androidx.annotation.NonNull;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -30,6 +43,7 @@ import org.apache.cordova.PermissionHelper;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.LOG;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.json.JSONException;
 
 
@@ -45,6 +59,7 @@ public class Geolocation extends CordovaPlugin {
     String[] permissionsToCheck;
 
     LocationManager manager;
+    CurrentLocationRequest currentLocationRequest;
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         LOG.d(TAG, "We are entering execute");
@@ -73,6 +88,40 @@ public class Geolocation extends CordovaPlugin {
                 return true;
             }
             else {
+                PermissionHelper.requestPermissions(this, 1, permissionsToRequest);
+            }
+            return true;
+        }
+        else if(action.equals("getCurrentPosition"))
+        {
+            if(!isLocationProviderAvailable())
+            {
+                LOG.d(TAG, "Location Provider Unavailable!");
+                PluginResult result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+                context.sendPluginResult(result);
+                return true;
+            }
+
+            boolean highAccuracy = args.getBoolean(0);
+            permissionsToCheck = highAccuracy ? highAccuracyPermissions : lowAccuracyPermissions;
+
+            currentLocationRequest = new CurrentLocationRequest.Builder()
+                    .setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
+                    .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                    .setMaxUpdateAgeMillis(args.getLong(1))
+                    .setDurationMillis(args.isNull(2) ? Long.MAX_VALUE : args.getLong(2))
+                    .build();
+
+            // Always request both FINE & COARSE permissions on API <= 31 due to bug in WebView that manifests on these versions
+            // See https://bugs.chromium.org/p/chromium/issues/detail?id=1269362
+            permissionsToRequest = Build.VERSION.SDK_INT <= 31 ? highAccuracyPermissions : permissionsToCheck;
+
+            if(hasPermission(permissionsToCheck))
+            {
+                getCurrentLocation();
+                return true;
+            }
+            else {
                 PermissionHelper.requestPermissions(this, 0, permissionsToRequest);
             }
             return true;
@@ -91,8 +140,12 @@ public class Geolocation extends CordovaPlugin {
                 int r = grantResults[i];
                 String p = permissions[i];
                 if (r == PackageManager.PERMISSION_GRANTED) {
-                    result = new PluginResult(PluginResult.Status.OK);
-                    context.sendPluginResult(result);
+                    if (requestCode == 0) {
+                        getCurrentLocation();
+                    } else {
+                        result = new PluginResult(PluginResult.Status.OK);
+                        context.sendPluginResult(result);
+                    }
                     return;
                 }
 
@@ -128,5 +181,48 @@ public class Geolocation extends CordovaPlugin {
     {
         manager = (LocationManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         return manager.isProviderEnabled(LocationManager.FUSED_PROVIDER);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getCurrentLocation() throws JSONException {
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.cordova.getActivity().getApplicationContext());
+        CancellationTokenSource cts = new CancellationTokenSource();
+
+        fusedLocationClient.getCurrentLocation(
+            currentLocationRequest,
+            cts.getToken())
+                .addOnSuccessListener(
+                    this.cordova.getActivity(), (OnSuccessListener<Location>) location -> {
+                        if (location != null) {
+                            try {
+                                JSONObject result = new JSONObject();
+                                result.put("latitude", location.getLatitude());
+                                result.put("longitude", location.getLongitude());
+                                result.put("altitude", location.getAltitude());
+                                result.put("accuracy", location.getAccuracy());
+                                result.put("heading", null);
+                                result.put("velocity", null);
+                                result.put("altitudeAccuracy", null);
+                                result.put("time", location.getTime());
+                                result.put("deviceApiLevel", Build.VERSION.SDK_INT);
+
+                                PluginResult r = new PluginResult(PluginResult.Status.OK, result);
+                                context.sendPluginResult(r);
+                            } catch (JSONException e) {
+                                PluginResult r = new PluginResult(PluginResult.Status.JSON_EXCEPTION);
+                                context.sendPluginResult(r);
+                            }
+                        } else {
+                            PluginResult r = new PluginResult(PluginResult.Status.ERROR);
+                            context.sendPluginResult(r);
+                        }
+                    })
+                .addOnFailureListener(this.cordova.getActivity(), new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        PluginResult r = new PluginResult(PluginResult.Status.ERROR);
+                        context.sendPluginResult(r);
+                    }
+                });
     }
 }

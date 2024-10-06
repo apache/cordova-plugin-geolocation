@@ -39,6 +39,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
     <!-- android -->
     <platform name="android">
+        <preference name="PLAY_SERVICES_LOCATION_VERSION" default="21.+" />
+        <framework src="com.google.android.gms:play-services-location:$PLAY_SERVICES_LOCATION_VERSION" />
 
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -56,6 +58,14 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <js-module src="www/android/geolocation.js" name="geolocation">
             <clobbers target="navigator.geolocation" />
+        </js-module>
+
+        <js-module src="www/Coordinates.js" name="Coordinates">
+            <clobbers target="Coordinates" />
+        </js-module>
+
+        <js-module src="www/Position.js" name="Position">
+            <clobbers target="Position" />
         </js-module>
 
         <!-- We don't expose PositionError via clobber on Android as we use it internally only -->
