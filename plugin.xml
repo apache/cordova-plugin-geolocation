@@ -49,9 +49,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </config-file>
 
         <config-file target="res/xml/config.xml" parent="/*">
-          <feature name="Geolocation">
-              <param name="android-package" value="org.apache.cordova.geolocation.Geolocation" />
-          </feature>
+            <preference name="android-minSdkVersion" value="31" />
+            <feature name="Geolocation">
+                <param name="android-package" value="org.apache.cordova.geolocation.Geolocation" />
+            </feature>
         </config-file>
 
         <source-file src="src/android/Geolocation.java" target-dir="src/org/apache/cordova/geolocation/" />
@@ -90,7 +91,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <clobbers target="Position" />
         </js-module>
 
-        <js-module src="www/geolocation.js" name="geolocation">
+        <js-module src="www/ios/geolocation.js" name="geolocation">
             <clobbers target="navigator.geolocation" />
         </js-module>
 

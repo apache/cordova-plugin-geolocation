@@ -24,9 +24,6 @@ const utils = require('cordova/utils');
 const Position = require('./Position');
 const PositionError = require('./PositionError');
 
-// Native watchPosition method is called async after permissions prompt.
-// So we use additional map and own ids to return watch id synchronously.
-const pluginToNativeWatchMap = {};
 // Returns default params, overrides if provided with values
 function parseParameters (options) {
     const opt = {
@@ -88,14 +85,25 @@ module.exports = {
     watchPosition: function (success, error, args) {
         const pluginWatchId = utils.createUUID();
 
-        const win = function (deviceApiLevel) {
+        const win = function (p) {
             // Workaround for bug specific to API 31 where requesting `enableHighAccuracy: false` results in TIMEOUT error.
-            if (deviceApiLevel === 31) {
+            if (p.deviceApiLevel === 31) {
                 if (typeof args === 'undefined') args = {};
                 args.enableHighAccuracy = true;
             }
-            const geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
-            pluginToNativeWatchMap[pluginWatchId] = geo.watchPosition(success, error, args);
+            const pos = new Position(
+                {
+                    latitude: p.latitude,
+                    longitude: p.longitude,
+                    altitude: p.altitude,
+                    accuracy: p.accuracy,
+                    heading: p.heading,
+                    velocity: p.velocity,
+                    altitudeAccuracy: p.altitudeAccuracy
+                },
+                p.timestamp
+            );
+            success(pos);
         };
 
         const fail = function () {
@@ -103,15 +111,13 @@ module.exports = {
                 error(new PositionError(PositionError.PERMISSION_DENIED, 'Illegal Access'));
             }
         };
-        const enableHighAccuracy = typeof args === 'object' && !!args.enableHighAccuracy;
-        exec(win, fail, 'Geolocation', 'getPermission', [enableHighAccuracy]);
+        const options = parseParameters(args);
+        exec(win, fail, 'Geolocation', 'watchPosition', [options.enableHighAccuracy, options.maximumAge, options.timeout]);
 
         return pluginWatchId;
     },
 
-    clearWatch: function (pluginWatchId) {
-        const nativeWatchId = pluginToNativeWatchMap[pluginWatchId];
-        const geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
-        geo.clearWatch(nativeWatchId);
+    clearWatch: function (success, error) {
+        exec(success, error, 'Geolocation', 'clearWatch', []);
     }
 };
