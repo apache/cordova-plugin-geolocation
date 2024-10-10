@@ -135,7 +135,7 @@ public class Geolocation extends CordovaPlugin {
                 boolean highAccuracy = args.getBoolean(0);
                 permissionsToCheck = highAccuracy ? highAccuracyPermissions : lowAccuracyPermissions;
 
-                locationRequest = new LocationRequest.Builder(args.getLong(1))
+                locationRequest = new LocationRequest.Builder(LocationRequest.Builder.IMPLICIT_MIN_UPDATE_INTERVAL)
                         .setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
                         .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
                         .setMaxUpdateAgeMillis(args.getLong(1))
