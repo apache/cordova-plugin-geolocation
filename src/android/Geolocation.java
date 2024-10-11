@@ -70,30 +70,6 @@ public class Geolocation extends CordovaPlugin {
         LOG.d(TAG, "We are entering execute");
         context = callbackContext;
         switch (action) {
-            case "getPermission": {
-                if (isLocationProviderAvailable()) {
-                    LOG.d(TAG, "Location Provider Unavailable!");
-                    PluginResult result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
-                    context.sendPluginResult(result);
-                    return true;
-                }
-
-                boolean highAccuracy = args.getBoolean(0);
-                permissionsToCheck = highAccuracy ? highAccuracyPermissions : lowAccuracyPermissions;
-
-                // Always request both FINE & COARSE permissions on API <= 31 due to bug in WebView that manifests on these versions
-                // See https://bugs.chromium.org/p/chromium/issues/detail?id=1269362
-                permissionsToRequest = Build.VERSION.SDK_INT <= 31 ? highAccuracyPermissions : permissionsToCheck;
-
-                if (hasPermission(permissionsToCheck)) {
-                    PluginResult r = new PluginResult(PluginResult.Status.OK, Build.VERSION.SDK_INT);
-                    context.sendPluginResult(r);
-                    return true;
-                } else {
-                    PermissionHelper.requestPermissions(this, 1, permissionsToRequest);
-                }
-                return true;
-            }
             case "getCurrentPosition": {
                 if (isLocationProviderAvailable()) {
                     LOG.d(TAG, "Location Provider Unavailable!");
