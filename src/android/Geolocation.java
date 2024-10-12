@@ -91,11 +91,11 @@ public class Geolocation extends CordovaPlugin {
 
     public boolean hasPermission(String[] permissions) {
         for (String p : permissions) {
-            if (PermissionHelper.hasPermission(this, p)) {
-                return true;
+            if (!PermissionHelper.hasPermission(this, p)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     /*
