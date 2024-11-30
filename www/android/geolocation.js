@@ -27,8 +27,6 @@ const PositionError = require('./PositionError');
 // So we use additional map and own ids to return watch id synchronously.
 const pluginToNativeWatchMap = {};
 
-const timers = {}; // list of timers in use
-
 // Returns a timeout failure, closed over a specified timeout value and error callback.
 function createTimeout (errorCallback, timeout) {
     let t = setTimeout(function () {
@@ -42,8 +40,37 @@ function createTimeout (errorCallback, timeout) {
     return t;
 }
 
+// Returns default params, overrides if provided with values
+function parseParameters (options) {
+    const opt = {
+        maximumAge: 0,
+        enableHighAccuracy: false,
+        timeout: Infinity
+    };
+
+    if (options) {
+        if (options.maximumAge !== undefined && !isNaN(options.maximumAge) && options.maximumAge > 0) {
+            opt.maximumAge = options.maximumAge;
+        }
+        if (options.enableHighAccuracy !== undefined) {
+            opt.enableHighAccuracy = options.enableHighAccuracy;
+        }
+        if (options.timeout !== undefined && !isNaN(options.timeout)) {
+            if (options.timeout < 0) {
+                opt.timeout = 0;
+            } else {
+                opt.timeout = options.timeout;
+            }
+        }
+    }
+
+    return opt;
+}
+
 module.exports = {
     getCurrentPosition: function (success, error, args) {
+        args = parseParameters(args);
+
         // Timer var that will fire an error callback if no position is retrieved from native
         // before the "timeout" param provided expires
         const timeoutTimer = { timer: null };
@@ -54,17 +81,19 @@ module.exports = {
                 if (typeof args === 'undefined') args = {};
                 args.enableHighAccuracy = true;
             }
-            const geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
-            geo.getCurrentPosition((position) => {
-                clearTimeout(timeoutTimer.timer);
-                if (!timeoutTimer.timer) {
-                    // Timeout already happened, or native fired error callback for
-                    // this geo request.
+            // Timeout already happened, or native fired error callback for this geo request.
+            // Don't continue with success callback.
+            if (timeoutTimer.timer) {
+                const geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
+                geo.getCurrentPosition((position) => {
+                    clearTimeout(timeoutTimer.timer);
+                    // Timeout already happened, or native fired error callback for this geo request.
                     // Don't continue with success callback.
-                    return;
-                }
-                success(position);
-            }, error, args);
+                    if (timeoutTimer.timer) {
+                        success(position);
+                    }
+                }, error, args);
+            }
         };
         const fail = function () {
             clearTimeout(timeoutTimer.timer);
@@ -74,11 +103,11 @@ module.exports = {
             }
         };
 
-        if (options.timeout !== Infinity) {
+        if (args.timeout !== Infinity) {
             // If the timeout value was not set to Infinity (default), then
             // set up a timeout function that will fire the error callback
             // if no successful position was retrieved before timeout expired.
-            timeoutTimer.timer = createTimeout(fail, options.timeout);
+            timeoutTimer.timer = createTimeout(error, args.timeout);
         } else {
             // This is here so the check in the win function doesn't mess stuff up
             // may seem weird but this guarantees timeoutTimer is
