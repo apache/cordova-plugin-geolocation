@@ -27,17 +27,20 @@ const PositionError = require('./PositionError');
 // So we use additional map and own ids to return watch id synchronously.
 const pluginToNativeWatchMap = {};
 
+// list of timers in use
+const timers = {};
+
 // Returns a timeout failure, closed over a specified timeout value and error callback.
-function createTimeout (errorCallback, timeout) {
-    let t = setTimeout(function () {
-        clearTimeout(t);
-        t = null;
+function createTimeout (errorCallback, timeout, id) {
+    timers[id].timer = setTimeout(function () {
+        clearTimeout(timers[id].timer);
+        timers[id].timer = null;
         errorCallback({
             code: PositionError.TIMEOUT,
             message: 'Position retrieval timed out.'
         });
     }, timeout);
-    return t;
+    return timers[id].timer;
 }
 
 // Returns default params, overrides if provided with values
@@ -71,33 +74,39 @@ module.exports = {
     getCurrentPosition: function (success, error, args) {
         args = parseParameters(args);
 
+        const id = utils.createUUID();
+
         // Timer var that will fire an error callback if no position is retrieved from native
         // before the "timeout" param provided expires
-        const timeoutTimer = { timer: null };
+        timers[id] = { timer: null };
 
         const win = function (deviceApiLevel) {
+            if (!timers[id].timer) {
+                // Timeout already happened, or native fired error callback for
+                // this geo request.
+                // Don't continue with success callback.
+                return;
+            }
             // Workaround for bug specific to API 31 where requesting `enableHighAccuracy: false` results in TIMEOUT error.
             if (deviceApiLevel === 31) {
                 if (typeof args === 'undefined') args = {};
                 args.enableHighAccuracy = true;
             }
-            // Timeout already happened, or native fired error callback for this geo request.
-            // Don't continue with success callback.
-            if (timeoutTimer.timer) {
-                const geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
-                geo.getCurrentPosition((position) => {
-                    clearTimeout(timeoutTimer.timer);
-                    // Timeout already happened, or native fired error callback for this geo request.
+            const geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation'); // eslint-disable-line no-undef
+            geo.getCurrentPosition((position) => {
+                clearTimeout(timers[id].timer);
+                if (!timers[id].timer) {
+                    // Timeout already happened, or native fired error callback for
+                    // this geo request.
                     // Don't continue with success callback.
-                    if (timeoutTimer.timer) {
-                        success(position);
-                    }
-                }, error, args);
-            }
+                    return;
+                }
+                success(position);
+            }, error, args);
         };
         const fail = function () {
-            clearTimeout(timeoutTimer.timer);
-            timeoutTimer.timer = null;
+            clearTimeout(timers[id].timer);
+            timers[id].timer = null;
             if (error) {
                 error(new PositionError(PositionError.PERMISSION_DENIED, 'Illegal Access'));
             }
@@ -107,16 +116,16 @@ module.exports = {
             // If the timeout value was not set to Infinity (default), then
             // set up a timeout function that will fire the error callback
             // if no successful position was retrieved before timeout expired.
-            timeoutTimer.timer = createTimeout(error, args.timeout);
+            timers[id].timer = createTimeout(error, args.timeout, id);
         } else {
             // This is here so the check in the win function doesn't mess stuff up
             // may seem weird but this guarantees timeoutTimer is
             // always truthy before we call into native
-            timeoutTimer.timer = true;
+            timers[id].timer = true;
         }
         const enableHighAccuracy = typeof args === 'object' && !!args.enableHighAccuracy;
         exec(win, fail, 'Geolocation', 'getPermission', [enableHighAccuracy]);
-        return timeoutTimer;
+        return timers[id];
     },
 
     watchPosition: function (success, error, args) {
