@@ -14,12 +14,12 @@
        specific language governing permissions and limitations
        under the License.
  */
-
-
 package org.apache.cordova.geolocation;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.Manifest;
+import android.location.LocationManager;
 import android.os.Build;
 
 import org.apache.cordova.CallbackContext;
@@ -30,24 +30,29 @@ import org.apache.cordova.LOG;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-
 public class Geolocation extends CordovaPlugin {
 
     String TAG = "GeolocationPlugin";
     CallbackContext context;
 
-
-    String [] highAccuracyPermissions = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION };
-    String [] lowAccuracyPermissions = { Manifest.permission.ACCESS_COARSE_LOCATION };
-    String [] permissionsToRequest;
+    String[] highAccuracyPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+    String[] lowAccuracyPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
+    String[] permissionsToRequest;
     String[] permissionsToCheck;
 
+    LocationManager manager;
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         LOG.d(TAG, "We are entering execute");
         context = callbackContext;
-        if(action.equals("getPermission"))
-        {
+        if (action.equals("getPermission")) {
+            if (!isLocationProviderAvailable()) {
+                LOG.d(TAG, "Location Provider Unavailable!");
+                PluginResult result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+                context.sendPluginResult(result);
+                return true;
+            }
+
             boolean highAccuracy = args.getBoolean(0);
             permissionsToCheck = highAccuracy ? highAccuracyPermissions : lowAccuracyPermissions;
 
@@ -55,13 +60,11 @@ public class Geolocation extends CordovaPlugin {
             // See https://bugs.chromium.org/p/chromium/issues/detail?id=1269362
             permissionsToRequest = Build.VERSION.SDK_INT <= 31 ? highAccuracyPermissions : permissionsToCheck;
 
-            if(hasPermisssion(permissionsToCheck))
-            {
+            if (hasPermission(permissionsToCheck)) {
                 PluginResult r = new PluginResult(PluginResult.Status.OK, Build.VERSION.SDK_INT);
                 context.sendPluginResult(r);
                 return true;
-            }
-            else {
+            } else {
                 PermissionHelper.requestPermissions(this, 0, permissionsToRequest);
             }
             return true;
@@ -69,34 +72,26 @@ public class Geolocation extends CordovaPlugin {
         return false;
     }
 
-
-    public void onRequestPermissionResult(int requestCode, String[] permissions,
-                                          int[] grantResults) throws JSONException
-    {
+    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
         PluginResult result;
         //This is important if we're using Cordova without using Cordova, but we have the geolocation plugin installed
-        if(context != null) {
-            for (int i=0; i<grantResults.length; i++) {
-                int r = grantResults[i];
-                String p = permissions[i];
-                if (r == PackageManager.PERMISSION_DENIED && arrayContains(permissionsToCheck, p)) {
-                    LOG.d(TAG, "Permission Denied!");
-                    result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+        if (context != null) {
+            for (int r : grantResults) {
+                if (r == PackageManager.PERMISSION_GRANTED) {
+                    result = new PluginResult(PluginResult.Status.OK);
                     context.sendPluginResult(result);
                     return;
                 }
-
             }
-            result = new PluginResult(PluginResult.Status.OK);
+            LOG.d(TAG, "Permission Denied!");
+            result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
             context.sendPluginResult(result);
         }
     }
 
-    public boolean hasPermisssion(String[] permissions) {
-        for(String p : permissions)
-        {
-            if(!PermissionHelper.hasPermission(this, p))
-            {
+    public boolean hasPermission(String[] permissions) {
+        for (String p : permissions) {
+            if (!PermissionHelper.hasPermission(this, p)) {
                 return false;
             }
         }
@@ -107,26 +102,12 @@ public class Geolocation extends CordovaPlugin {
      * We override this so that we can access the permissions variable, which no longer exists in
      * the parent class, since we can't initialize it reliably in the constructor!
      */
-
-    public void requestPermissions(int requestCode)
-    {
+    public void requestPermissions(int requestCode) {
         PermissionHelper.requestPermissions(this, requestCode, permissionsToRequest);
     }
 
-    //https://stackoverflow.com/a/12635769/777265
-    private <T> boolean arrayContains(final T[] array, final T v) {
-        if (v == null) {
-            for (final T e : array)
-                if (e == null)
-                    return true;
-        }
-        else {
-            for (final T e : array)
-                if (e == v || v.equals(e))
-                    return true;
-        }
-
-        return false;
+    private boolean isLocationProviderAvailable() {
+        manager = (LocationManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER) || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
-
 }
