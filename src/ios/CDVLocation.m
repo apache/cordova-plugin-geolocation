@@ -92,7 +92,7 @@
     }
 }
 
-- (void)startLocation:(BOOL)enableHighAccuracy
+- (void)startLocation:(BOOL)enableHighAccuracy distanceFilter:(NSNumber*)distanceFilter desiredAccuracy:(NSString*)desiredAccuracy
 {
     if (![self isLocationServicesEnabled]) {
         [self returnLocationError:PERMISSIONDENIED withMessage:@"Location services are not enabled."];
@@ -120,6 +120,8 @@
     NSUInteger code = [CLLocationManager authorizationStatus];
     if (code == kCLAuthorizationStatusNotDetermined && ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)] || [self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)])) { //iOS8+
         __highAccuracyEnabled = enableHighAccuracy;
+        __pendingDistanceFilter = distanceFilter;
+        __pendingDesiredAccuracy = desiredAccuracy;
         if([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"]){
             [self.locationManager requestWhenInUseAuthorization];
         } else if([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"]) {
@@ -137,16 +139,42 @@
     [self.locationManager stopUpdatingLocation];
     [self.locationManager startUpdatingLocation];
     __locationStarted = YES;
-    if (enableHighAccuracy) {
-        __highAccuracyEnabled = YES;
+    __highAccuracyEnabled = enableHighAccuracy;
+    
+    // Apply distance filter: use caller-supplied value if provided, otherwise fall back to
+    // accuracy-dependent defaults (5 m for high accuracy, 10 m for low accuracy).
+    if (distanceFilter != nil) {
+        self.locationManager.distanceFilter = [distanceFilter doubleValue];
+    } else if (enableHighAccuracy) {
         // Set distance filter to 5 for a high accuracy. Setting it to "kCLDistanceFilterNone" could provide a
         // higher accuracy, but it's also just spamming the callback with useless reports which drain the battery.
         self.locationManager.distanceFilter = 5;
+    } else {
+        self.locationManager.distanceFilter = 10;
+    }
+    
+    // Apply desired accuracy: use caller-supplied string if provided, otherwise fall back to
+    // enableHighAccuracy-dependent defaults.
+    if (desiredAccuracy != nil) {
+        CLLocationAccuracy accuracy = kCLLocationAccuracyBest;
+        if ([desiredAccuracy isEqualToString:@"bestForNavigation"]) {
+            accuracy = kCLLocationAccuracyBestForNavigation;
+        } else if ([desiredAccuracy isEqualToString:@"best"]) {
+            accuracy = kCLLocationAccuracyBest;
+        } else if ([desiredAccuracy isEqualToString:@"nearestTenMeters"]) {
+            accuracy = kCLLocationAccuracyNearestTenMeters;
+        } else if ([desiredAccuracy isEqualToString:@"hundredMeters"]) {
+            accuracy = kCLLocationAccuracyHundredMeters;
+        } else if ([desiredAccuracy isEqualToString:@"kilometer"]) {
+            accuracy = kCLLocationAccuracyKilometer;
+        } else if ([desiredAccuracy isEqualToString:@"threeKilometers"]) {
+            accuracy = kCLLocationAccuracyThreeKilometers;
+        }
+        self.locationManager.desiredAccuracy = accuracy;
+    } else if (enableHighAccuracy) {
         // Set desired accuracy to Best.
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     } else {
-        __highAccuracyEnabled = NO;
-        self.locationManager.distanceFilter = 10;
         self.locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers;
     }
 }
@@ -195,6 +223,11 @@
     [self.commandDelegate runInBackground:^{
         NSString* callbackId = command.callbackId;
         BOOL enableHighAccuracy = [[command argumentAtIndex:0] boolValue];
+        // args[1] = maximumAge, handled on the JS side
+        id distanceFilterArg = [command argumentAtIndex:2];
+        NSNumber* distanceFilter = (distanceFilterArg != nil && distanceFilterArg != [NSNull null]) ? distanceFilterArg : nil;
+        id desiredAccuracyArg = [command argumentAtIndex:3];
+        NSString* desiredAccuracy = (desiredAccuracyArg != nil && desiredAccuracyArg != [NSNull null]) ? desiredAccuracyArg : nil;
         
         if ([self isLocationServicesEnabled] == NO) {
             NSMutableDictionary* posError = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -221,7 +254,7 @@
                     }
                 }
                 // Tell the location manager to start notifying us of heading updates
-                [self startLocation:enableHighAccuracy];
+                [self startLocation:enableHighAccuracy distanceFilter:distanceFilter desiredAccuracy:desiredAccuracy];
             } else {
                 [self returnLocationInfo:callbackId andKeepCallback:NO];
             }
@@ -234,6 +267,10 @@
     NSString* callbackId = command.callbackId;
     NSString* timerId = [command argumentAtIndex:0];
     BOOL enableHighAccuracy = [[command argumentAtIndex:1] boolValue];
+    id distanceFilterArg = [command argumentAtIndex:2];
+    NSNumber* distanceFilter = (distanceFilterArg != nil && distanceFilterArg != [NSNull null]) ? distanceFilterArg : nil;
+    id desiredAccuracyArg = [command argumentAtIndex:3];
+    NSString* desiredAccuracy = (desiredAccuracyArg != nil && desiredAccuracyArg != [NSNull null]) ? desiredAccuracyArg : nil;
     
     if (!self.locationData) {
         self.locationData = [[CDVLocationData alloc] init];
@@ -256,7 +293,7 @@
     } else {
         if (!__locationStarted || (__highAccuracyEnabled != enableHighAccuracy)) {
             // Tell the location manager to start notifying us of location updates
-            [self startLocation:enableHighAccuracy];
+            [self startLocation:enableHighAccuracy distanceFilter:distanceFilter desiredAccuracy:desiredAccuracy];
         }
     }
 }
@@ -361,7 +398,7 @@
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
     if(!__locationStarted){
-        [self startLocation:__highAccuracyEnabled];
+        [self startLocation:__highAccuracyEnabled distanceFilter:__pendingDistanceFilter desiredAccuracy:__pendingDesiredAccuracy];
     }
 }
 

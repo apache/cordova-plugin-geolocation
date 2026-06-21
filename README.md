@@ -247,13 +247,70 @@ Optional parameters to customize the retrieval of the geolocation
 
     { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
 
-### Options
+### Standard Options
 
 - __enableHighAccuracy__: Provides a hint that the application needs the best possible results. By default, the device attempts to retrieve a `Position` using network-based methods. Setting this property to `true` tells the framework to use more accurate methods, such as satellite positioning. _(Boolean)_
 
 - __timeout__: The maximum length of time (milliseconds) that is allowed to pass from the call to `navigator.geolocation.getCurrentPosition` or `geolocation.watchPosition` until the corresponding `geolocationSuccess` callback executes. If the `geolocationSuccess` callback is not invoked within this time, the `geolocationError` callback is passed a `PositionError.TIMEOUT` error code. (Note that when used in conjunction with `geolocation.watchPosition`, the `geolocationError` callback could be called on an interval every `timeout` milliseconds!) _(Number)_
 
 - __maximumAge__: Accept a cached position whose age is no greater than the specified time in milliseconds. _(Number)_
+
+### Extended Options
+
+The following options provide fine-grained control over update frequency and accuracy. They are **optional** and fall back to sensible defaults derived from `enableHighAccuracy` when omitted.
+
+#### `distanceFilter` _(Number, metres — iOS only)_
+
+The minimum distance (in metres) the device must move horizontally before a location update is delivered to the callback. Smaller values produce more frequent updates at the cost of battery life; larger values reduce update frequency.
+
+Default values (when `distanceFilter` is omitted):
+
+- `enableHighAccuracy: true` → **5 m**
+- `enableHighAccuracy: false` → **10 m**
+
+> **Platform support:** Fully implemented on **iOS**. On **Android**, the WebView's built-in geolocation API is used and this option has no effect.
+
+```javascript
+// Deliver a new position only after moving at least 50 metres
+navigator.geolocation.watchPosition(onSuccess, onError, {
+  enableHighAccuracy: true,
+  distanceFilter: 50,
+});
+```
+
+#### `desiredAccuracy` _(String — iOS only)_
+
+Requests a specific accuracy level from Core Location, overriding the accuracy that `enableHighAccuracy` would normally select. Accepted values (from highest to lowest accuracy and power consumption):
+
+| Value                 | Core Location constant                 | Typical use                                           |
+| --------------------- | -------------------------------------- | ----------------------------------------------------- |
+| `"bestForNavigation"` | `kCLLocationAccuracyBestForNavigation` | Turn-by-turn navigation (uses additional sensor data) |
+| `"best"`              | `kCLLocationAccuracyBest`              | General high-accuracy positioning                     |
+| `"nearestTenMeters"`  | `kCLLocationAccuracyNearestTenMeters`  | Moderate accuracy, lower power                        |
+| `"hundredMeters"`     | `kCLLocationAccuracyHundredMeters`     | City-block level                                      |
+| `"kilometer"`         | `kCLLocationAccuracyKilometer`         | Neighbourhood level                                   |
+| `"threeKilometers"`   | `kCLLocationAccuracyThreeKilometers`   | Coarse, battery-friendly                              |
+
+Default values (when `desiredAccuracy` is omitted):
+
+- `enableHighAccuracy: true` → `"best"`
+- `enableHighAccuracy: false` → `"threeKilometers"`
+
+> **Platform support:** Fully implemented on **iOS**. On **Android**, accuracy is controlled by `enableHighAccuracy` via the WebView geolocation API; this option has no effect.
+
+```javascript
+// Navigation-grade accuracy
+navigator.geolocation.watchPosition(onSuccess, onError, {
+  desiredAccuracy: "bestForNavigation",
+  distanceFilter: 2,
+});
+
+// Battery-friendly background tracking
+navigator.geolocation.watchPosition(onSuccess, onError, {
+  desiredAccuracy: "hundredMeters",
+  distanceFilter: 100,
+});
+```
 
 ### Android Quirks
 

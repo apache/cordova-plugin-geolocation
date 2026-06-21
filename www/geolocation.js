@@ -27,12 +27,24 @@ const Position = require('./Position');
 
 const timers = {}; // list of timers in use
 
+// Valid desiredAccuracy string values (iOS only)
+const DESIRED_ACCURACY_VALUES = [
+    'bestForNavigation',
+    'best',
+    'nearestTenMeters',
+    'hundredMeters',
+    'kilometer',
+    'threeKilometers'
+];
+
 // Returns default params, overrides if provided with values
 function parseParameters (options) {
     const opt = {
         maximumAge: 0,
         enableHighAccuracy: false,
         timeout: Infinity
+        // distanceFilter: undefined  (optional, metres; iOS & Android)
+        // desiredAccuracy: undefined (optional, string; iOS only)
     };
 
     if (options) {
@@ -48,6 +60,13 @@ function parseParameters (options) {
             } else {
                 opt.timeout = options.timeout;
             }
+        }
+        if (options.distanceFilter !== undefined && !isNaN(options.distanceFilter) && options.distanceFilter >= 0) {
+            opt.distanceFilter = options.distanceFilter;
+        }
+        if (options.desiredAccuracy !== undefined && typeof options.desiredAccuracy === 'string' &&
+            DESIRED_ACCURACY_VALUES.indexOf(options.desiredAccuracy) !== -1) {
+            opt.desiredAccuracy = options.desiredAccuracy;
         }
     }
 
@@ -144,7 +163,7 @@ const geolocation = {
                 // always truthy before we call into native
                 timeoutTimer.timer = true;
             }
-            exec(win, fail, 'Geolocation', 'getLocation', [options.enableHighAccuracy, options.maximumAge]);
+            exec(win, fail, 'Geolocation', 'getLocation', [options.enableHighAccuracy, options.maximumAge, options.distanceFilter, options.desiredAccuracy]);
         }
         return timeoutTimer;
     },
@@ -195,7 +214,7 @@ const geolocation = {
             successCallback(pos);
         };
 
-        exec(win, fail, 'Geolocation', 'addWatch', [id, options.enableHighAccuracy]);
+        exec(win, fail, 'Geolocation', 'addWatch', [id, options.enableHighAccuracy, options.distanceFilter, options.desiredAccuracy]);
 
         return id;
     },
