@@ -247,17 +247,19 @@ Optional parameters to customize the retrieval of the geolocation
 
     { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
 
-### Standard Options
+### Options
 
-- __enableHighAccuracy__: Provides a hint that the application needs the best possible results. By default, the device attempts to retrieve a `Position` using network-based methods. Setting this property to `true` tells the framework to use more accurate methods, such as satellite positioning. _(Boolean)_
+- **enableHighAccuracy**: Provides a hint that the application needs the best possible results. By default, the device attempts to retrieve a `Position` using network-based methods. Setting this property to `true` tells the framework to use more accurate methods, such as satellite positioning. _(Boolean)_
 
-- __timeout__: The maximum length of time (milliseconds) that is allowed to pass from the call to `navigator.geolocation.getCurrentPosition` or `geolocation.watchPosition` until the corresponding `geolocationSuccess` callback executes. If the `geolocationSuccess` callback is not invoked within this time, the `geolocationError` callback is passed a `PositionError.TIMEOUT` error code. (Note that when used in conjunction with `geolocation.watchPosition`, the `geolocationError` callback could be called on an interval every `timeout` milliseconds!) _(Number)_
+- **timeout**: The maximum length of time (milliseconds) that is allowed to pass from the call to `navigator.geolocation.getCurrentPosition` or `geolocation.watchPosition` until the corresponding `geolocationSuccess` callback executes. If the `geolocationSuccess` callback is not invoked within this time, the `geolocationError` callback is passed a `PositionError.TIMEOUT` error code. (Note that when used in conjunction with `geolocation.watchPosition`, the `geolocationError` callback could be called on an interval every `timeout` milliseconds!) _(Number)_
 
-- __maximumAge__: Accept a cached position whose age is no greater than the specified time in milliseconds. _(Number)_
+- **maximumAge**: Accept a cached position whose age is no greater than the specified time in milliseconds. _(Number)_
 
-### Extended Options
+### Extended Options (iOS only)
 
 The following options provide fine-grained control over update frequency and accuracy. They are **optional** and fall back to sensible defaults derived from `enableHighAccuracy` when omitted.
+
+> **Platform support:** Fully implemented on **iOS**. On **Android**, the WebView's built-in geolocation API is used and these options have no effect.
 
 #### `distanceFilter` _(Number, metres — iOS only)_
 
@@ -267,8 +269,6 @@ Default values (when `distanceFilter` is omitted):
 
 - `enableHighAccuracy: true` → **5 m**
 - `enableHighAccuracy: false` → **10 m**
-
-> **Platform support:** Fully implemented on **iOS**. On **Android**, the WebView's built-in geolocation API is used and this option has no effect.
 
 ```javascript
 // Deliver a new position only after moving at least 50 metres
@@ -296,8 +296,6 @@ Default values (when `desiredAccuracy` is omitted):
 - `enableHighAccuracy: true` → `"best"`
 - `enableHighAccuracy: false` → `"threeKilometers"`
 
-> **Platform support:** Fully implemented on **iOS**. On **Android**, accuracy is controlled by `enableHighAccuracy` via the WebView geolocation API; this option has no effect.
-
 ```javascript
 // Navigation-grade accuracy
 navigator.geolocation.watchPosition(onSuccess, onError, {
@@ -309,6 +307,65 @@ navigator.geolocation.watchPosition(onSuccess, onError, {
 navigator.geolocation.watchPosition(onSuccess, onError, {
   desiredAccuracy: "hundredMeters",
   distanceFilter: 100,
+});
+```
+
+#### `pausesLocationUpdatesAutomatically` _(Boolean — iOS only)_
+
+When `true` (the iOS default), Core Location may automatically pause location updates when it determines that the user is unlikely to have moved, to save battery. When `false`, updates are delivered continuously until `clearWatch` or `stopLocation` is called.
+
+Set this to `false` whenever you need an uninterrupted stream of updates, for example during navigation or fitness recording.
+
+```javascript
+// Never let iOS pause updates during a workout session
+navigator.geolocation.watchPosition(onSuccess, onError, {
+  enableHighAccuracy: true,
+  pausesLocationUpdatesAutomatically: false,
+});
+```
+
+#### `allowsBackgroundLocationUpdates` _(Boolean — iOS only)_
+
+When `true`, the app can receive location updates while in the background. Defaults to `false`.
+
+**Requirements before enabling this flag:**
+
+1. Add the **Location updates** entry to the _Background Modes_ capability in Xcode (or `UIBackgroundModes` → `location` in `Info.plist`).
+   For example add the following to config.xml:
+
+```
+        <config-file parent="UIBackgroundModes" target="*-Info.plist">
+            <array>
+                <string>location</string>
+            </array>
+        </config-file>
+```
+
+2. Use `NSLocationAlwaysAndWhenInUseUsageDescription` (iOS 11+) or `NSLocationAlwaysUsageDescription` in `Info.plist`.
+   You can do that in config.xml:
+
+```
+        <edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
+            <string>need location access to test it out</string>
+        </edit-config>
+        <edit-config target="NSLocationAlwaysAndWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
+            <string>need location access to test it out</string>
+        </edit-config>
+        <edit-config target="NSLocationAlwaysUsageDescription" file="*-Info.plist" mode="merge">
+            <string>need location access to test it out</string>
+        </edit-config>
+```
+
+3. The user must grant _Always_ location permission.
+
+Requires iOS 9 or later. On older iOS versions a warning is logged and the flag is ignored.
+
+```javascript
+// Continuous background tracking (navigation / fitness)
+navigator.geolocation.watchPosition(onSuccess, onError, {
+  enableHighAccuracy: true,
+  pausesLocationUpdatesAutomatically: false,
+  allowsBackgroundLocationUpdates: true,
 });
 ```
 

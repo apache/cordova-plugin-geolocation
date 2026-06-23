@@ -68,6 +68,12 @@ function parseParameters (options) {
             DESIRED_ACCURACY_VALUES.indexOf(options.desiredAccuracy) !== -1) {
             opt.desiredAccuracy = options.desiredAccuracy;
         }
+        if (options.pausesLocationUpdatesAutomatically !== undefined) {
+            opt.pausesLocationUpdatesAutomatically = !!options.pausesLocationUpdatesAutomatically;
+        }
+        if (options.allowsBackgroundLocationUpdates !== undefined) {
+            opt.allowsBackgroundLocationUpdates = !!options.allowsBackgroundLocationUpdates;
+        }
     }
 
     return opt;
@@ -163,7 +169,7 @@ const geolocation = {
                 // always truthy before we call into native
                 timeoutTimer.timer = true;
             }
-            exec(win, fail, 'Geolocation', 'getLocation', [options.enableHighAccuracy, options.maximumAge, options.distanceFilter, options.desiredAccuracy]);
+            exec(win, fail, 'Geolocation', 'getLocation', [options.enableHighAccuracy, options.maximumAge, options.distanceFilter, options.desiredAccuracy, options.pausesLocationUpdatesAutomatically, options.allowsBackgroundLocationUpdates]);
         }
         return timeoutTimer;
     },
@@ -214,7 +220,7 @@ const geolocation = {
             successCallback(pos);
         };
 
-        exec(win, fail, 'Geolocation', 'addWatch', [id, options.enableHighAccuracy, options.distanceFilter, options.desiredAccuracy]);
+        exec(win, fail, 'Geolocation', 'addWatch', [id, options.enableHighAccuracy, options.distanceFilter, options.desiredAccuracy, options.pausesLocationUpdatesAutomatically, options.allowsBackgroundLocationUpdates]);
 
         return id;
     },

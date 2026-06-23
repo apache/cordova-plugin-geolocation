@@ -92,7 +92,7 @@
     }
 }
 
-- (void)startLocation:(BOOL)enableHighAccuracy distanceFilter:(NSNumber*)distanceFilter desiredAccuracy:(NSString*)desiredAccuracy
+- (void)startLocation:(BOOL)enableHighAccuracy distanceFilter:(NSNumber*)distanceFilter desiredAccuracy:(NSString*)desiredAccuracy pausesLocationUpdatesAutomatically:(NSNumber*)pausesLocationUpdatesAutomatically allowsBackgroundLocationUpdates:(NSNumber*)allowsBackgroundLocationUpdates
 {
     if (![self isLocationServicesEnabled]) {
         [self returnLocationError:PERMISSIONDENIED withMessage:@"Location services are not enabled."];
@@ -122,6 +122,8 @@
         __highAccuracyEnabled = enableHighAccuracy;
         __pendingDistanceFilter = distanceFilter;
         __pendingDesiredAccuracy = desiredAccuracy;
+        __pendingPausesLocationUpdatesAutomatically = pausesLocationUpdatesAutomatically;
+        __pendingAllowsBackgroundLocationUpdates = allowsBackgroundLocationUpdates;
         if([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"]){
             [self.locationManager requestWhenInUseAuthorization];
         } else if([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"]) {
@@ -177,6 +179,24 @@
     } else {
         self.locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers;
     }
+    
+    // Apply pausesLocationUpdatesAutomatically (iOS 6+): when YES the OS may pause updates
+    // automatically to save battery; when NO updates continue until explicitly stopped.
+    // Default iOS behaviour is YES.
+    if (pausesLocationUpdatesAutomatically != nil) {
+        self.locationManager.pausesLocationUpdatesAutomatically = [pausesLocationUpdatesAutomatically boolValue];
+    }
+    
+    // Apply allowsBackgroundLocationUpdates (iOS 9+): must also have the "Location updates"
+    // Background Mode capability and NSLocationAlwaysUsageDescription in Info.plist.
+    // Default iOS behaviour is NO.
+    if (allowsBackgroundLocationUpdates != nil) {
+        if ([self.locationManager respondsToSelector:@selector(setAllowsBackgroundLocationUpdates:)]) {
+            self.locationManager.allowsBackgroundLocationUpdates = [allowsBackgroundLocationUpdates boolValue];
+        } else {
+            NSLog(@"[Warning] allowsBackgroundLocationUpdates requires iOS 9 or later.");
+        }
+    }
 }
 
 - (void)_stopLocation
@@ -228,6 +248,10 @@
         NSNumber* distanceFilter = (distanceFilterArg != nil && distanceFilterArg != [NSNull null]) ? distanceFilterArg : nil;
         id desiredAccuracyArg = [command argumentAtIndex:3];
         NSString* desiredAccuracy = (desiredAccuracyArg != nil && desiredAccuracyArg != [NSNull null]) ? desiredAccuracyArg : nil;
+        id pausesArg = [command argumentAtIndex:4];
+        NSNumber* pausesLocationUpdatesAutomatically = (pausesArg != nil && pausesArg != [NSNull null]) ? pausesArg : nil;
+        id bgArg = [command argumentAtIndex:5];
+        NSNumber* allowsBackgroundLocationUpdates = (bgArg != nil && bgArg != [NSNull null]) ? bgArg : nil;
         
         if ([self isLocationServicesEnabled] == NO) {
             NSMutableDictionary* posError = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -254,7 +278,7 @@
                     }
                 }
                 // Tell the location manager to start notifying us of heading updates
-                [self startLocation:enableHighAccuracy distanceFilter:distanceFilter desiredAccuracy:desiredAccuracy];
+                [self startLocation:enableHighAccuracy distanceFilter:distanceFilter desiredAccuracy:desiredAccuracy pausesLocationUpdatesAutomatically:pausesLocationUpdatesAutomatically allowsBackgroundLocationUpdates:allowsBackgroundLocationUpdates];
             } else {
                 [self returnLocationInfo:callbackId andKeepCallback:NO];
             }
@@ -271,6 +295,10 @@
     NSNumber* distanceFilter = (distanceFilterArg != nil && distanceFilterArg != [NSNull null]) ? distanceFilterArg : nil;
     id desiredAccuracyArg = [command argumentAtIndex:3];
     NSString* desiredAccuracy = (desiredAccuracyArg != nil && desiredAccuracyArg != [NSNull null]) ? desiredAccuracyArg : nil;
+    id pausesArg = [command argumentAtIndex:4];
+    NSNumber* pausesLocationUpdatesAutomatically = (pausesArg != nil && pausesArg != [NSNull null]) ? pausesArg : nil;
+    id bgArg = [command argumentAtIndex:5];
+    NSNumber* allowsBackgroundLocationUpdates = (bgArg != nil && bgArg != [NSNull null]) ? bgArg : nil;
     
     if (!self.locationData) {
         self.locationData = [[CDVLocationData alloc] init];
@@ -293,7 +321,7 @@
     } else {
         if (!__locationStarted || (__highAccuracyEnabled != enableHighAccuracy)) {
             // Tell the location manager to start notifying us of location updates
-            [self startLocation:enableHighAccuracy distanceFilter:distanceFilter desiredAccuracy:desiredAccuracy];
+            [self startLocation:enableHighAccuracy distanceFilter:distanceFilter desiredAccuracy:desiredAccuracy pausesLocationUpdatesAutomatically:pausesLocationUpdatesAutomatically allowsBackgroundLocationUpdates:allowsBackgroundLocationUpdates];
         }
     }
 }
@@ -398,7 +426,7 @@
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
     if(!__locationStarted){
-        [self startLocation:__highAccuracyEnabled distanceFilter:__pendingDistanceFilter desiredAccuracy:__pendingDesiredAccuracy];
+        [self startLocation:__highAccuracyEnabled distanceFilter:__pendingDistanceFilter desiredAccuracy:__pendingDesiredAccuracy pausesLocationUpdatesAutomatically:__pendingPausesLocationUpdatesAutomatically allowsBackgroundLocationUpdates:__pendingAllowsBackgroundLocationUpdates];
     }
 }
 

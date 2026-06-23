@@ -46,8 +46,10 @@ typedef NSUInteger CDVLocationStatus;
 @interface CDVLocation : CDVPlugin <CLLocationManagerDelegate>{
     @private BOOL __locationStarted;
     @private BOOL __highAccuracyEnabled;
-    @private NSNumber* __pendingDistanceFilter;   // stored while waiting for authorization
-    @private NSString* __pendingDesiredAccuracy;  // stored while waiting for authorization
+    @private NSNumber* __pendingDistanceFilter;                    // stored while waiting for authorization
+    @private NSString* __pendingDesiredAccuracy;                   // stored while waiting for authorization
+    @private NSNumber* __pendingPausesLocationUpdatesAutomatically; // stored while waiting for authorization
+    @private NSNumber* __pendingAllowsBackgroundLocationUpdates;    // stored while waiting for authorization
     CDVLocationData* locationData;
 }
 
@@ -59,7 +61,7 @@ typedef NSUInteger CDVLocationStatus;
 - (void)clearWatch:(CDVInvokedUrlCommand*)command;
 - (void)returnLocationInfo:(NSString*)callbackId andKeepCallback:(BOOL)keepCallback;
 - (void)returnLocationError:(NSUInteger)errorCode withMessage:(NSString*)message;
-- (void)startLocation:(BOOL)enableHighAccuracy distanceFilter:(NSNumber*)distanceFilter desiredAccuracy:(NSString*)desiredAccuracy;
+- (void)startLocation:(BOOL)enableHighAccuracy distanceFilter:(NSNumber*)distanceFilter desiredAccuracy:(NSString*)desiredAccuracy pausesLocationUpdatesAutomatically:(NSNumber*)pausesLocationUpdatesAutomatically allowsBackgroundLocationUpdates:(NSNumber*)allowsBackgroundLocationUpdates;
 
 - (void)locationManager:(CLLocationManager*)manager
     didUpdateToLocation:(CLLocation*)newLocation
