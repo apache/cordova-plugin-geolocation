@@ -70,7 +70,7 @@ public class Geolocation extends CordovaPlugin {
     }
 
 
-    public void onRequestPermissionResult(int requestCode, String[] permissions,
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                           int[] grantResults) throws JSONException
     {
         PluginResult result;
