@@ -41,6 +41,6 @@
     }
   },
   "devDependencies": {
-    "@cordova/eslint-config": "^5.0.0"
+    "@cordova/eslint-config": "^6.0.1"
   }
 }

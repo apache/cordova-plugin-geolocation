@@ -280,7 +280,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     function stopLocation () {
         const geo = navigator.geolocation;
         if (!geo) {
-            alert('navigator.geolocation object is missing.'); // eslint-disable-line no-undef
+            alert('navigator.geolocation object is missing.');
             return;
         }
         setLocationStatus('Stopped');
@@ -296,7 +296,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     const watchLocation = function () {
         const geo = navigator.geolocation;
         if (!geo) {
-            alert('navigator.geolocation object is missing.'); // eslint-disable-line no-undef
+            alert('navigator.geolocation object is missing.');
             return;
         }
 
@@ -322,7 +322,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     const getLocation = function (opts) {
         const geo = navigator.geolocation;
         if (!geo) {
-            alert('navigator.geolocation object is missing.'); // eslint-disable-line no-undef
+            alert('navigator.geolocation object is missing.');
             return;
         }
 
